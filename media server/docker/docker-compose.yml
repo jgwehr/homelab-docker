@@ -1,28 +1,29 @@
-version: "3.8"
+version: "3.7"
+
 services:
   portainer:
     container_name: portainer
-    image: portainer/portainer
+    image: portainer/portainer-ce
     restart: always
     command: -H unix:///var/run/docker.sock
     ports:
-      - "8000:8000"
-      - "9000:9000"
+      - 8001:8000
+      - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${USERDIR}/docker/portainer/data:/data
-      - ${USERDIR}/docker/shared:/shared
+      - ./portainer/data:/data
+      - ./shared:/shared
     environment:
       - TZ=${TZ}
   organizr:
     container_name: organizr
-    image: lsiocommunity/organizr
+    image: organizr/organizr
     restart: always
     volumes:
-      - ${USERDIR}/docker/organizr:/config
-      - ${USERDIR}/docker/shared:/shared
+      - ./organizr:/config
+      - ./shared:/shared
     ports:
-      - "80:80"
+      - 81:80
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -38,7 +39,8 @@ services:
     container_name: uptime_kuma
     image: louislam/uptime-kuma
     restart: always
+    
     ports:
-      - "9001:3001"
+      - 9001:3001
     volumes:
-      - uptime-kuma:/app/data
+      - ./uptime-kuma:/app/data
