@@ -11,7 +11,7 @@ Includes:
 
 
 ### Port Reservations
-* Organizr: 80
+* Organizr: 81
 * Portainer Management UI: 9000
-* Portainer Management UI: 8000
+* Portainer Management UI: 8001
 * Uptime-Kuma: 9001
