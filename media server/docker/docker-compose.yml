@@ -1,6 +1,7 @@
 version: "3.7"
 
 services:
+  
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
@@ -15,12 +16,13 @@ services:
       - ./shared:/shared
     environment:
       - TZ=${TZ}
+  
   organizr:
     container_name: organizr
     image: organizr/organizr
     restart: always
     volumes:
-      - ./organizr:/config
+      - ${CONFIGDIR}/organizr:/config
       - ./shared:/shared
     ports:
       - 81:80
@@ -28,6 +30,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+  
   watchtower:
     container_name: watchtower
     image: v2tec/watchtower
@@ -35,12 +38,26 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --schedule "0 0 23 * * SUN" --cleanup
+
   uptime-kuma:
     container_name: uptime_kuma
     image: louislam/uptime-kuma
     restart: always
-    
     ports:
       - 9001:3001
     volumes:
       - ./uptime-kuma:/app/data
+
+  duckdns:
+    container_name: duckdns
+    image: ghcr.io/linuxserver/duckdns
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SUBDOMAINS=${DUCKDNS_SUBDOMAINLIST}
+      - TOKEN=${DUCKDNS_TOKEN}
+      - LOG_FILE=${DEBUG_LOG}
+    volumes:
+      - ${CONFIGDIR}/duckdns:/config #optional
+    restart: unless-stopped
