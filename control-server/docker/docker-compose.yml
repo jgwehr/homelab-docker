@@ -12,8 +12,8 @@ services:
       - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./portainer/data:/data
-      - ./shared:/shared
+      - ${CONFIGDIR}/data:/data
+      - ${CONFIGDIR}/_shared:/shared
     environment:
       - TZ=${TZ}
   
@@ -23,7 +23,7 @@ services:
     restart: always
     volumes:
       - ${CONFIGDIR}/organizr:/config
-      - ./shared:/shared
+      - ${CONFIGDIR}/_shared:/shared
     ports:
       - 81:80
     environment:
@@ -46,7 +46,7 @@ services:
     ports:
       - 9001:3001
     volumes:
-      - ./uptime-kuma:/app/data
+      - ${CONFIGDIR}/uptime-kuma:/app/data
 
   duckdns:
     container_name: duckdns
