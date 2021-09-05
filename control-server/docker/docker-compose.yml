@@ -61,3 +61,10 @@ services:
     volumes:
       - ${CONFIGDIR}/duckdns:/config #optional
     restart: unless-stopped
+
+  gloomhaven-helper-wireless:
+    container_name: gloomhaven-helper-wireless
+    image: grepnull/gloomhaven-helper-headless
+    volumes:
+      - ${CONFIGDIR}/gloomhaven-helper-headless/ghh:/root/.ghh
+    restart: unless-stopped
