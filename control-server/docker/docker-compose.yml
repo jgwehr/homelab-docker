@@ -9,7 +9,7 @@ services:
     command: -H unix:///var/run/docker.sock
     ports:
       - 8001:8000
-      - 9000:9000
+      - PORT_PORTAINER_WEB:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${CONFIGDIR}/portainer/data:/data
@@ -25,7 +25,7 @@ services:
       - ${CONFIGDIR}/organizr:/config
       - ./shared:/shared
     ports:
-      - 81:80
+      - ${PORT_ORGANIZR}:80
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -44,7 +44,7 @@ services:
     image: louislam/uptime-kuma:latest
     restart: always
     ports:
-      - 9001:3001
+      - ${PORT_UPKUMA}:3001
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
 
@@ -64,6 +64,6 @@ services:
 
   gloomhaven-helper-headless:
     container_name: gloomhaven-helper-headless
-    image: grepnull/gloomhaven-helper-headless
+    image: grepnull/gloomhaven-helper-headless:latest
     volumes:
       - ${CONFIGDIR}/gloomhaven-helper-headless/ghh:/root/.ghh
