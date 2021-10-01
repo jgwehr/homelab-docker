@@ -53,7 +53,7 @@ services:
     restart: unless-stopped
     ports:
       - ${PORT_BITWARDEN_HTTP}:80
-      #- ${PORT_BITWARDEN_HTTPS}:443
+      - ${PORT_BITWARDEN_HTTPS}:443
     volumes:
       - ${CONFIGDIR}/bw-data:/data
     environment:
@@ -75,12 +75,13 @@ services:
         - web
     volumes:
       - ${CADDYDIR}/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
-      - ${CONFIGDIR}/caddy/data:/data # Optional, house for certs
-      - ${CONFIGDIR}/caddy/config:/config # Optional, JSON Config files
+      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
+      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
     environment:
       LOG_FILE: ${LOGDIR}/caddy.log
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL_ADMIN}
+      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
 
 networks:
   web:
