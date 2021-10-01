@@ -74,7 +74,7 @@ services:
     networks:
         - web
     volumes:
-      - ${CONFIGDIR}/caddy/caddyfile:/etc/caddy/Caddyfile
+      - ${CADDYDIR}/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}/caddy/data:/data # Optional, house for certs
       - ${CONFIGDIR}/caddy/config:/config # Optional, JSON Config files
     environment:
@@ -85,6 +85,3 @@ services:
 networks:
   web:
     external: true
-
-volumes:
-  
