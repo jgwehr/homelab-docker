@@ -14,7 +14,7 @@ services:
       - ${CONFIGDIR}/portainer/data:/data
       - ${CONFIGDIR}/shared:/shared
     environment:
-      - TZ=${TZ}
+      TZ: ${TZ}
 
   watchtower:
     container_name: watchtower
@@ -37,42 +37,54 @@ services:
     container_name: duckdns
     image: ghcr.io/linuxserver/duckdns:latest
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - SUBDOMAINS=${DUCKDNS_SUBDOMAINLIST}
-      - TOKEN=${DUCKDNS_TOKEN}
-      - LOG_FILE=${DEBUG_LOG}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
+      TOKEN: ${DUCKDNS_TOKEN}
+      LOG_FILE: ${LOGDIR}/duckdns.log
     volumes:
       - ${CONFIGDIR}/duckdns:/config #optional
     restart: unless-stopped
 
   bitwarden:
+    container_name: bitwarden
     image: vaultwarden/server
     restart: unless-stopped
     ports:
       - ${PORT_BITWARDEN_HTTP}:80
-      - ${PORT_BITWARDEN_HTTPS}:443
+      #- ${PORT_BITWARDEN_HTTPS}:443
     volumes:
       - ${CONFIGDIR}/bw-data:/data
     environment:
+      TZ: ${TZ}
+      LOG_FILE: ${LOGDIR}/bitwarden.log
       WEBSOCKET_ENABLED: 'true' # Required to use websockets
       SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
+      INVITATIONS_ALLOWED: 'false'
   
 
   caddy:
+    container_name: caddy
     image: caddy/caddy:alpine
     restart: unless-stopped
     ports:
         - ${PORT_CADDY_HTTP}:80
-        - ${PORT_CADDY_HTTP}:443
+        - ${PORT_CADDY_HTTPS}:443
     networks:
         - web
     volumes:
       - ${CONFIGDIR}/caddy/caddyfile:/etc/caddy/Caddyfile
       - ${CONFIGDIR}/caddy/data:/data # Optional, house for certs
       - ${CONFIGDIR}/caddy/config:/config # Optional, JSON Config files
+    environment:
+      LOG_FILE: ${LOGDIR}/caddy.log
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL_ADMIN}
 
 networks:
   web:
     external: true
+
+volumes:
+  
