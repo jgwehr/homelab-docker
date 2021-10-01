@@ -1,0 +1,43 @@
+{
+    # Global options block. Entirely optional, https is on by default
+    # Optional email key for lets encrypt
+}
+
+localhost {
+  respond "Hello, world!"
+}
+
+{$DOMAIN} {
+  log {
+    llevel INFO
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
+  
+  encode zstd gzip
+
+  tls {
+    dns duckdns {$DUCKDNS_API_TOKEN}
+  }
+
+
+  # The negotiation endpoint is also proxied to Rocket
+  reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
+
+  # Notifications redirected to the websockets server
+  reverse_proxy /notifications/hub 0.0.0.0:3012
+
+  # Send all other traffic to the regular bitwarden_rs endpoint
+  reverse_proxy 0.0.0.0:8080 {
+    header_up X-Real-IP {remote_host}
+  }
+
+}
+
+www.{$DOMAIN} {
+    redir {$DOMAIN}{uri}
+}
