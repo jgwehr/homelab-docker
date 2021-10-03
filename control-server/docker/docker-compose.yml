@@ -63,7 +63,6 @@ services:
       SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
       INVITATIONS_ALLOWED: 'false'
   
-
   caddy:
     container_name: caddy
     image: caddy/caddy:alpine
@@ -83,7 +82,23 @@ services:
       EMAIL: ${EMAIL_ADMIN}
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
     healthcheck:
-        test: ["CMD", "caddy", "version"]
+      test: ["CMD", "caddy", "version"]
+    args:
+      - '--watch' # Optional, turn-off-prod, allows refreshes when the Caddyfile is saved
+
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${CONFIGDIR}/heimdall:/config
+    ports:
+      - ${PORT_ORGANIZR}:80
+      #- 443:443
+    restart: unless-stopped
 
 networks:
   web:
