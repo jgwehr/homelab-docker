@@ -65,7 +65,9 @@ services:
   
   caddy:
     container_name: caddy
-    image: caddy/caddy:alpine
+    build:
+      context: ${DOCKERDIR}
+      dockerfile: caddy.dockerfile #Custom build which uses duckdns
     restart: unless-stopped
     ports:
         - ${PORT_CADDY_HTTP}:80
@@ -83,8 +85,6 @@ services:
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
     healthcheck:
       test: ["CMD", "caddy", "version"]
-    args:
-      - '--watch' # Optional, turn-off-prod, allows refreshes when the Caddyfile is saved
 
   heimdall:
     image: ghcr.io/linuxserver/heimdall

@@ -9,7 +9,7 @@ localhost {
 
 {$DOMAIN} {
   log {
-    llevel INFO
+    level ERROR
     output file {$LOG_FILE} {
       roll_size 3MiB
       roll_keep 5
@@ -24,6 +24,8 @@ localhost {
     dns duckdns {$DUCKDNS_API_TOKEN}
   }
 
+  # System Status page
+  reverse_proxy /status 0.0.0.0:9001/status
 
   # The negotiation endpoint is also proxied to Rocket
   reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
@@ -39,5 +41,5 @@ localhost {
 }
 
 www.{$DOMAIN} {
-    redir {$DOMAIN}{uri}
+  redir {$DOMAIN}{uri}
 }
