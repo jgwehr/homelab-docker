@@ -82,6 +82,8 @@ services:
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL_ADMIN}
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+    healthcheck:
+        test: ["CMD", "caddy", "version"]
 
 networks:
   web:
