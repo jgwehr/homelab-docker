@@ -18,7 +18,7 @@ services:
 
   watchtower:
     container_name: watchtower
-    image: v2tec/watchtower:latest
+    image: v2tec/watchtower
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -26,79 +26,16 @@ services:
 
   uptime-kuma:
     container_name: uptime_kuma
-    image: louislam/uptime-kuma:latest
+    image: louislam/uptime-kuma
     restart: always
     ports:
       - ${PORT_UPKUMA}:3001
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
 
-  duckdns:
-    container_name: duckdns
-    image: ghcr.io/linuxserver/duckdns:latest
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-      SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
-      TOKEN: ${DUCKDNS_TOKEN}
-      LOG_FILE: ${LOGDIR}/duckdns.log
-    volumes:
-      - ${CONFIGDIR}/duckdns:/config #optional
-    restart: unless-stopped
 
-  bitwarden:
-    container_name: bitwarden
-    image: vaultwarden/server
-    restart: unless-stopped
-    ports:
-      - ${PORT_BITWARDEN_HTTP}:80
-      - ${PORT_BITWARDEN_HTTPS}:443
-    volumes:
-      - ${CONFIGDIR}/bw-data:/data
-    environment:
-      TZ: ${TZ}
-      LOG_FILE: ${LOGDIR}/bitwarden.log
-      WEBSOCKET_ENABLED: 'true' # Required to use websockets
-      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
-      INVITATIONS_ALLOWED: 'false'
   
-  caddy:
-    container_name: caddy
-    build:
-      context: ${DOCKERDIR}
-      dockerfile: caddy.dockerfile #Custom build which uses duckdns
-    restart: unless-stopped
-    ports:
-        - ${PORT_CADDY_HTTP}:80
-        - ${PORT_CADDY_HTTPS}:443
-    networks:
-        - web
-    volumes:
-      - ${CADDYDIR}/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
-      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
-      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
-    environment:
-      LOG_FILE: ${LOGDIR}/caddy.log
-      DOMAIN: ${DOMAIN}
-      EMAIL: ${EMAIL_ADMIN}
-      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
-    healthcheck:
-      test: ["CMD", "caddy", "version"]
 
-  heimdall:
-    image: ghcr.io/linuxserver/heimdall
-    container_name: heimdall
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    volumes:
-      - ${CONFIGDIR}/heimdall:/config
-    ports:
-      - ${PORT_ORGANIZR}:80
-      #- 443:443
-    restart: unless-stopped
 
 networks:
   web:

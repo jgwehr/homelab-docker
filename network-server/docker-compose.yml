@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+  caddy:
+    container_name: caddy
+    build:
+      context: ${DOCKERDIR}
+      dockerfile: caddy.dockerfile #Custom build which uses duckdns
+    restart: unless-stopped
+    ports:
+        - ${PORT_CADDY_HTTP}:80
+        - ${PORT_CADDY_HTTPS}:443
+    networks:
+        - web
+    volumes:
+      - ${CADDYDIR}/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
+      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
+      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
+    environment:
+      LOG_FILE: ${LOGDIR}/caddy.log
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL_ADMIN}
+      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+  
+  duckdns:
+    container_name: duckdns
+    image: ghcr.io/linuxserver/duckdns
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
+      TOKEN: ${DUCKDNS_TOKEN}
+      LOG_FILE: ${LOGDIR}/duckdns.log
+    volumes:
+      - ${CONFIGDIR}/duckdns:/config #optional
+    restart: unless-stopped
+
+networks:
+  web:
+    external: true

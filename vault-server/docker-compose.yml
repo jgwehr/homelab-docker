@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  bitwarden:
+    container_name: bitwarden
+    image: vaultwarden/server
+    restart: unless-stopped
+    ports:
+      - ${PORT_BITWARDEN_HTTP}:80
+      - ${PORT_BITWARDEN_HTTPS}:443
+    volumes:
+      - ${CONFIGDIR}/bw-data:/data
+    environment:
+      TZ: ${TZ}
+      LOG_FILE: ${LOGDIR}/bitwarden.log
+      WEBSOCKET_ENABLED: 'true' # Required to use websockets
+      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
+      INVITATIONS_ALLOWED: 'false'
