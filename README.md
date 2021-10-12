@@ -22,7 +22,7 @@ Uptime Kuma
 Caddy
 
 `vault-server`
-<img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden />
+<img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden" />
 
 
 
