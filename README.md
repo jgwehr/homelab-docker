@@ -15,6 +15,12 @@ Includes:
 ![Portainer]https://github.com/NX211/homer-icons/blob/master/png/portainer.png)
 Uptime Kuma
 
+`navigation-server`
+![Heimdall](https://github.com/NX211/homer-icons/blob/master/png/heimdall.png)
+
+`network-server`
+Caddy
+
 `vault-server`
 ![Vaultwarden](https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png)
 
