@@ -11,7 +11,7 @@ Includes:
 
 # Technology
 `control-server`
-<img src=https://github.com/NX211/homer-icons/blob/master/png/watchtower.png" width="32" alt="Watchtower" />
+<img src="https://github.com/NX211/homer-icons/blob/master/png/watchtower.png" width="32" alt="Watchtower" />
 ![Portainer]https://github.com/NX211/homer-icons/blob/master/png/portainer.png)
 Uptime Kuma
 
