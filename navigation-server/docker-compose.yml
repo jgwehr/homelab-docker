@@ -11,6 +11,7 @@ services:
     volumes:
       - ${CONFIGDIR}/heimdall:/config
     ports:
-      - ${PORT_ORGANIZR}:80
-      #- 443:443
+      - ${PORT_DASH_HTTP}:80
+      - ${PORT_DASH_HTTPS}:443
     restart: unless-stopped
+    
