@@ -12,17 +12,17 @@ Includes:
 # Technology
 `control-server`
 <img src="https://github.com/NX211/homer-icons/blob/master/png/watchtower.png" width="32" alt="Watchtower" />
-![Portainer]https://github.com/NX211/homer-icons/blob/master/png/portainer.png)
+<img src="https://github.com/NX211/homer-icons/blob/master/png/portainer.png" width="32" alt="Portainer" />
 Uptime Kuma
 
 `navigation-server`
-![Heimdall](https://github.com/NX211/homer-icons/blob/master/png/heimdall.png)
+<img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" />
 
 `network-server`
 Caddy
 
 `vault-server`
-![Vaultwarden](https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png)
+<img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden />
 
 
 
