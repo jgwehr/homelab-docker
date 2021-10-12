@@ -7,8 +7,8 @@ services:
     restart: always
     command: -H unix:///var/run/docker.sock
     ports:
-      - 8001:8000
-      - 9000:9000
+      - ${PORT_PORTAINER_AGENT}:8000
+      - ${PORT_PORTAINER_UI}:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${CONFIGDIR}/portainer/data:/data
@@ -32,11 +32,4 @@ services:
       - ${PORT_UPKUMA}:3001
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
-
-
-  
-
-
-networks:
-  web:
-    external: true
+      
