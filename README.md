@@ -13,7 +13,7 @@ Includes:
 `control-server`
 <img src="https://github.com/NX211/homer-icons/blob/master/png/watchtower.png" width="32" alt="Watchtower" />
 <img src="https://github.com/NX211/homer-icons/blob/master/png/portainer.png" width="32" alt="Portainer" />
-Uptime Kuma
+<img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" />
 
 `navigation-server`
 <img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" />
