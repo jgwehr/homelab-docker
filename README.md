@@ -9,6 +9,17 @@ Includes:
 - Self-Hosting for Small Business, such as: Akaunting, Tabby
 - Self-Hosting for Friends, such as: SheetAble, Minecraft
 
+# Technology
+`control-server`
+![Watchtower](https://github.com/NX211/homer-icons/blob/master/png/watchtower.png)
+![Portainer]https://github.com/NX211/homer-icons/blob/master/png/portainer.png)
+Uptime Kuma
+
+`vault-server`
+![Vaultwarden](https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png)
+
+
+
 # Project Structure
 I can't find any good practices for this. So here's where it's currently at.
 
