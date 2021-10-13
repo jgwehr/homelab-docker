@@ -74,15 +74,16 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 
 This github repo represents this folder. It's safely committed to public repos and shouldn't contain anything sensitive.
 
-Individual contexts are their own folders. This allows separate `docker-compose` files and, in turn, an ability to manage those contexts separately:
-- Taking down a context to fix issues, modify config, or update images should be possible without taking down *other* contexts. *To correct an issue with Emby, it's not necessary to take down Heimdall*
-- Managing the overall Homelab's configuration in a single repo (aka, HERE) should be possible without an individual server needing to run *all* services. This allows for a given server/vm/box to run *certain* contexts - but not necessarily all - while keeping the project manageable. No doubt something like proxmox/kubernetes would have different opinions about this.
-
 Example files:
-- ./media-server.yaml
+- ./docker-compose.yml
 - ./.env
 - ./dockerfiles/custom-build-for-caddy.dockerfile
 - ./Caddyfile
+
+
+Ideally, individual contexts are separated - distinct "stacks" which can be managed (up/down/restart/etc). Unfortuantely, I'm not smart enough for that yet.
+- Taking down a context to fix issues, modify config, or update images should be possible without taking down *other* contexts. *To correct an issue with Emby, it's not necessary to take down Heimdall*
+- Managing the overall Homelab's configuration in a single repo (aka, HERE) should be possible without an individual server needing to run *all* services. This allows for a given server/vm/box to run *certain* contexts - but not necessarily all - while keeping the project manageable. No doubt something like proxmox/kubernetes would have different opinions about this.
 
 ### Persistent Data and Configuration
 `~/home/{$USER}/server`
