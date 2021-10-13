@@ -34,10 +34,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 ~
 ├── docker
 │  ├── .env
-│  ├── control-server.yml
-│  ├── navigation-server.yml
-│  ├── network-server.yml
-│  └── valut-server.yml
+│  └── docker-compose.yml
 │
 ├── server
 │  ├── config
