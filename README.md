@@ -9,24 +9,78 @@ Includes:
 - Self-Hosting for Small Business, such as: Akaunting, Tabby
 - Self-Hosting for Friends, such as: SheetAble, Minecraft
 
+# Technology
+`control-server`
+<img src="https://github.com/NX211/homer-icons/blob/master/png/watchtower.png" width="32" alt="Watchtower" />
+<img src="https://github.com/NX211/homer-icons/blob/master/png/portainer.png" width="32" alt="Portainer" />
+<img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" />
+
+`navigation-server`
+<img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" />
+
+`network-server`
+Caddy
+
+`vault-server`
+<img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden" />
+
+
+
 # Project Structure
-I can't find any good practices for this. So here's where it's currently at.
+Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)* and *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
 
 ## File System
+```
+~
+├── docker
+│  ├── .env
+│  └── docker-compose.yml
+│
+├── server
+│  ├── config
+│  └── logs
+│
+├── Audiobooks
+├── Downloads
+│  ├── complete (tbd... presuming staging for metadata?)
+│     ├── audiobooks
+│     ├── movies
+│     ├── music
+│     └── tv
+│  ├── incomplete
+│     ├── audiobooks
+│     ├── movies
+│     ├── music
+│     └── tv
+│  └── torrents
+│     ├── audiobooks
+│     ├── movies
+│     ├── music
+│     └── tv
+├── Music
+├── Pictures
+├── Podcasts
+└── Videos
+   ├── Movies
+   └── TV
+```
+
+
 ### Docker Compose (and needed files)
 `~/home/{$USER}/docker`
 
-This github repo represents this folder. It's safely shared with the public and shouldn't contain anything sensitive.
-
-Individual contexts are their own folders. This allows separate `docker-compose` files and, in turn, an ability to manage those contexts separately:
-- Taking down a context to fix issues, modify config, or update images should be possible without taking down *other* contexts. *To correct an issue with Emby, it's not necessary to take down Heimdall*
-- Managing the overall Homelab's configuration in a single repo (aka, HERE) should be possible without an individual server needing to run *all* services. This allows for a given server/vm/box to run *certain* contexts - but not necessarily all - while keeping the project manageable. No doubt something like proxmox/kubernetes would have different opinions about this.
+This github repo represents this folder. It's safely committed to public repos and shouldn't contain anything sensitive.
 
 Example files:
-- ./media-server/docker-compose.yaml
-- ./media-server/.env
-- ./control-server/dockerfiles/custom-build-for-caddy.dockerfile
-- ./control-server/Caddyfile
+- ./docker-compose.yml
+- ./.env
+- ./dockerfiles/custom-build-for-caddy.dockerfile
+- ./Caddyfile
+
+
+Ideally, individual contexts are separated - distinct "stacks" which can be managed (up/down/restart/etc). Unfortuantely, I'm not smart enough for that yet.
+- Taking down a context to fix issues, modify config, or update images should be possible without taking down *other* contexts. *To correct an issue with Emby, it's not necessary to take down Heimdall*
+- Managing the overall Homelab's configuration in a single repo (aka, HERE) should be possible without an individual server needing to run *all* services. This allows for a given server/vm/box to run *certain* contexts - but not necessarily all - while keeping the project manageable. No doubt something like proxmox/kubernetes would have different opinions about this.
 
 ### Persistent Data and Configuration
 `~/home/{$USER}/server`
@@ -35,9 +89,10 @@ How your configure the apps and their current states. This is separated from the
 
 
 ### Finalized Media (such as Podcasts, Movies, TV Shows, Audiobooks):
-`~/home/{$USER}/media`
+`~/home/{$USER}/Videos/Movies`
+`~/home/{$USER}/Podcasts`
 
-This creates a clear distinction between the files *many* services could use or want and the files those services need *just to run*. Separation presumably allows for alternate backup or hosting mechanisms, as well.
+This creates a clear distinction between the files *many* services could use or want and the files those services *just need to access*. Separation presumably allows for alternate backup or hosting mechanisms, as well. It's an attempt to achieve Least Privilege.
 
 
 
