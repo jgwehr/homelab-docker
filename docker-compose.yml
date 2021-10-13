@@ -9,7 +9,7 @@ services:
       - ${PORT_BITWARDEN_HTTP}:80
       - ${PORT_BITWARDEN_HTTPS}:443
     volumes:
-      - ${CONFIGDIR}/bw-data:/data
+      - ${CONFIGDIR}/bitwarden:/data
     environment:
       TZ: ${TZ}
       LOG_FILE: ${LOGDIR}/bitwarden.log
