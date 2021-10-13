@@ -10,12 +10,12 @@ Includes:
 - Self-Hosting for Friends, such as: SheetAble, Minecraft
 
 # Technology
-<img src="https://github.com/NX211/homer-icons/blob/master/png/watchtower.png" width="32" alt="Watchtower" /> Watchtower
-<img src="https://github.com/NX211/homer-icons/blob/master/png/portainer.png" width="32" alt="Portainer" /> Portainer
-<img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" /> Uptime Kuma
-<img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
-Caddy
-<img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden" /> Bitwarden
+- <img src="https://github.com/NX211/homer-icons/blob/master/png/watchtower.png" width="32" alt="Watchtower" /> Watchtower
+- <img src="https://github.com/NX211/homer-icons/blob/master/png/portainer.png" width="32" alt="Portainer" /> Portainer
+- <img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" /> Uptime Kuma
+- <img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
+- Caddy
+- <img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden" /> Bitwarden
 
 
 
