@@ -2,3 +2,4 @@
 *.properties
 *.crt
 *.log
+/config
