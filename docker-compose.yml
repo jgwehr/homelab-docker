@@ -84,14 +84,6 @@ services:
     environment:
       TZ: ${TZ}
 
-  watchtower:
-    container_name: watchtower
-    image: v2tec/watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --schedule "0 0 23 * * SUN" --cleanup
-
   uptime-kuma:
     container_name: uptime_kuma
     image: louislam/uptime-kuma
