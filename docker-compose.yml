@@ -5,6 +5,7 @@ services:
     container_name: bitwarden
     image: vaultwarden/server
     restart: unless-stopped
+    user: ${PUID}:1000
     ports:
       - ${PORT_BITWARDEN_HTTP}:80
       - ${PORT_BITWARDEN_HTTPS}:443
