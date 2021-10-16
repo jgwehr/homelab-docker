@@ -57,6 +57,20 @@ services:
       - ${CONFIGDIR}/duckdns:/config #optional
     restart: unless-stopped
 
+  fail2ban:
+    container_name: fail2ban
+    image: ghcr.io/crazy-max/fail2ban
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${CONFIGDIR}/fail2ban:/dat
+      - ${LOGDIR}:/var/log:ro
+    restart: always
+
   heimdall:
     image: ghcr.io/linuxserver/heimdall
     container_name: heimdall
