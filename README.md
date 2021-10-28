@@ -15,7 +15,8 @@ Includes:
 - <img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
 - <img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden" /> Bitwarden
 
-
+### Notes
+Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
 
 # Project Structure
 Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)* and *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
