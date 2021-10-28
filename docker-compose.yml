@@ -19,7 +19,15 @@ services:
       WEBSOCKET_ENABLED: 'true' # Required to use websockets
       SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
       INVITATIONS_ALLOWED: 'false'
-      SHOW_PASSWORD_HINT: 'false'
+      SHOW_PASSWORD_HINT: 'false' # set to false to improve security (slightly)
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "10"
+
+
 #      
 #  caddy:
 #    container_name: caddy
