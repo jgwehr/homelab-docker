@@ -14,7 +14,8 @@ services:
     environment:
       TZ: ${TZ}
       LOG_FILE: ${LOGDIR}/bitwarden.log
-      LOG_LEVEL: ${LOG_LEVEL}
+      LOG_LEVEL: ${LOG_LEVEL:-warn}
+      EXTENDED-LOGGING: 'true'
       WEBSOCKET_ENABLED: 'true' # Required to use websockets
       SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
       INVITATIONS_ALLOWED: 'false'
