@@ -76,8 +76,9 @@ services:
     environment:
       TZ: ${TZ}
     volumes:
-      - ${CONFIGDIR}/fail2ban:/dat
-      - ${LOGDIR}:/var/log:ro
+      - ${CONFIGDIR}/fail2ban:/data
+      - ${LOGDIR}:/container-logs/:ro # ref: https://gist.github.com/saniaky/dc75cbf64922e418400b0f54ed5b2c3a
+      - /var/log:/var/log:ro
     restart: always
 
   heimdall:
