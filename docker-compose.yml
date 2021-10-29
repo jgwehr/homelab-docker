@@ -75,9 +75,11 @@ services:
       - NET_RAW
     environment:
       TZ: ${TZ}
+      F2B_LOG_LEVEL: ${LOG_LEVEL:-warn}
     volumes:
       - ${CONFIGDIR}/fail2ban:/data
       - ${LOGDIR}:/container-logs/:ro # ref: https://gist.github.com/saniaky/dc75cbf64922e418400b0f54ed5b2c3a
+      - /etc/localtime:/etc/localtime:ro
       - /var/log:/var/log:ro
     restart: always
 
