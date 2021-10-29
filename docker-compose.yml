@@ -75,7 +75,10 @@ services:
       - NET_RAW
     environment:
       TZ: ${TZ}
+      F2B_DB_PURGE_AGE: '1d'
       F2B_LOG_LEVEL: ${LOG_LEVEL:-warn}
+      #F2B_LOG_TARGET: #This could be a file, SYSLOG, STDERR or STDOUT (default STDOUT)
+
     volumes:
       - ${CONFIGDIR}/fail2ban:/data
       - ${LOGDIR}:/container-logs/:ro # ref: https://gist.github.com/saniaky/dc75cbf64922e418400b0f54ed5b2c3a
