@@ -34,8 +34,12 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      PATH_TO_CROWDSEC_CONFIG: ${STATICONFIGDIR}/crowdsec/config.yaml
-      PATH_TO_LAPI_CREDENTIALS: ${STATICONFIGDIR}/crowdsec/local_api_credentials.yaml
+      CONFIG_FILE: ${STATICONFIGDIR}/crowdsec/config.yaml
+
+      #Test modes
+      TEST_MODE: 'true'
+      DISABLE_ONLINE_API: 'true'
+      DISABLE_AGENT: 'true'
 
       COLLECTIONS: "crowdsecurity/caddy"
 
