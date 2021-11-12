@@ -31,6 +31,9 @@ services:
     container_name: crowdsec
     image: crowdsecurity/crowdsec
     restart: always
+    ports:
+      - 8080:8080
+      - 6060:6060
     environment:
       TZ: ${TZ}
       GID: ${PGID}

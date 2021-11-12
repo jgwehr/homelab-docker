@@ -32,29 +32,30 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │  ├── config
 │  └── logs
 │
-├── Audiobooks
-├── Downloads
-│  ├── complete (tbd... presuming staging for metadata?)
-│  │  ├── audiobooks
-│  │  ├── movies
-│  │  ├── music
-│  │  └── tv
-│  ├── incomplete
-│  │  ├── audiobooks
-│  │  ├── movies
-│  │  ├── music
-│  │  └── tv
-│  └── torrents
-│     ├── audiobooks
-│     ├── movies
-│     ├── music
-│     └── tv
-├── Music
-├── Pictures
-├── Podcasts
-└── Videos
-   ├── Movies
-   └── TV
+└── data
+   ├── downloads
+   │  ├── complete (tbd... presuming staging for metadata?)
+   │  │  ├── audiobooks
+   │  │  ├── movies
+   │  │  ├── music
+   │  │  └── tv
+   │  ├── incomplete
+   │  │  ├── audiobooks
+   │  │  ├── movies
+   │  │  ├── music
+   │  │  └── tv
+   │  └── torrents
+   │     ├── audiobooks
+   │     ├── movies
+   │     ├── music
+   │     └── tv
+   └── Media
+      ├── audiobooks
+      ├── music
+      ├── pictures
+      ├── podcasts
+      ├── movies
+      └── tv
 ```
 
 
@@ -80,12 +81,21 @@ Ideally, individual contexts are separated - distinct "stacks" which can be mana
 How your configure the apps and their current states. This is separated from the Docker Compose (ie. "setup") as these become specific to how *you* use the services - not how they're installed/maintained.
 
 
-### Finalized Media (such as Podcasts, Movies, TV Shows, Audiobooks):
-`~/home/{$USER}/Videos/Movies`
-`~/home/{$USER}/Podcasts`
+### Media Storage (such as Podcasts, Movies, TV Shows, Audiobooks):
+`~/home/{$USER}/data/media/movies`
+`~/home/{$USER}/data/media/podcasts`
 
 This creates a clear distinction between the files *many* services could use or want and the files those services *just need to access*. Separation presumably allows for alternate backup or hosting mechanisms, as well. It's an attempt to achieve Least Privilege.
 
+Nesting the `media` adjacent to `torrents` is suggested via servarr.com as a way to allow **atomic file moves** as opposed to a more intensive/longer **copy+paste** action. Explained [here](https://wiki.servarr.com/docker-guide).
+
+### Container Roles and Access to Files
+Let's recognize four kinds of Media Server roles containers/apps:
+
+1. A **Curator** whose role is to enable the discovery and selection of Media by an End User. It then delivers a Work Order to the **Acquirer**. It also monitors the Media and ensures it is accurately described and and of desired quality.*Ex. Sonarr, Radarr, Lidarr, Readarr, Ombi*
+1. An **Indexer** whose role is to interpret how a Work Order should be completed. It figures out where the Media should come from while negotiating with each supplier. *Ex. Jackett, Prowlaar*
+1. An **Acquirer** whose role is to accept and execute a Work Order to retrieve a specific Media. It then delivers that Media to the **Provider**. *Ex. Transmission*
+1. A **Provider** whose role is to provide Media (movies, podcasts, etc) to end users. It is unconcerned with how the Media came to exist and isn't responsible for its quality or description. *Ex. Emby, Plex, Jellyfin*
 
 
 ## Port Reservations
