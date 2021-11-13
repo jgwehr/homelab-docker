@@ -33,7 +33,7 @@ services:
     restart: always
     ports:
       - ${PORT_CROWDSEC_REST}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
-      - ${PORT_CROWDSEC_METRICS}6060:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
+      - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
     environment:
       TZ: ${TZ}
       GID: ${PGID}
