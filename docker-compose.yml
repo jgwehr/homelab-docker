@@ -37,8 +37,7 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      CONFIG_FILE: ${STATICONFIGDIR}/crowdsec/config.yaml
-
+      
       #Test modes
       TEST_MODE: 'true'
       DISABLE_ONLINE_API: 'true'
@@ -48,6 +47,8 @@ services:
 
     volumes:
       - ${LOGDIR}:/var/log/nginx
+      - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
+      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
       - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
       - ${CONFIGDIR}/crowdsec:/etc/crowdsec/
     
