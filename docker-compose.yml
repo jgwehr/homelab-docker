@@ -1,31 +1,31 @@
 version: "3.7"
 
 services:
-  bitwarden:
-    container_name: bitwarden
-    image: vaultwarden/server
-    restart: unless-stopped
-    user: ${PUID}:1000
-    ports:
-      - ${PORT_BITWARDEN_HTTP}:80
-      - ${PORT_BITWARDEN_HTTPS}:443
-    volumes:
-      - ${CONFIGDIR}/bitwarden:/data
-    environment:
-      TZ: ${TZ}
-      LOG_FILE: ${LOGDIR}/bitwarden.log
-      LOG_LEVEL: ${LOG_LEVEL:-warn}
-      EXTENDED-LOGGING: 'true'
-      WEBSOCKET_ENABLED: 'true' # Required to use websockets
-      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
-      INVITATIONS_ALLOWED: 'false'
-      SHOW_PASSWORD_HINT: 'false' # set to false to improve security (slightly)
-    
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "5m"
-        max-file: "10"
+#  bitwarden:
+#    container_name: bitwarden
+#    image: vaultwarden/server
+#    restart: unless-stopped
+#    user: ${PUID}:1000
+#    ports:
+#      - ${PORT_BITWARDEN_HTTP}:80
+#      - ${PORT_BITWARDEN_HTTPS}:443
+#    volumes:
+#      - ${CONFIGDIR}/bitwarden:/data
+#    environment:
+#      TZ: ${TZ}
+#      LOG_FILE: ${LOGDIR}/bitwarden.log
+#      LOG_LEVEL: ${LOG_LEVEL:-warn}
+#      EXTENDED-LOGGING: 'true'
+#      WEBSOCKET_ENABLED: 'true' # Required to use websockets
+#      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
+#      INVITATIONS_ALLOWED: 'false'
+#      SHOW_PASSWORD_HINT: 'false' # set to false to improve security (slightly)
+#    
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-size: "5m"
+#        max-file: "10"
 
   crowdsec:
     container_name: crowdsec
@@ -45,7 +45,7 @@ services:
       - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
 
       - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
-      - ${CONFIGDIR}/crowdsec:/etc/crowdsec/
+    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/
     
     networks:
      crowdsec_test:
@@ -77,57 +77,57 @@ services:
 #    healthcheck:
 #      test: ["CMD", "caddy", "version"]
 #  
-  duckdns:
-    container_name: duckdns
-    image: ghcr.io/linuxserver/duckdns
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-      SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
-      TOKEN: ${DUCKDNS_TOKEN}
-      LOG_FILE: ${LOGDIR}/duckdns.log #optional
-    volumes:
-      - ${CONFIGDIR}/duckdns:/config #optional
-    restart: unless-stopped
-  
-  heimdall:
-    image: ghcr.io/linuxserver/heimdall
-    container_name: heimdall
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    volumes:
-      - ${CONFIGDIR}/heimdall:/config
-    ports:
-      - ${PORT_DASH_HTTP}:80
-      - ${PORT_DASH_HTTPS}:443
-    restart: unless-stopped
-
-  portainer:
-    container_name: portainer
-    image: portainer/portainer-ce
-    restart: always
-    command: -H unix:///var/run/docker.sock
-    ports:
-      - ${PORT_PORTAINER_AGENT}:8000
-      - ${PORT_PORTAINER_UI}:9000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${CONFIGDIR}/portainer/data:/data
-      - ${CONFIGDIR}/shared:/shared
-    environment:
-      TZ: ${TZ}
-
-  uptime-kuma:
-    container_name: uptime_kuma
-    image: louislam/uptime-kuma
-    restart: always
-    ports:
-      - ${PORT_UPKUMA}:3001
-    volumes:
-      - ${CONFIGDIR}/uptime-kuma:/app/data
+#  duckdns:
+#    container_name: duckdns
+#    image: ghcr.io/linuxserver/duckdns
+#    environment:
+#      PUID: ${PUID}
+#      PGID: ${PGID}
+#      TZ: ${TZ}
+#      SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
+#      TOKEN: ${DUCKDNS_TOKEN}
+#      LOG_FILE: ${LOGDIR}/duckdns.log #optional
+#    volumes:
+#      - ${CONFIGDIR}/duckdns:/config #optional
+#    restart: unless-stopped
+#  
+#  heimdall:
+#    image: ghcr.io/linuxserver/heimdall
+#    container_name: heimdall
+#    environment:
+#      PUID: ${PUID}
+#      PGID: ${PGID}
+#      TZ: ${TZ}
+#    volumes:
+#      - ${CONFIGDIR}/heimdall:/config
+#    ports:
+#      - ${PORT_DASH_HTTP}:80
+#      - ${PORT_DASH_HTTPS}:443
+#    restart: unless-stopped
+#
+#  portainer:
+#    container_name: portainer
+#    image: portainer/portainer-ce
+#    restart: always
+#    command: -H unix:///var/run/docker.sock
+#    ports:
+#      - ${PORT_PORTAINER_AGENT}:8000
+#      - ${PORT_PORTAINER_UI}:9000
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - ${CONFIGDIR}/portainer/data:/data
+#      - ${CONFIGDIR}/shared:/shared
+#    environment:
+#      TZ: ${TZ}
+#
+#  uptime-kuma:
+#    container_name: uptime_kuma
+#    image: louislam/uptime-kuma
+#    restart: always
+#    ports:
+#      - ${PORT_UPKUMA}:3001
+#    volumes:
+#      - ${CONFIGDIR}/uptime-kuma:/app/data
       
 
 networks:
