@@ -29,7 +29,7 @@ services:
 
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec
+    image: crowdsecurity/crowdsec:v1.2.0
     restart: always
     ports:
       - ${PORT_CROWDSEC_REST}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
@@ -37,16 +37,10 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      
-      #Test modes
-      TEST_MODE: 'true'
-      DISABLE_ONLINE_API: 'true'
-      DISABLE_AGENT: 'true'
-
       COLLECTIONS: "crowdsecurity/caddy"
 
     volumes:
-      - ${LOGDIR}:/var/log/nginx
+    #  - ${LOGDIR}:/var/log/nginx
       - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
       - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
       - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
