@@ -43,10 +43,10 @@ services:
     #  - ${LOGDIR}:/var/log/nginx
       - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
       - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+
       - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
       - ${CONFIGDIR}/crowdsec:/etc/crowdsec/
     
-    #not sure what this is quite yet...
     networks:
      crowdsec_test:
        ipv4_address: 172.20.0.4
