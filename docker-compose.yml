@@ -45,6 +45,7 @@ services:
       - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
 
       - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
+      - crowdsec-config:/etc/crowdsec/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/
     
     networks:
@@ -129,6 +130,8 @@ services:
 #    volumes:
 #      - ${CONFIGDIR}/uptime-kuma:/app/data
       
+volumes:
+  crowdsec-config:
 
 networks:
   web:
