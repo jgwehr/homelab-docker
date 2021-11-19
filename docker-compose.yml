@@ -40,13 +40,12 @@ services:
       COLLECTIONS: "crowdsecurity/caddy"
 
     volumes:
-    #  - ${LOGDIR}:/var/log/nginx
       - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
       - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
 
       - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
-    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/
+    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
     
     networks:
      crowdsec_test:
@@ -70,6 +69,7 @@ services:
 #      - ${CADDYDIR}/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
 #      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
 #      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
+#      # try: - ${LOGDIR}/caddy:/var/log/caddy
 #    environment:
 #      LOG_FILE: ${LOGDIR}/caddy.log
 #      DOMAIN: ${DOMAIN}
