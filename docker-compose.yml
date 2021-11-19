@@ -60,7 +60,7 @@ services:
 
 
 #      
-#  caddy:
+      context: ${DOCKERDIR}
 #    container_name: caddy
 #    build:
 #      context: ${DOCKERDIR}
@@ -69,10 +69,10 @@ services:
 #    ports:
 #        - ${PORT_CADDY_HTTP}:80
 #        - ${PORT_CADDY_HTTPS}:443
-#    networks:
+      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
 #        - web
 #    volumes:
-#      - ${CADDYDIR}/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
+      # try: - ${LOGDIR}/caddy:/var/log/caddy
 #      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
 #      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
 #      # try: - ${LOGDIR}/caddy:/var/log/caddy
