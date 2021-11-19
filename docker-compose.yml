@@ -9,6 +9,8 @@ services:
     ports:
       - ${PORT_BITWARDEN_HTTP}:80
       - ${PORT_BITWARDEN_HTTPS}:443
+    depends_on:
+      - 'caddy'
     volumes:
       - ${CONFIGDIR}/bitwarden:/data
       - ${LOGDIR}/bitwarden:/var/log/vaultwarden
@@ -47,6 +49,9 @@ services:
       - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
+
+    healthcheck:
+      test: ["metrics","hub list"]
     
     networks:
      crowdsec_test:
