@@ -56,33 +56,30 @@ services:
     networks:
      crowdsec_test:
        ipv4_address: 172.20.0.4
-    
-
-
-#      
+         
+  caddy:
+    container_name: caddy
+    build:
       context: ${DOCKERDIR}
-#    container_name: caddy
-#    build:
-#      context: ${DOCKERDIR}
-#      dockerfile: caddy.dockerfile #Custom build which uses duckdns
-#    restart: unless-stopped
-#    ports:
-#        - ${PORT_CADDY_HTTP}:80
-#        - ${PORT_CADDY_HTTPS}:443
+      dockerfile: caddy.dockerfile #Custom build which uses duckdns
+    restart: unless-stopped
+    ports:
+        - ${PORT_CADDY_HTTP}:80
+        - ${PORT_CADDY_HTTPS}:443
+    networks:
+        - web
+    volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
-#        - web
-#    volumes:
+      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
+      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
       # try: - ${LOGDIR}/caddy:/var/log/caddy
-#      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
-#      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
-#      # try: - ${LOGDIR}/caddy:/var/log/caddy
-#    environment:
-#      LOG_FILE: ${LOGDIR}/caddy.log
-#      DOMAIN: ${DOMAIN}
-#      EMAIL: ${EMAIL_ADMIN}
-#      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
-#    healthcheck:
-#      test: ["CMD", "caddy", "version"]
+    environment:
+      LOG_FILE: ${LOGDIR}/caddy.log
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL_ADMIN}
+      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
 #  
 #  duckdns:
 #    container_name: duckdns
