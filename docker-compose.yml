@@ -40,7 +40,7 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/caddy"
+      COLLECTIONS: "crowdsecurity/caddy crowdsecurity/caddy-logs"
 
     volumes:
       - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
