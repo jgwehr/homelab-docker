@@ -2,3 +2,8 @@ filenames:
   - /var/log/nginx/example.*.log
 labels:
   type: nginx
+
+filenames:
+ - /var/log/caddy/access.log
+labels:
+  type: caddy

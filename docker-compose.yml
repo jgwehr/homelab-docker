@@ -50,6 +50,8 @@ services:
       - crowdsec-config:/etc/crowdsec/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
 
+      - ${LOGDIR}/caddy:/var/log/caddy ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
+
     healthcheck:
       test: ["CMD","cscli metrics","cscli hub list"]
     
@@ -72,9 +74,9 @@ services:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}/caddy:/data # Optional, house for certs
       - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
-      - ${LOGDIR}/caddy:/var/log/caddy
+      - ${LOGDIR}/caddy:/var/log/caddy ## check for /access.log
     environment:
-      LOG_FILE: ${LOGDIR}/caddy.log
+      LOG_FILE: ${LOGDIR}/caddy/access.log
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL_ADMIN}
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
