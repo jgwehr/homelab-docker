@@ -51,7 +51,7 @@ services:
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
 
     healthcheck:
-      test: ["metrics","hub list"]
+      test: ["CMD","metrics","hub list"]
     
     networks:
      crowdsec_test:
@@ -80,21 +80,21 @@ services:
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
     healthcheck:
       test: ["CMD", "caddy", "version"]
-#  
-#  duckdns:
-#    container_name: duckdns
-#    image: ghcr.io/linuxserver/duckdns
-#    environment:
-#      PUID: ${PUID}
-#      PGID: ${PGID}
-#      TZ: ${TZ}
-#      SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
-#      TOKEN: ${DUCKDNS_TOKEN}
-#      LOG_FILE: ${LOGDIR}/duckdns.log #optional
-#    volumes:
-#      - ${CONFIGDIR}/duckdns:/config #optional
-#    restart: unless-stopped
-#  
+  
+  duckdns:
+    container_name: duckdns
+    image: ghcr.io/linuxserver/duckdns
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
+      TOKEN: ${DUCKDNS_TOKEN}
+      LOG_FILE: ${LOGDIR}/duckdns.log #optional
+    volumes:
+      - ${CONFIGDIR}/duckdns:/config #optional
+    restart: unless-stopped
+  
   heimdall:
     image: ghcr.io/linuxserver/heimdall
     container_name: heimdall
