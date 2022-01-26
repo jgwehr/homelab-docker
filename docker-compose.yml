@@ -1,34 +1,34 @@
 version: "3.7"
 
 services:
-  bitwarden:
-    container_name: bitwarden
-    image: vaultwarden/server
-    restart: unless-stopped
-    user: ${PUID}:1000
-    ports:
-      - ${PORT_BITWARDEN_HTTP}:80
-      - ${PORT_BITWARDEN_HTTPS}:443
-    depends_on:
-      - 'caddy'
-    volumes:
-      - ${CONFIGDIR}/bitwarden:/data
-      - ${LOGDIR}/bitwarden:/var/log/vaultwarden
-    environment:
-      TZ: ${TZ}
-      # LOG_FILE: ${LOGDIR}/bitwarden.log
-      LOG_LEVEL: ${LOG_LEVEL:-warn}
-      EXTENDED-LOGGING: 'true'
-      WEBSOCKET_ENABLED: 'true' # Required to use websockets
-      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
-      INVITATIONS_ALLOWED: 'false'
-      SHOW_PASSWORD_HINT: 'false' # set to false to improve security (slightly)
-    
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "5m"
-        max-file: "10"
+#  bitwarden:
+#    container_name: bitwarden
+#    image: vaultwarden/server
+#    restart: unless-stopped
+#    user: ${PUID}:1000
+#    ports:
+#      - ${PORT_BITWARDEN_HTTP}:80
+#      - ${PORT_BITWARDEN_HTTPS}:443
+#    depends_on:
+#      - 'caddy'
+#    volumes:
+#      - ${CONFIGDIR}/bitwarden:/data
+#      - ${LOGDIR}/bitwarden:/var/log/vaultwarden
+#    environment:
+#      TZ: ${TZ}
+#      # LOG_FILE: ${LOGDIR}/bitwarden.log
+#      LOG_LEVEL: ${LOG_LEVEL:-warn}
+#      EXTENDED-LOGGING: 'true'
+#      WEBSOCKET_ENABLED: 'true' # Required to use websockets
+#      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
+#      INVITATIONS_ALLOWED: 'false'
+#      SHOW_PASSWORD_HINT: 'false' # set to false to improve security (slightly)
+#    
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-size: "5m"
+#        max-file: "10"
 
   crowdsec:
     container_name: crowdsec
@@ -111,20 +111,20 @@ services:
       - ${PORT_DASH_HTTPS}:443
     restart: unless-stopped
 
-  portainer:
-    container_name: portainer
-    image: portainer/portainer-ce
-    restart: always
-    command: -H unix:///var/run/docker.sock
-    ports:
-      - ${PORT_PORTAINER_AGENT}:8000
-      - ${PORT_PORTAINER_UI}:9000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${CONFIGDIR}/portainer/data:/data
-      - ${CONFIGDIR}/shared:/shared
-    environment:
-      TZ: ${TZ}
+#  portainer:
+#    container_name: portainer
+#    image: portainer/portainer-ce
+#    restart: always
+#    command: -H unix:///var/run/docker.sock
+#    ports:
+#      - ${PORT_PORTAINER_AGENT}:8000
+#      - ${PORT_PORTAINER_UI}:9000
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - ${CONFIGDIR}/portainer/data:/data
+#      - ${CONFIGDIR}/shared:/shared
+#    environment:
+#      TZ: ${TZ}
 
   uptime-kuma:
     container_name: uptime_kuma
