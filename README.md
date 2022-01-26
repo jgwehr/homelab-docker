@@ -29,6 +29,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │  └── docker-compose.yml
 │
 ├── server
+│  ├── cache
 │  ├── config
 │  └── logs
 │
@@ -49,7 +50,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
    │     ├── movies
    │     ├── music
    │     └── tv
-   └── Media
+   └── media
       ├── audiobooks
       ├── music
       ├── pictures
