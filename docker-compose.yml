@@ -76,7 +76,7 @@ services:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
       - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
-      - ${LOGDIR}/caddy:/var/log/caddy ## check for /access.log
+      - ${LOGDIR}/caddy:/server/logs/caddy ## check for /access.log
     environment:
       LOG_FILE: ${LOGDIR}/caddy/access.log
       DOMAIN: ${DOMAIN}

@@ -22,6 +22,8 @@ localhost {
   }
 
   header {
+    -server #anonymizes Caddy
+    
     # disable FLoC tracking
     Permissions-Policy interest-cohort=()
 
