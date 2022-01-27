@@ -99,17 +99,18 @@ services:
   
   jellyfin2:
     container_name: jellyfin2
-    image: lscr.io/linuxserver/jellyfin
+    image: jellyfin/jellyfin
+    user: ${PUID}:${PGID}
+    network_mode: "host"
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional
     volumes:
-      - ${CONFIGDIR}/jellyfin:/config
-      - ${CACHEDIR}/jellyfin:/cache
-      - ${MEDIADIR}/jellyfin:/media
-      #- ${MEDIADIR}/jellyfin:/media:ro
+      - ${CONFIGDIR}/jellyfin_compose:/config
+      - ${CACHEDIR}/jellyfin_compose:/cache
+      - ${MEDIADIR}:/media:ro
     ports:
       - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
       - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
