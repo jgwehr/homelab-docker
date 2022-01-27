@@ -70,6 +70,7 @@ services:
         - ${PORT_CADDY_HTTPS}:443
     networks:
         - web
+        - htpc-net
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
@@ -101,7 +102,7 @@ services:
     container_name: jellyfin2
     image: jellyfin/jellyfin
     user: ${PUID}:${PGID}
-    network_mode: "host"
+    network_mode: "host" #This option will tell the container to use the same network as the computer that it is running on. This means that if you have this running on your windows machine, you will be able to access jellyfin by using http://localhost:8096 instead of a different IP
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
@@ -117,6 +118,13 @@ services:
       - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
       - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
     restart: unless-stopped
+    networks:
+      - htpc-net
+    #deploy:
+    #  resources:
+    #    limits:
+    #      cpus: '2'
+    #      memory: 1024M
 
   heimdall:
     image: ghcr.io/linuxserver/heimdall
@@ -161,9 +169,14 @@ volumes:
 
 networks:
   web:
+    name: web
     external: true
-  crowdsec_test:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/24
+  htpc-net:
+    name: htpc-net
+  caddy-net:
+    name: caddy-net
+#  crowdsec_test:
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 172.20.0.0/24
