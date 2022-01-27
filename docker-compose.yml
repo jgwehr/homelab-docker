@@ -70,6 +70,7 @@ services:
         - ${PORT_CADDY_HTTPS}:443
     networks:
         - web
+        - caddy-net
         - htpc-net
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
@@ -102,7 +103,7 @@ services:
     container_name: jellyfin2
     image: jellyfin/jellyfin
     user: ${PUID}:${PGID}
-    network_mode: "host" #This option will tell the container to use the same network as the computer that it is running on. This means that if you have this running on your windows machine, you will be able to access jellyfin by using http://localhost:8096 instead of a different IP
+    #network_mode: "host" #This option will tell the container to use the same network as the computer that it is running on. This means that if you have this running on your windows machine, you will be able to access jellyfin by using http://localhost:8096 instead of a different IP
     depends_on:
       - 'caddy'
     environment:
