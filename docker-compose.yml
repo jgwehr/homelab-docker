@@ -99,8 +99,8 @@ services:
       - ${CONFIGDIR}/duckdns:/config #optional
     restart: unless-stopped
   
-  jellyfin2:
-    container_name: jellyfin2
+  jellyfin:
+    container_name: jellyfin
     image: jellyfin/jellyfin
     user: ${PUID}:${PGID}
     #network_mode: "host" #This option will tell the container to use the same network as the computer that it is running on. This means that if you have this running on your windows machine, you will be able to access jellyfin by using http://localhost:8096 instead of a different IP
@@ -115,7 +115,7 @@ services:
       - ${CONFIGDIR}/jellyfin:/config
       - ${CACHEDIR}/jellyfin:/cache
       - ${MEDIADIR}:/media:ro
-      #- ${SSL_CERT_FILE}::ro ### Read-only cert
+      - ${SSL_CERT_FILE}:/srv/certs/caddy.crt:ro ### Read-only cert
     ports:
       - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
       - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
