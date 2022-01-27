@@ -46,7 +46,7 @@ localhost {
   }
 
   # System Status page
-  reverse_proxy /status 0.0.0.0:9001/status
+  reverse_proxy /status/* 0.0.0.0:3001/status/
 
   # The negotiation endpoint is also proxied to Rocket
   #reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
