@@ -30,34 +30,34 @@ services:
 #        max-size: "5m"
 #        max-file: "10"
 
-  crowdsec:
-    container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.2.0
-    restart: always
-    ports:
-      - ${PORT_CROWDSEC_REST}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
-      - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
-    environment:
-      TZ: ${TZ}
-      GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/caddy crowdsecurity/caddy-logs"
-
-    volumes:
-      - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
-      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
-
-      - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
-      - crowdsec-config:/etc/crowdsec/
-    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
-
-      - ${LOGDIR}/caddy:/var/log/caddy ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
-
-    healthcheck:
-      test: ["CMD","cscli metrics","cscli hub list"]
-    
-    networks:
-     crowdsec_test:
-       ipv4_address: 172.20.0.4
+#  crowdsec:
+#    container_name: crowdsec
+#    image: crowdsecurity/crowdsec:v1.2.0
+#    restart: always
+#    ports:
+#      - ${PORT_CROWDSEC_REST}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
+#      - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
+#    environment:
+#      TZ: ${TZ}
+#      GID: ${PGID}
+#      COLLECTIONS: "crowdsecurity/caddy crowdsecurity/caddy-logs"
+#
+#    volumes:
+#      - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
+#      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+#
+#      - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
+#      - crowdsec-config:/etc/crowdsec/
+#    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
+#
+#      - ${LOGDIR}/caddy:/var/log/caddy ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
+#
+#    healthcheck:
+#      test: ["CMD","cscli metrics","cscli hub list"]
+#    
+#    networks:
+#     crowdsec_test:
+#       ipv4_address: 172.20.0.4
          
   caddy:
     container_name: caddy
@@ -72,8 +72,8 @@ services:
         - web
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
-      - ${CONFIGDIR}/caddy:/data # Optional, house for certs
-      - ${CONFIGDIR}/caddy:/config # Optional, JSON Config files
+      - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
+      - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
       - ${LOGDIR}/caddy:/var/log/caddy ## check for /access.log
     environment:
       LOG_FILE: ${LOGDIR}/caddy/access.log

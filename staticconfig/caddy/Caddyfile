@@ -3,6 +3,9 @@
     # Optional email key for lets encrypt
 }
 
+
+# import *.caddy ## try this while storing individual sites in *.caddy files
+
 localhost {
   respond "Hello, world!"
 }
@@ -17,9 +20,27 @@ localhost {
     }
     format json
   }
+
+  #header {
+    # disable FLoC tracking
+    #Permissions-Policy interest-cohort=()
+
+    # enable HSTS
+    #Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    #?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    #?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    #?Referrer-Policy no-referrer-when-downgrade
+  #}
   
   encode zstd gzip
 
+  # SSL Cert via Duckdns build
   tls {
     dns duckdns {$DUCKDNS_API_TOKEN}
   }
@@ -28,15 +49,15 @@ localhost {
   reverse_proxy /status 0.0.0.0:9001/status
 
   # The negotiation endpoint is also proxied to Rocket
-  reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
+  #reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
 
   # Notifications redirected to the websockets server
-  reverse_proxy /notifications/hub 0.0.0.0:3012
+  #reverse_proxy /notifications/hub 0.0.0.0:3012
 
   # Send all other traffic to the regular bitwarden_rs endpoint
-  reverse_proxy 0.0.0.0:8080 {
-    header_up X-Real-IP {remote_host}
-  }
+  #reverse_proxy 0.0.0.0:8080 {
+  #   header_up X-Real-IP {remote_host}
+  #}
 
 }
 
