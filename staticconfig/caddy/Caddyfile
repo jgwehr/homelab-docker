@@ -45,6 +45,10 @@ localhost {
     dns duckdns {$DUCKDNS_API_TOKEN}
   }
 
+
+  # Jellyfin
+  reverse_proxy /jelly/* 127.0.0.1:8096
+
   # System Status page
   reverse_proxy /status/* 0.0.0.0:3001/status/
 
