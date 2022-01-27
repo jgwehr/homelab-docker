@@ -112,8 +112,8 @@ services:
       TZ: ${TZ}
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional
     volumes:
-      - ${CONFIGDIR}/jellyfin_compose:/config
-      - ${CACHEDIR}/jellyfin_compose:/cache
+      - ${CONFIGDIR}/jellyfin:/config
+      - ${CACHEDIR}/jellyfin:/cache
       - ${MEDIADIR}:/media:ro
       #- ${SSL_CERT_FILE}::ro ### Read-only cert
     ports:

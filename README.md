@@ -39,6 +39,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
    │  │  ├── audiobooks
    │  │  ├── movies
    │  │  ├── music
+   │  │  ├── podcasts
    │  │  └── tv
    │  ├── incomplete
    │  │  ├── audiobooks
