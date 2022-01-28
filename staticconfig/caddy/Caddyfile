@@ -1,4 +1,5 @@
 {
+  email {$EMAIL}
     # Global options block. Entirely optional, https is on by default
     # Optional email key for lets encrypt
 }
@@ -7,16 +8,46 @@
 # import *.caddy ## try this while storing individual sites in *.caddy files
 
 localhost {
+  
   respond "Hello, world!"
 }
 
 jelly.{$DOMAIN} {
-  respond "test subsub"
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
+
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    #Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    #?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+
+  proxy / localhost:8096 {
+    transparent
+  }
 }
 
-http://192.168.1.202 {
-  reverse_proxy /jelly/* 127.0.0.1:8096
-}
+
 
 {$DOMAIN} {
   log {
