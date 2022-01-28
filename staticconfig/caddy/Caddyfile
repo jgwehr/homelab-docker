@@ -42,7 +42,7 @@ jelly.{$DOMAIN} {
     ?Referrer-Policy no-referrer-when-downgrade
   }
 
-  proxy / localhost:8096 {
+  reverse_proxy / localhost:8096 {
     transparent
   }
 }
