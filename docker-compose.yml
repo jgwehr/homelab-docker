@@ -64,6 +64,8 @@ services:
     build:
       context: ${DOCKERDIR}
       dockerfile: caddy.dockerfile #Custom build which uses duckdns
+    depends_on:
+      - jellyfin
     restart: unless-stopped
     ports:
         - ${PORT_CADDY_HTTP}:80
@@ -104,8 +106,6 @@ services:
     image: jellyfin/jellyfin
     user: ${PUID}:${PGID}
     network_mode: "host" #This option will tell the container to use the same network as the computer that it is running on. This means that if you have this running on your windows machine, you will be able to access jellyfin by using http://localhost:8096 instead of a different IP
-    depends_on:
-      - 'caddy'
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
@@ -116,11 +116,11 @@ services:
       - ${CACHEDIR}/jellyfin:/cache
       - ${MEDIADIR}:/media:ro
       - ${SSL_CERT_FILE}:/srv/certs/caddy.crt:ro ### Read-only cert
-    ports:
-      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
-      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
-      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
-      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
+    #ports:
+    #  - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
+    #  - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
+    #  - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
+    #  - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
     restart: unless-stopped
     #devices:
     #  - /dev/dri:/dev/dri #optional Only needed if you want to use your Intel GPU for hardware accelerated video encoding (vaapi).
