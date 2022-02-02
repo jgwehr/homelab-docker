@@ -66,6 +66,9 @@ services:
       dockerfile: caddy.dockerfile #Custom build which uses duckdns
     depends_on:
       - jellyfin
+    external_links:
+      - jellyfin:jellyfin
+      - uptime-kuma:uptime-kuma
     restart: unless-stopped
     ports:
         - ${PORT_CADDY_HTTP}:80

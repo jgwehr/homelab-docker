@@ -8,7 +8,9 @@
 # import *.caddy ## try this while storing individual sites in *.caddy files
 
 localhost {
-  
+  transport http {
+            tls_insecure_skip_verify
+  }
   respond "Hello, world!"
 }
 
@@ -43,6 +45,39 @@ jelly.{$DOMAIN} {
   }
 
   reverse_proxy / localhost:8096
+}
+
+status.{$DOMAIN} {
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
+
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    #Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    #?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+  
+  reverse_proxy uptime-kuma:3001
 }
 
 
@@ -89,7 +124,7 @@ jelly.{$DOMAIN} {
   reverse_proxy /jelly/* 127.0.0.1:8096
 
   # System Status page
-  reverse_proxy /status/* 0.0.0.0:3001/status/
+  reverse_proxy /status/* localhost:3001/status/
 
   # The negotiation endpoint is also proxied to Rocket
   #reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
