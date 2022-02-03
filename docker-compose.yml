@@ -44,16 +44,17 @@ services:
 
     networks:
       - caddy-net
-      
+
     volumes:
-      - ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
+      #- ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
       - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
 
-      - ${CONFIGDIR}/crowdsec/db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
+      - crowdsec-db:/var/lib/crowdsec/data/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
 
-      - ${LOGDIR}/caddy:/var/log/caddy ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
+      ## Log Files
+      - ${LOGDIR}/caddy:/var/log/caddy:ro ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
 
     healthcheck:
       test: ["CMD","cscli metrics","cscli hub list"]
@@ -197,6 +198,7 @@ services:
       
 volumes:
   crowdsec-config:
+  crowdsec-db:
 
 networks:
   web:
