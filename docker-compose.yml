@@ -42,7 +42,7 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/caddy crowdsecurity/caddy-logs"
+      COLLECTIONS: "crowdsecurity/caddy crowdsecurity/caddy-logs crowdsecurity/sshd"
 
     networks:
       - caddy-net
