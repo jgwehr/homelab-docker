@@ -57,6 +57,9 @@ services:
 
       ## Log Files
       - ${LOGDIR}/caddy:/var/log/caddy:ro ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
+      - /var/log/auth.log:/logs/auth.log:ro
+      - /var/log/syslog.log:/logs/syslog.log:ro
+      
 
     healthcheck:
       test: ["CMD","cscli metrics","cscli hub list"]
