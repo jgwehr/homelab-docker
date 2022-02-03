@@ -175,6 +175,11 @@ services:
       - caddy-net
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
       
 volumes:
   crowdsec-config:
