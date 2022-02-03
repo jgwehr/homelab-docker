@@ -136,19 +136,19 @@ services:
     #      cpus: '2'
     #      memory: 1024M
 
-#  heimdall:
-#    image: ghcr.io/linuxserver/heimdall
-#    container_name: heimdall
-#    environment:
-#      PUID: ${PUID}
-#      PGID: ${PGID}
-#      TZ: ${TZ}
-#    volumes:
-#      - ${CONFIGDIR}/heimdall:/config
-#    ports:
-#      - ${PORT_DASH_HTTP}:80
-#      - ${PORT_DASH_HTTPS}:443
-#    restart: unless-stopped
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${CONFIGDIR}/heimdall:/config
+    ports:
+      - ${PORT_DASH_HTTP}:80
+      - ${PORT_DASH_HTTPS}:443
+    restart: unless-stopped
 
 #  portainer:
 #    container_name: portainer
