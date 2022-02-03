@@ -33,6 +33,8 @@ services:
   crowdsec:
     container_name: crowdsec
     image: crowdsecurity/crowdsec:v1.3.0
+    depends_on:
+      - caddy
     restart: always
     ports:
       - ${PORT_CROWDSEC_REST}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
