@@ -89,6 +89,11 @@ services:
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
     healthcheck:
       test: ["CMD", "caddy", "version"]
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
   
 #  duckdns:
 #    container_name: duckdns
@@ -149,6 +154,11 @@ services:
       - ${PORT_DASH_HTTP}:80
       - ${PORT_DASH_HTTPS}:443
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
 
 #  portainer:
 #    container_name: portainer
