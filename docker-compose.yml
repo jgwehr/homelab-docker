@@ -63,6 +63,11 @@ services:
 
     healthcheck:
       test: ["CMD","cscli metrics","cscli hub list"]
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     
     #networks:
     # crowdsec_test:
