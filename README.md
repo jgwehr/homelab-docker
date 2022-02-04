@@ -11,6 +11,7 @@ Includes:
 
 # Technology
 - <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy
+- <img src="https://docs.crowdsec.net/img/crowdsec_logo.png" width="32" alt="CrowdSec" /> CrowdSec
 - <img src="https://github.com/NX211/homer-icons/blob/master/png/portainer.png" width="32" alt="Portainer" /> Portainer
 - <img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" /> Uptime Kuma
 - <img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
