@@ -1,9 +1,22 @@
 filenames:
-  - /var/log/nginx/example.*.log
-labels:
-  type: nginx
----
-filenames:
  - /var/log/caddy/access.log
 labels:
   type: caddy
+---
+source: docker
+container_name:
+ - caddy
+labels:
+  type: caddy_log
+---
+source: docker
+container_name:
+ - jellyfin
+labels:
+  type: jellyfin_log
+---
+source: docker
+container_name:
+ - uptime-kuma
+labels:
+  type: uptime-kuma_log
