@@ -1,7 +1,12 @@
-{
-  email {$EMAIL}
-    # Global options block. Entirely optional, https is on by default
-    # Optional email key for lets encrypt
+{ # Global options block. Entirely optional, https is on by default
+  email {$EMAIL} # Optional email key for lets encrypt
+  debug # this is optional; makes Caddy log more details
+  order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
+  crowdsec {
+    api_url http://localhost:8080 # the URL where your CrowdSec LAPI can be reached
+    api_key <api_key> # the secret API key for the bouncer to authenticate against LAPI
+  }  
+    
 }
 
 
@@ -12,16 +17,6 @@ localhost {
 }
 
 jelly.{$DOMAIN} {
-  log {
-    level ERROR
-    output file {$LOG_FILE} {
-      roll_size 3MiB
-      roll_keep 5
-      roll_keep_for 48h
-    }
-    format json
-  }
-
   header {
     -server #anonymizes Caddy
     
@@ -41,10 +36,45 @@ jelly.{$DOMAIN} {
     ?Referrer-Policy no-referrer-when-downgrade
   }
 
+  crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
+
   reverse_proxy jellyfin:8096
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
 }
 
 status.{$DOMAIN} {
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    #Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    #?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+
+  encode zstd gzip
+
+  reverse_proxy uptime-kuma:3001
+
   log {
     level ERROR
     output file {$LOG_FILE} {
@@ -54,42 +84,11 @@ status.{$DOMAIN} {
     }
     format json
   }
-
-  header {
-    -server #anonymizes Caddy
-    
-    # disable FLoC tracking
-    Permissions-Policy interest-cohort=()
-
-    #enable HSTS
-    #Strict-Transport-Security max-age=31536000;
-
-    # disable clients from sniffing the media type
-    #?X-Content-Type-Options nosniff
-
-    # clickjacking protection
-    ?X-Frame-Options DENY
-
-    # keep referrer data off of HTTP connections
-    ?Referrer-Policy no-referrer-when-downgrade
-  }
-
-  reverse_proxy uptime-kuma:3001
 }
 
 
 
 {$DOMAIN} {
-  log {
-    level ERROR
-    output file {$LOG_FILE} {
-      roll_size 3MiB
-      roll_keep 5
-      roll_keep_for 48h
-    }
-    format json
-  }
-
   header {
     -server #anonymizes Caddy
     
@@ -130,6 +129,16 @@ status.{$DOMAIN} {
   #reverse_proxy 0.0.0.0:8080 {
   #   header_up X-Real-IP {remote_host}
   #}
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
 
 }
 
