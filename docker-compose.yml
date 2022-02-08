@@ -102,6 +102,9 @@ services:
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL_ADMIN}
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+
+      PORT_UPKUMA: ${PORT_UPKUMA}
+      PORT_DASH_HTTP: ${PORT_DASH_HTTP}
     healthcheck:
       test: ["CMD", "caddy", "version"]
     deploy:

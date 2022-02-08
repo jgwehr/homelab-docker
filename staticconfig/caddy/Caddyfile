@@ -1,6 +1,7 @@
 { # Global options block. Entirely optional, https is on by default
   email {$EMAIL} # Optional email key for lets encrypt
   debug # this is optional; makes Caddy log more details
+  
   order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
   crowdsec {
     api_url http://localhost:8080 # the URL where your CrowdSec LAPI can be reached
@@ -38,7 +39,7 @@ jelly.{$DOMAIN} {
 
   crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
 
-  reverse_proxy jellyfin:8096
+  reverse_proxy jellyfin:{$PORT_HTPC_HTTP}
 
   log {
     level ERROR
@@ -117,7 +118,7 @@ status.{$DOMAIN} {
 
 
   # System Status page
-  reverse_proxy uptime-kuma:3001
+  reverse_proxy uptime-kuma:{$PORT_UPKUMA}
 
   # The negotiation endpoint is also proxied to Rocket
   #reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
