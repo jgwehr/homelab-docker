@@ -213,9 +213,13 @@ services:
 
   socky_proxy:
     container_name: socky_proxy
-    image: tecnativa/docker-socket-proxy
+    image: tecnativa/docker-socket-proxy # A security-enhanced proxy for the Docker Socket.
     privileged: true
     restart: always
+    # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
+    #   0 - revoke access
+    #   1 - grant access
+    environment:
     ports:
       - ${PORT_SOCKY_PROXY}:2375
     networks:
