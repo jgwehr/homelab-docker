@@ -35,6 +35,7 @@ services:
     image: crowdsecurity/crowdsec:v1.3.0
     depends_on:
       - caddy
+      - socky_proxy
     restart: always
     ports:
       - ${PORT_CROWDSEC_REST}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
@@ -42,10 +43,11 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/caddy crowdsecurity/caddy-logs crowdsecurity/sshd"
+      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/caddy-logs crowdsecurity/sshd"
 
     networks:
       - caddy-net
+      - socky_proxy-net
 
     volumes:
       #- ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
@@ -104,7 +106,7 @@ services:
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
 
       PORT_UPKUMA: ${PORT_UPKUMA}
-      PORT_DASH_HTTP: ${PORT_DASH_HTTP}
+      PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
     healthcheck:
       test: ["CMD", "caddy", "version"]
     deploy:
@@ -208,6 +210,18 @@ services:
         limits:
           cpus: '1'
           memory: 128M
+
+  socky_proxy:
+    container_name: socky_proxy
+    image: tecnativa/docker-socket-proxy
+    privileged: true
+    restart: always
+    ports:
+      - ${PORT_SOCKY_PROXY}:2375
+    networks:
+      - socky_proxy-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       
 volumes:
   crowdsec-config:
@@ -221,6 +235,7 @@ networks:
     name: htpc-net
   caddy-net:
     name: caddy-net
+  socky_proxy-net:
 #  crowdsec_test:
 #    ipam:
 #      driver: default
