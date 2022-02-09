@@ -239,3 +239,4 @@ networks:
   caddy-net:
     name: caddy-net
   socky_proxy-net:
+    name: socky_proxy-net
