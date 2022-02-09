@@ -217,7 +217,7 @@ services:
     #   0 - revoke access
     #   1 - grant access
     environment:
-      - CONTAINERS: 1 # crowdsec
+      CONTAINERS: 1 # crowdsec
     ports:
       - ${PORT_SOCKY_PROXY}:2375
     networks:
