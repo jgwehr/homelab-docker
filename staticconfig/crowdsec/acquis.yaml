@@ -1,13 +1,8 @@
-filenames:
- - /var/log/caddy/access.log
-labels:
-  type: caddy
----
 source: docker
 container_name:
  - caddy
 labels:
-  type: caddy_log
+  type: caddy
 ---
 source: docker
 container_name:
