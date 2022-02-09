@@ -78,6 +78,7 @@ services:
       - jellyfin
       - uptime-kuma
     external_links:
+      - crowdsec:crowdsec
       - jellyfin:jellyfin
       - uptime-kuma:uptime-kuma
     restart: unless-stopped
@@ -101,6 +102,8 @@ services:
 
       PORT_UPKUMA: ${PORT_UPKUMA}
       PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
+      PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
+      BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
     healthcheck:
       test: ["CMD", "caddy", "version"]
     deploy:
