@@ -44,14 +44,11 @@ services:
       TZ: ${TZ}
       GID: ${PGID}
       COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/caddy-logs crowdsecurity/sshd"
-      DOCKER_HOST: tcp://dockerproxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
+      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
     networks:
       - caddy-net
       - socky_proxy-net
-
-
-      ####tcp://socket-proxy:2375
 
     volumes:
       #- ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
@@ -213,7 +210,7 @@ services:
 
   socky_proxy:
     container_name: socky_proxy
-    image: tecnativa/docker-socket-proxy # A security-enhanced proxy for the Docker Socket.
+    image: ghcr.io/tecnativa/docker-socket-proxy:0.1 # A security-enhanced proxy for the Docker Socket.
     privileged: true
     restart: always
     # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
