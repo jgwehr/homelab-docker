@@ -9,3 +9,4 @@ container_name:
  - jellyfin
 labels:
   type: jellyfin_log
+
