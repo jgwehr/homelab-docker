@@ -63,9 +63,6 @@ services:
       - /var/log/auth.log:/logs/auth.log:ro
       - /var/log/syslog.log:/logs/syslog.log:ro
       
-
-    healthcheck:
-      test: ["CMD","cscli metrics","cscli hub list"]
     deploy:
       resources:
         limits:
@@ -218,6 +215,7 @@ services:
     #   1 - grant access
     environment:
       CONTAINERS: 1 # crowdsec
+      INFO: 1 # crowdsec
     ports:
       - ${PORT_SOCKY_PROXY}:2375
     networks:

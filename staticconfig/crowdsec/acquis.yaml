@@ -14,9 +14,3 @@ container_name:
  - jellyfin
 labels:
   type: jellyfin_log
----
-source: docker
-container_name:
- - uptime-kuma
-labels:
-  type: uptime-kuma_log
