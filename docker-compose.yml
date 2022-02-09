@@ -44,10 +44,14 @@ services:
       TZ: ${TZ}
       GID: ${PGID}
       COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/caddy-logs crowdsecurity/sshd"
+      DOCKER_HOST: tcp://dockerproxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
     networks:
       - caddy-net
       - socky_proxy-net
+
+
+      ####tcp://socket-proxy:2375
 
     volumes:
       #- ${STATICONFIGDIR}/crowdsec/config.yaml:/etc/crowdsec/config.yaml
@@ -70,10 +74,6 @@ services:
         limits:
           cpus: '1'
           memory: 128M
-    
-    #networks:
-    # crowdsec_test:
-    #   ipv4_address: 172.20.0.4
          
   caddy:
     container_name: caddy
@@ -220,6 +220,7 @@ services:
     #   0 - revoke access
     #   1 - grant access
     environment:
+      - CONTAINERS: 1 # crowdsec
     ports:
       - ${PORT_SOCKY_PROXY}:2375
     networks:
@@ -240,8 +241,3 @@ networks:
   caddy-net:
     name: caddy-net
   socky_proxy-net:
-#  crowdsec_test:
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: 172.20.0.0/24
