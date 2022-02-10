@@ -10,7 +10,7 @@ services:
       - tandoor-net
 
     environment:
-      POSTGRES_USER: root #TODO env #creates the specified user with superuser power and a database with the same name
+      POSTGRES_USER: tandoor #TODO env #creates the specified user with superuser power and a database with the same name
       POSTGRES_PASSWORD: #TODO env #the superuser password for PostgreSQL
       POSTGRES_DB:  #TODO env #optional. Sets db created image is first started. Defaults to POSTGRES_USER if unset
 
@@ -22,6 +22,16 @@ services:
   adminer:
     image: adminer
     restart: always
+    depends_on:
+      - tandoor_db
+    environment:
+      ADMINER_DESIGN: 'dracula'
+
+    links:
+      - tandoor_db:db
+    
+    networks:
+      - tandoor-net
     ports:
       - 8081:8080
 

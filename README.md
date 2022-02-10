@@ -31,6 +31,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │  └── docker-compose.yml
 │
 ├── server
+│  ├── db
 │  ├── cache
 │  ├── config
 │  └── logs
@@ -63,7 +64,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 ```
 
 ### These may be created with the following cmds
-`mkdir -p ~/{docker,server/{cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{complete/{audiobooks,music,podcasts,movies,tv},incomplete/{audiobooks,music,movies,tv},torrents/{audiobooks,music,movies,tv}}}}`
+`mkdir -p ~/{docker,server/{db,cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{complete/{audiobooks,music,podcasts,movies,tv},incomplete/{audiobooks,music,movies,tv},torrents/{audiobooks,music,movies,tv}}}}`
 
 ### Docker Compose (and needed files)
 `~/home/{$USER}/docker`
