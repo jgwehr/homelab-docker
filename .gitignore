@@ -1,0 +1,5 @@
+.env
+*.properties
+*.crt
+*.log
+/config

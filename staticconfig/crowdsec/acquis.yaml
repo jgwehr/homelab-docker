@@ -1,0 +1,12 @@
+source: docker
+container_name:
+ - caddy
+labels:
+  type: caddy
+---
+source: docker
+container_name:
+ - jellyfin
+labels:
+  type: jellyfin_log
+
