@@ -239,6 +239,12 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
     restart: always
       
 volumes:
