@@ -9,6 +9,9 @@ services:
     networks:
       - tandoor-net
 
+    ports:
+      - 5432:5432
+
     environment:
       POSTGRES_USER: tandoor #TODO env #creates the specified user with superuser power and a database with the same name
       POSTGRES_PASSWORD: #TODO env #the superuser password for PostgreSQL
@@ -24,16 +27,19 @@ services:
     restart: always
     depends_on:
       - tandoor_db
+    
+    networks:
+      - tandoor-net
+
+    ports:
+      - 8081:8080
+
     environment:
       ADMINER_DESIGN: 'dracula'
 
     links:
       - tandoor_db:db
     
-    networks:
-      - tandoor-net
-    ports:
-      - 8081:8080
 
 networks:
   tandoor-net:
