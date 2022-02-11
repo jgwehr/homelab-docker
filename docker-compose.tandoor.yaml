@@ -32,44 +32,53 @@ services:
       - tandoor-net
 
     ports:
-      - 8081:8080
+      - 8081:8080 #TODO env
 
     environment:
-      ADMINER_DESIGN: 'dracula'
+      ADMINER_DESIGN: 'dracula' #TODO env
 
     links:
       - tandoor_db:db
-    
+  
+  tandoor:
+    container_name: tandoor
+    image: vabene1111/recipes:1.0.8
 
+    depends_on:
+      - tandoor_db
+
+    networks:
+      - tandoor-net
+
+    ports:
+      - 82:8080 #TODO env
+
+    environment:
+      SECRET_KEY: # Required. random secret key, use for example `base64 /dev/urandom | head -c50` to generate one
+      TIMEZONE: America/Chicago #TODO env ${TZ}
+
+      # Database
+      DB_ENGINE: django.db.backends.postgresql
+      # DB_OPTIONS: {} # e.g. {"sslmode":"require"} to enable ssl
+      POSTGRES_HOST: 'db' #TODO env
+      POSTGRES_PORT: 5432 #TODO env
+      POSTGRES_USER: 'tandoor' #TODO env
+      POSTGRES_PASSWORD: #Required. #TODO env
+      POSTGRES_DB: tandoordb #TODO env
+
+      # database connection string, when used overrides other database settings.
+      # format might vary depending on backend
+      # DATABASE_URL = engine://username:password@host:port/dbname
+
+    volumes:
+      - tandoor-static:/opt/recipes/staticfiles
+      - tandoor-media:/opt/recipes/mediafiles
+
+      
 networks:
   tandoor-net:
     name: tandoor-net
 
-  #tandoor:
-  #  container_name: tandoor
-  #  image: vabene1111/recipes:1.0.8
-#
-  #  depends_on:
-  #  
-  #  networks:
-  #  ports:
-#
-  #  environment:
-  #    SECRET_KEY: # Required. random secret key, use for example `base64 /dev/urandom | head -c50` to generate one
-  #    TIMEZONE: America/Chicago ${TZ}
-#
-  #    # Database
-  #    DB_ENGINE: django.db.backends.postgresql
-  #    # DB_OPTIONS: {} # e.g. {"sslmode":"require"} to enable ssl
-  #    POSTGRES_HOST: 'db_recipes'
-  #    POSTGRES_PORT: 5432
-  #    POSTGRES_USER: 'tandoor'
-  #    POSTGRES_PASSWORD: #Required.
-  #    POSTGRES_DB=tandoordb
-#
-  #    # database connection string, when used overrides other database settings.
-  #    # format might vary depending on backend
-  #    # DATABASE_URL = engine://username:password@host:port/dbname
-#
-  #  volumes:
-  #    - 
+volumes:
+  tandoor-static:
+  tandoor-media:
