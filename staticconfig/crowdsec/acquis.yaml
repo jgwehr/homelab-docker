@@ -9,4 +9,9 @@ container_name:
  - jellyfin
 labels:
   type: jellyfin_log
+---
+filenames:
+  - /var/log/auth.log
+labels:
+  type: syslog
 
