@@ -49,7 +49,7 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/caddy-logs"
+      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe"
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
     volumes:
@@ -239,13 +239,12 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
+    
     deploy:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
-    restart: always
+          memory: 32M
       
 volumes:
   crowdsec-config:
