@@ -56,6 +56,7 @@ services:
     environment:
       SECRET_KEY: # Required. random secret key, use for example `base64 /dev/urandom | head -c50` to generate one
       TIMEZONE: America/Chicago #TODO env ${TZ}
+      DEBUG: 0
 
       # Database
       DB_ENGINE: django.db.backends.postgresql
@@ -69,6 +70,9 @@ services:
       # database connection string, when used overrides other database settings.
       # format might vary depending on backend
       # DATABASE_URL = engine://username:password@host:port/dbname
+
+      FRACTION_PREF_DEFAULT: 1 #default value for the user preference 'fractions'
+      COMMENT_PREF_DEFAULT: 0 #enable/disable commenting system
 
     volumes:
       - tandoor-static:/opt/recipes/staticfiles
