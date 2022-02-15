@@ -4,7 +4,7 @@ services:
 
   tandoor_db:
     container_name: tandoor_db
-    image: postgres:11-apline
+    image: postgres:11-alpine
 
     networks:
       - tandoor-net
