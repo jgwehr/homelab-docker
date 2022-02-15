@@ -62,7 +62,7 @@ services:
       - tandoor-net
 
     ports:
-      - ${PORT_RECIPE}:8080 #TODO env
+      - ${PORT_RECIPE}:8080
 
     env_file:
       - ./env/tandoor.env
@@ -71,6 +71,8 @@ services:
       TIMEZONE: ${TZ}
       POSTGRES_PORT: ${PORT_POSTGRES}
 
+    links:
+      - tandoor_db:db
 
     volumes:
       - tandoor-static:/opt/recipes/staticfiles
