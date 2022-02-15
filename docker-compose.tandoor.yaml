@@ -13,7 +13,7 @@ services:
       - ${PORT_POSTGRES}:5432
 
     env_file:
-      - postgres.env
+      - ./env/tandoor.env
 
     volumes:
       - ${DBDIR}/tandoor:/var/lib/postgresql/data
@@ -65,7 +65,7 @@ services:
       - ${PORT_RECIPE}:8080 #TODO env
 
     env_file:
-      - tandoor.env
+      - ./env/tandoor.env
 
     environment:
       TIMEZONE: ${TZ}
