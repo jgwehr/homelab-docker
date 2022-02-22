@@ -15,6 +15,7 @@ services:
       - crowdsec:crowdsec
       - jellyfin:jellyfin
       - uptime-kuma:uptime-kuma
+      - tandoor:tandoor
 
     networks:
         - web
@@ -60,7 +61,7 @@ services:
       - socky_proxy
     
     networks:
-      - caddy-net
+      - caddy-net # provides access for the reverse proxy
       - socky_proxy-net
 
     ports:
@@ -99,7 +100,7 @@ services:
 
     networks:
       - htpc-net
-      - caddy-net
+      - caddy-net # provides access for the reverse proxy
     
     ports:
       - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
@@ -155,7 +156,8 @@ services:
       - tandoor_db
 
     networks:
-      - tandoor-net
+      - caddy-net # provides access for the reverse proxy
+      - tandoor-net # provides access to the back-end
 
     ports:
       - ${PORT_RECIPE}:8080
@@ -183,7 +185,7 @@ services:
     image: louislam/uptime-kuma
     
     networks:
-      - caddy-net
+      - caddy-net # provides access for the reverse proxy
     
     ports:
       - ${PORT_UPKUMA}:3001

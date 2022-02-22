@@ -18,6 +18,41 @@ localhost {
   respond "Hello, world!"
 }
 
+cook.{$DOMAIN} {
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    #Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    #?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+
+  crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
+
+  reverse_proxy tandoor:{$PORT_RECIPE}
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
+}
+
 jelly.{$DOMAIN} {
   header {
     -server #anonymizes Caddy
