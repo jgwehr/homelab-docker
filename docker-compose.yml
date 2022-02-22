@@ -10,6 +10,7 @@ services:
     depends_on:
       - jellyfin
       - uptime-kuma
+      - tandoor
 
     external_links:
       - crowdsec:crowdsec
@@ -31,11 +32,13 @@ services:
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL_ADMIN}
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+      
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
-
-      PORT_UPKUMA: ${PORT_UPKUMA}
-      PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
       PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
+
+      PORT_RECIPE: ${PORT_RECIPE}
+      PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
+      PORT_UPKUMA: ${PORT_UPKUMA}
 
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
