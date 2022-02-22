@@ -167,9 +167,6 @@ services:
       TIMEZONE: ${TZ}
       POSTGRES_PORT: ${PORT_POSTGRES}
 
-    links:
-      - tandoor_db:db
-
     volumes:
       - tandoor-static:/opt/recipes/staticfiles # app files
       - tandoor-media:/opt/recipes/mediafiles # recipe images
