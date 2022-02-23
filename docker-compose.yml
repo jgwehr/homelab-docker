@@ -10,13 +10,13 @@ services:
     depends_on:
       - jellyfin
       - uptime-kuma
-      - tandoor
+      - tandoor_webserver
 
     external_links:
       - crowdsec:crowdsec
       - jellyfin:jellyfin
       - uptime-kuma:uptime-kuma
-      - tandoor:tandoor
+      - tandoor_webserver:tandoor_webserver
 
     networks:
         - web
@@ -159,11 +159,7 @@ services:
       - tandoor_db
 
     networks:
-      - caddy-net # provides access for the reverse proxy
       - tandoor-net # provides access to the back-end
-
-    ports:
-      - ${PORT_RECIPE}:8080
 
     env_file:
       - ./env/tandoor.env
@@ -181,6 +177,35 @@ services:
         limits:
           cpus: '1'
           memory: 256M
+    restart: unless-stopped
+  
+  tandoor_webserver:
+    container_name: tandoor_webserver
+    image: nginx:mainline-alpine
+
+    depends_on:
+      - tandoor
+
+    networks:
+      - caddy-net # provides access for the reverse proxy
+      - tandoor-net # provides access to the app
+
+    ports:
+      - ${PORT_RECIPE}:80
+
+    env_file:
+      - ./env/tandoor.env
+    
+    volumes:
+      - tandoor-webserv:/etc/nginx/conf.d:ro
+      - tandoor-static:/static
+      - tandoor-media:/media
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     restart: unless-stopped
 
   uptime-kuma:
@@ -316,6 +341,7 @@ volumes:
   crowdsec-db:
   tandoor-static:
   tandoor-media:
+  tandoor-webserv:
 
 networks:
   web:

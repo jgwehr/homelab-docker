@@ -40,7 +40,7 @@ cook.{$DOMAIN} {
 
   crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
 
-  reverse_proxy tandoor:{$PORT_RECIPE}
+  reverse_proxy tandoor_webserver:{$PORT_RECIPE}
 
   log {
     level ERROR
