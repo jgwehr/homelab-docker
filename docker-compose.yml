@@ -161,6 +161,9 @@ services:
     networks:
       - tandoor-net # provides access to the back-end
 
+    ports:
+      - 89:8080
+
     env_file:
       - ./env/tandoor.env
 
