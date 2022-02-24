@@ -171,7 +171,6 @@ services:
     volumes:
       - tandoor-static:/opt/recipes/staticfiles # app files
       - tandoor-media:/opt/recipes/mediafiles # recipe images
-      - ${CONFIGDIR}/tandoor/conf.d:/etc/nginx/conf.d #enables webserver #move to static config after test
     
     deploy:
       resources:
@@ -198,7 +197,7 @@ services:
       - ./env/tandoor.env
     
     volumes:
-      - ${CONFIGDIR}/tandoor/conf.d:/etc/nginx/conf.d:ro
+      - ${STATICONFIGDIR}/nginx:/etc/nginx/conf.d:ro
       - tandoor-static:/static
       - tandoor-media:/media
 
