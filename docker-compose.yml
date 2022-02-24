@@ -198,7 +198,7 @@ services:
       - ./env/tandoor.env
     
     volumes:
-      - tandoor-webserv:/etc/nginx/conf.d:ro
+      - ${CONFIGDIR}/tandoor/conf.d:/etc/nginx/conf.d:ro
       - tandoor-static:/static
       - tandoor-media:/media
 
