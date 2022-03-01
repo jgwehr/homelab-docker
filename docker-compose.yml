@@ -159,6 +159,7 @@ services:
       - tandoor_db
 
     networks:
+      - caddy-net # provides access for the reverse proxy
       - tandoor-net # provides access to the back-end
 
     ports:
