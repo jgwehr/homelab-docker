@@ -151,66 +151,66 @@ services:
           memory: 128M
     restart: unless-stopped
 
-  tandoor:
-    container_name: tandoor
-    image: vabene1111/recipes:1.0.8
-
-    depends_on:
-      - tandoor_db
-
-    networks:
-      - caddy-net # provides access for the reverse proxy
-      - tandoor-net # provides access to the back-end
-
-    ports:
-      - 89:8080
-
-    env_file:
-      - ./env/tandoor.env
-
-    environment:
-      TIMEZONE: ${TZ}
-      POSTGRES_PORT: ${PORT_POSTGRES}
-
-    volumes:
-      - tandoor-static:/opt/recipes/staticfiles # app files
-      - tandoor-media:/opt/recipes/mediafiles # recipe images
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-    restart: unless-stopped
-  
-  tandoor_webserver:
-    container_name: tandoor_webserver
-    image: nginx:mainline-alpine
-
-    depends_on:
-      - tandoor
-
-    networks:
-      - caddy-net # provides access for the reverse proxy
-      - tandoor-net # provides access to the app
-
-    ports:
-      - ${PORT_RECIPE}:80
-
-    env_file:
-      - ./env/tandoor.env
-    
-    volumes:
-      - ${STATICONFIGDIR}/nginx:/etc/nginx/conf.d:ro
-      - tandoor-static:/static
-      - tandoor-media:/media
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: unless-stopped
+#  tandoor:
+#    container_name: tandoor
+#    image: vabene1111/recipes:1.0.8
+#
+#    depends_on:
+#      - tandoor_db
+#
+#    networks:
+#      - caddy-net # provides access for the reverse proxy
+#      - tandoor-net # provides access to the back-end
+#
+#    ports:
+#      - 89:8080
+#
+#    env_file:
+#      - ./env/tandoor.env
+#
+#    environment:
+#      TIMEZONE: ${TZ}
+#      POSTGRES_PORT: ${PORT_POSTGRES}
+#
+#    volumes:
+#      - tandoor-static:/opt/recipes/staticfiles # app files
+#      - tandoor-media:/opt/recipes/mediafiles # recipe images
+#    
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 256M
+#    restart: unless-stopped
+#  
+#  tandoor_webserver:
+#    container_name: tandoor_webserver
+#    image: nginx:mainline-alpine
+#
+#    depends_on:
+#      - tandoor
+#
+#    networks:
+#      - caddy-net # provides access for the reverse proxy
+#      - tandoor-net # provides access to the app
+#
+#    ports:
+#      - ${PORT_RECIPE}:80
+#
+#    env_file:
+#      - ./env/tandoor.env
+#    
+#    volumes:
+#      - ${STATICONFIGDIR}/nginx:/etc/nginx/conf.d:ro
+#      - tandoor-static:/static
+#      - tandoor-media:/media
+#
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 128M
+#    restart: unless-stopped
 
   uptime-kuma:
     container_name: uptime_kuma
@@ -236,31 +236,31 @@ services:
 # Back End Services
 ####################
 
-  adminer:
-    container_name: adminer
-    image: adminer
-    
-    depends_on:
-      - tandoor_db
-    
-    networks:
-      - tandoor-net
-
-    ports:
-      - ${PORT_ADMINER}:8080
-
-    environment:
-      ADMINER_DESIGN: 'dracula' #TODO env
-
-    links:
-      - tandoor_db:db
-  
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 32M
-    restart: unless-stopped
+#  adminer:
+#    container_name: adminer
+#    image: adminer
+#    
+#    depends_on:
+#      - tandoor_db
+#    
+#    networks:
+#      - tandoor-net
+#
+#    ports:
+#      - ${PORT_ADMINER}:8080
+#
+#    environment:
+#      ADMINER_DESIGN: 'dracula' #TODO env
+#
+#    links:
+#      - tandoor_db:db
+#  
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 32M
+#    restart: unless-stopped
 
   duckdns:
     container_name: duckdns
@@ -314,28 +314,28 @@ services:
 
     restart: always
 
-  tandoor_db:
-    container_name: tandoor_db
-    image: postgres:11-alpine
-
-    networks:
-      - tandoor-net
-
-    ports:
-      - ${PORT_POSTGRES}:5432
-
-    env_file:
-      - ./env/tandoor.env
-
-    volumes:
-      - ${DBDIR}/tandoor:/var/lib/postgresql/data
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 96M
-    restart: unless-stopped
+#  tandoor_db:
+#    container_name: tandoor_db
+#    image: postgres:11-alpine
+#
+#    networks:
+#      - tandoor-net
+#
+#    ports:
+#      - ${PORT_POSTGRES}:5432
+#
+#    env_file:
+#      - ./env/tandoor.env
+#
+#    volumes:
+#      - ${DBDIR}/tandoor:/var/lib/postgresql/data
+#
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 96M
+#    restart: unless-stopped
 
 
 ####################
@@ -345,9 +345,9 @@ services:
 volumes:
   crowdsec-config:
   crowdsec-db:
-  tandoor-static:
-  tandoor-media:
-  tandoor-webserv:
+#  tandoor-static:
+#  tandoor-media:
+#  tandoor-webserv:
 
 networks:
   web:
