@@ -57,7 +57,7 @@ services:
   
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.3.0
+    image: crowdsecurity/crowdsec:v1.3.2
 
     depends_on:
       - caddy
@@ -312,6 +312,8 @@ services:
           cpus: '1'
           memory: 32M
 
+    restart: always
+
   tandoor_db:
     container_name: tandoor_db
     image: postgres:11-alpine
@@ -333,7 +335,7 @@ services:
         limits:
           cpus: '1'
           memory: 96M
-    restart: always
+    restart: unless-stopped
 
 
 ####################
