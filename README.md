@@ -12,10 +12,8 @@ Includes:
 # Technology
 - <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy
 - <img src="https://docs.crowdsec.net/img/crowdsec_logo.png" width="32" alt="CrowdSec" /> CrowdSec
-- <img src="https://github.com/NX211/homer-icons/blob/master/png/portainer.png" width="32" alt="Portainer" /> Portainer
 - <img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" /> Uptime Kuma
 - <img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
-- <img src="https://github.com/NX211/homer-icons/blob/master/png/bitwarden.png" width="32" alt="Vaultwarden/Bitwarden" /> Bitwarden
 
 ### Notes
 Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
@@ -31,6 +29,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │  └── docker-compose.yml
 │
 ├── server
+│  ├── db
 │  ├── cache
 │  ├── config
 │  └── logs
@@ -63,18 +62,16 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 ```
 
 ### These may be created with the following cmds
-`mkdir -p ~/{docker,server/{cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{complete/{audiobooks,music,podcasts,movies,tv},incomplete/{audiobooks,music,movies,tv},torrents/{audiobooks,music,movies,tv}}}}`
+`mkdir -p ~/{docker,server/{db,cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{complete/{audiobooks,music,podcasts,movies,tv},incomplete/{audiobooks,music,movies,tv},torrents/{audiobooks,music,movies,tv}}}}`
 
 ### Docker Compose (and needed files)
-`~/home/{$USER}/docker`
-
 This github repo represents this folder. It's safely committed to public repos and shouldn't contain anything sensitive.
 
 Example files:
 - ./docker-compose.yml
 - ./.env
 - ./dockerfiles/custom-build-for-caddy.dockerfile
-- ./Caddyfile
+- ./staticonfig/caddy/Caddyfile
 
 
 Ideally, individual contexts are separated - distinct "stacks" which can be managed (up/down/restart/etc). Unfortuantely, I'm not smart enough for that yet.
@@ -82,14 +79,14 @@ Ideally, individual contexts are separated - distinct "stacks" which can be mana
 - Managing the overall Homelab's configuration in a single repo (aka, HERE) should be possible without an individual server needing to run *all* services. This allows for a given server/vm/box to run *certain* contexts - but not necessarily all - while keeping the project manageable. No doubt something like proxmox/kubernetes would have different opinions about this.
 
 ### Persistent Data and Configuration
-`~/home/{$USER}/server`
+`~/server`
 
-How your configure the apps and their current states. This is separated from the Docker Compose (ie. "setup") as these become specific to how *you* use the services - not how they're installed/maintained.
+How you configure the apps and their current states. This is separated from the Docker Compose (ie. "setup") as these become specific to how *you* use the services - not how they're installed/maintained.
 
 
 ### Media Storage (such as Podcasts, Movies, TV Shows, Audiobooks):
-`~/home/{$USER}/data/media/movies`
-`~/home/{$USER}/data/media/podcasts`
+`~/data/media/movies`
+`~/data/media/podcasts`
 
 This creates a clear distinction between the files *many* services could use or want and the files those services *just need to access*. Separation presumably allows for alternate backup or hosting mechanisms, as well. It's an attempt to achieve Least Privilege.
 
@@ -106,7 +103,6 @@ Let's recognize four kinds of Media Server roles containers/apps:
 
 ## Port Reservations
 Ports are controlled through variables to provide a central "fact check"
-* TBD
 
 
 # Optionals

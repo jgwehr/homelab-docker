@@ -1,58 +1,84 @@
 version: "3.7"
 
 services:
-#  bitwarden:
-#    container_name: bitwarden
-#    image: vaultwarden/server
-#    restart: unless-stopped
-#    user: ${PUID}:1000
-#    ports:
-#      - ${PORT_BITWARDEN_HTTP}:80
-#      - ${PORT_BITWARDEN_HTTPS}:443
-#    depends_on:
-#      - 'caddy'
-#    volumes:
-#      - ${CONFIGDIR}/bitwarden:/data
-#      - ${LOGDIR}/bitwarden:/var/log/vaultwarden
-#    environment:
-#      TZ: ${TZ}
-#      # LOG_FILE: ${LOGDIR}/bitwarden.log
-#      LOG_LEVEL: ${LOG_LEVEL:-warn}
-#      EXTENDED-LOGGING: 'true'
-#      WEBSOCKET_ENABLED: 'true' # Required to use websockets
-#      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
-#      INVITATIONS_ALLOWED: 'false'
-#      SHOW_PASSWORD_HINT: 'false' # set to false to improve security (slightly)
-#    
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "5m"
-#        max-file: "10"
+  caddy:
+    container_name: caddy
+    build:
+      context: ${DOCKERDIR}
+      dockerfile: caddy.dockerfile #Custom build which uses duckdns
 
+    depends_on:
+      - jellyfin
+      - uptime-kuma
+      - tandoor_webserver
+
+    external_links:
+      - crowdsec:crowdsec
+      - jellyfin:jellyfin
+      - uptime-kuma:uptime-kuma
+      - tandoor_webserver:tandoor_webserver
+
+    networks:
+        - web
+        - caddy-net
+        - htpc-net
+
+    ports:
+        - ${PORT_CADDY_HTTP}:80
+        - ${PORT_CADDY_HTTPS}:443
+
+    environment:
+      LOG_FILE: ${LOGDIR}/caddy/access.log
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL_ADMIN}
+      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+      
+      BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
+      PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
+
+      PORT_RECIPE: ${PORT_RECIPE}
+      PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
+      PORT_UPKUMA: ${PORT_UPKUMA}
+
+    volumes:
+      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
+      - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
+      - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
+      - ${LOGDIR}/caddy:/server/logs/caddy ## check for /access.log
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+    restart: unless-stopped
+  
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.3.0
+    image: crowdsecurity/crowdsec:v1.3.2
+
     depends_on:
       - caddy
       - socky_proxy
-    restart: always
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+      - socky_proxy-net
+
     ports:
       - ${PORT_CROWDSEC_API}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
       - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
+
     environment:
       TZ: ${TZ}
       GID: ${PGID}
       COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe"
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
-    networks:
-      - caddy-net
-      - socky_proxy-net
-
     volumes:
       - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
-
       - crowdsec-config:/etc/crowdsec/
       - crowdsec-db:/var/lib/crowdsec/data/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
@@ -67,53 +93,92 @@ services:
         limits:
           cpus: '1'
           memory: 128M
-         
-  caddy:
-    container_name: caddy
-    build:
-      context: ${DOCKERDIR}
-      dockerfile: caddy.dockerfile #Custom build which uses duckdns
-    depends_on:
-      - jellyfin
-      - uptime-kuma
-    external_links:
-      - crowdsec:crowdsec
-      - jellyfin:jellyfin
-      - uptime-kuma:uptime-kuma
-    restart: unless-stopped
-    ports:
-        - ${PORT_CADDY_HTTP}:80
-        - ${PORT_CADDY_HTTPS}:443
-    networks:
-        - web
-        - caddy-net
-        - htpc-net
-    volumes:
-      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
-      - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
-      - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
-      - ${LOGDIR}/caddy:/server/logs/caddy ## check for /access.log
-    environment:
-      LOG_FILE: ${LOGDIR}/caddy/access.log
-      DOMAIN: ${DOMAIN}
-      EMAIL: ${EMAIL_ADMIN}
-      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+    restart: always
+  
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin
 
-      PORT_UPKUMA: ${PORT_UPKUMA}
-      PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
-      PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
-      BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
-    healthcheck:
-      test: ["CMD", "caddy", "version"]
+    user: ${PUID}:${PGID}
+
+    networks:
+      - htpc-net
+      - caddy-net # provides access for the reverse proxy
+    
+    ports:
+      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
+      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
+      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
+      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
+
+    volumes:
+      - ${CONFIGDIR}/jellyfin:/config
+      - ${CACHEDIR}/jellyfin:/cache
+      - ${MEDIADIR}:/media:ro
+    
+    #deploy:
+    #  resources:
+    #    limits:
+    #      cpus: '2'
+    #      memory: 1024M
+    restart: unless-stopped
+
+  heimdall:
+    container_name: heimdall
+    image: ghcr.io/linuxserver/heimdall
+    
+    ports:
+      - ${PORT_DASH_HTTP}:80
+      - ${PORT_DASH_HTTPS}:443
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${CONFIGDIR}/heimdall:/config
+    
     deploy:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
-  
+          memory: 128M
+    restart: unless-stopped
+
+  uptime-kuma:
+    container_name: uptime_kuma
+    image: louislam/uptime-kuma
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+    
+    ports:
+      - ${PORT_UPKUMA}:3001
+    
+    volumes:
+      - ${CONFIGDIR}/uptime-kuma:/app/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: always
+
+####################
+# Back End Services
+####################
+
   duckdns:
     container_name: duckdns
     image: ghcr.io/linuxserver/duckdns
+
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
@@ -121,107 +186,36 @@ services:
       SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
       TOKEN: ${DUCKDNS_TOKEN}
       LOG_FILE: ${LOGDIR}/duckdns.log #optional
+
     volumes:
       - ${CONFIGDIR}/duckdns:/config #optional
-    restart: unless-stopped
-  
-  jellyfin:
-    container_name: jellyfin
-    image: jellyfin/jellyfin
-    user: ${PUID}:${PGID}
-    #network_mode: "host" #This option will tell the container to use the same network as the computer that it is running on. This means that if you have this running on your windows machine, you will be able to access jellyfin by using http://localhost:8096 instead of a different IP
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
-    volumes:
-      - ${CONFIGDIR}/jellyfin:/config
-      - ${CACHEDIR}/jellyfin:/cache
-      - ${MEDIADIR}:/media:ro
-      - ${SSL_CERT_FILE}:/srv/certs/caddy.crt:ro ### Read-only cert
-    ports:
-      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
-      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
-      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
-      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
-    restart: unless-stopped
-    #devices:
-    #  - /dev/dri:/dev/dri #optional Only needed if you want to use your Intel GPU for hardware accelerated video encoding (vaapi).
-    networks:
-      - htpc-net
-      - caddy-net #suggested by https://geek-cookbook.funkypenguin.co.nz/recipes/jellyfin/
-    #deploy:
-    #  resources:
-    #    limits:
-    #      cpus: '2'
-    #      memory: 1024M
 
-  heimdall:
-    image: ghcr.io/linuxserver/heimdall
-    container_name: heimdall
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    volumes:
-      - ${CONFIGDIR}/heimdall:/config
-    ports:
-      - ${PORT_DASH_HTTP}:80
-      - ${PORT_DASH_HTTPS}:443
-    restart: unless-stopped
     deploy:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
-
-#  portainer:
-#    container_name: portainer
-#    image: portainer/portainer-ce
-#    restart: always
-#    command: -H unix:///var/run/docker.sock
-#    ports:
-#      - ${PORT_PORTAINER_AGENT}:8000
-#      - ${PORT_PORTAINER_UI}:9000
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - ${CONFIGDIR}/portainer/data:/data
-#      - ${CONFIGDIR}/shared:/shared
-#    environment:
-#      TZ: ${TZ}
-
-  uptime-kuma:
-    container_name: uptime_kuma
-    image: louislam/uptime-kuma
-    restart: always
-    ports:
-      - ${PORT_UPKUMA}:3001
-    networks:
-      - caddy-net
-    volumes:
-      - ${CONFIGDIR}/uptime-kuma:/app/data
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
+          memory: 32M  
+    restart: unless-stopped
 
   socky_proxy:
     container_name: socky_proxy
     image: ghcr.io/tecnativa/docker-socket-proxy:0.1 # A security-enhanced proxy for the Docker Socket.
+
     privileged: true
-    restart: always
-    # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
-    #   0 - revoke access
-    #   1 - grant access
-    environment:
-      CONTAINERS: 1 # crowdsec
-      INFO: 1 # crowdsec
-    ports:
-      - ${PORT_SOCKY_PROXY}:2375
+  
     networks:
       - socky_proxy-net
+
+    ports:
+      - ${PORT_SOCKY_PROXY}:2375
+
+    environment:
+      # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
+      #   0 - revoke access
+      #   1 - grant access
+      CONTAINERS: 1 # crowdsec
+      INFO: 1 # crowdsec
+
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     
@@ -230,7 +224,13 @@ services:
         limits:
           cpus: '1'
           memory: 32M
-      
+
+    restart: always
+
+####################
+# Docker Environment
+####################
+
 volumes:
   crowdsec-config:
   crowdsec-db:
