@@ -10,13 +10,12 @@ services:
     depends_on:
       - jellyfin
       - uptime-kuma
-      - tandoor_webserver
+
 
     external_links:
       - crowdsec:crowdsec
-      - jellyfin:jellyfin
-      - uptime-kuma:uptime-kuma
-      - tandoor_webserver:tandoor_webserver
+#      - jellyfin:jellyfin
+#      - uptime-kuma:uptime-kuma
 
     networks:
         - web
