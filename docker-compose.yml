@@ -117,7 +117,7 @@ services:
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
 
     group_add:
-      - ${GID_HARDWAREACC} # gid of your `video` group
+      - ${GID_HARDWAREACC} # gid of your `render` group
 
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
