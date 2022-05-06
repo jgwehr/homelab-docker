@@ -96,7 +96,9 @@ services:
     container_name: jellyfin
     image: jellyfin/jellyfin
 
-    user: ${UID_JELLYFIN}:${GID_JELLYFIN}
+    user: ${PUID}:${PGID}
+    group_add:
+      - ${GID_HARDWAREACC} # gid of your `render` group
 
     networks:
       - htpc-net
@@ -109,13 +111,10 @@ services:
       - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
 
     environment:
-      PUID: ${UID_JELLYFIN}
-      PGID: ${GID_JELLYFIN}
       TZ: ${TZ}
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
 
-    group_add:
-      - ${GID_HARDWAREACC} # gid of your `render` group
+
 
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
