@@ -14,8 +14,6 @@ services:
 
     external_links:
       - crowdsec:crowdsec
-#      - jellyfin:jellyfin
-#      - uptime-kuma:uptime-kuma
 
     networks:
         - web
@@ -99,6 +97,8 @@ services:
     image: jellyfin/jellyfin
 
     user: ${PUID}:${PGID}
+    group_add:
+      - ${GID_HARDWAREACC} # gid of your `render` group
 
     networks:
       - htpc-net
@@ -111,10 +111,14 @@ services:
       - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
 
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
       TZ: ${TZ}
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
+
+
+
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
+      - /dev/dri/card0:/dev/dri/card0
 
     volumes:
       - ${CONFIGDIR}/jellyfin:/config
