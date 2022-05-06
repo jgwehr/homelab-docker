@@ -14,8 +14,6 @@ services:
 
     external_links:
       - crowdsec:crowdsec
-#      - jellyfin:jellyfin
-#      - uptime-kuma:uptime-kuma
 
     networks:
         - web
