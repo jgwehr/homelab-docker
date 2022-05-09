@@ -114,8 +114,6 @@ services:
       TZ: ${TZ}
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
 
-
-
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
       - /dev/dri/card0:/dev/dri/card0
@@ -130,6 +128,24 @@ services:
     #    limits:
     #      cpus: '2'
     #      memory: 1024M
+    restart: unless-stopped
+
+  gloomhaven-helper:
+    container_name: gloomhaven-helper
+    image: grepnull/gloomhaven-helper-headless:8.4
+
+    ports:
+      - ${PORT_GLOOMHELP_BROADCAST}:58887/udp #broadcast
+      - ${PORT_GLOOMHELP_SERVER}:58888
+    
+    volumes:
+      - ${CONFIGDIR}/gloomhaven-helper:/root/.ghh
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
     restart: unless-stopped
 
   heimdall:
