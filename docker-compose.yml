@@ -147,7 +147,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
+          memory: 320M
     restart: unless-stopped
 
   heimdall:
