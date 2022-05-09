@@ -14,6 +14,7 @@ Includes:
 - <img src="https://docs.crowdsec.net/img/crowdsec_logo.png" width="32" alt="CrowdSec" /> CrowdSec
 - <img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" /> Uptime Kuma
 - <img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
+- <img src="https://github.com/NX211/homer-icons/blob/master/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin
 
 ### Notes
 Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
