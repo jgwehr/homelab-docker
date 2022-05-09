@@ -1,0 +1,150 @@
+{ # Global options block. Entirely optional, https is on by default
+  email {$EMAIL} # Optional email key for lets encrypt
+  debug # this is optional; makes Caddy log more details
+  
+  order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
+  crowdsec {
+    api_url http://crowdsec:{$PORT_CROWDSEC_API} # the URL where your CrowdSec LAPI can be reached
+    api_key {$BOUNCER_CADDY_TOKEN} # the secret API key for the bouncer to authenticate against LAPI
+  }  
+    
+}
+
+
+# import *.caddy ## try this while storing individual sites in *.caddy files
+
+localhost {
+  crowdsec
+  respond "Hello, world!"
+}
+
+jelly.{$DOMAIN} {
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    ?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+
+  crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
+
+  reverse_proxy jellyfin:{$PORT_HTPC_HTTP}
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
+}
+
+status.{$DOMAIN} {
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    ?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+
+  encode zstd gzip
+
+  reverse_proxy uptime-kuma:3001
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 24h
+    }
+    format json
+  }
+}
+
+
+
+{$DOMAIN} {
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    ?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+  
+  encode zstd gzip
+
+  # SSL Cert via Duckdns build
+  tls {
+    dns duckdns {$DUCKDNS_API_TOKEN}
+  }
+
+  crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
+
+  # System Status page
+  reverse_proxy uptime-kuma:{$PORT_UPKUMA}
+
+  # The negotiation endpoint is also proxied to Rocket
+  #reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
+
+  # Notifications redirected to the websockets server
+  #reverse_proxy /notifications/hub 0.0.0.0:3012
+
+  # Send all other traffic to the regular bitwarden_rs endpoint
+  #reverse_proxy 0.0.0.0:8080 {
+  #   header_up X-Real-IP {remote_host}
+  #}
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
+    }
+    format json
+  }
+
+}
+
+www.{$DOMAIN} {
+  redir {$DOMAIN}{uri}
+}
