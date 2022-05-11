@@ -11,10 +11,11 @@ Includes:
 
 # Technology
 - <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy
-- <img src="https://docs.crowdsec.net/img/crowdsec_logo.png" width="32" alt="CrowdSec" /> CrowdSec
-- <img src="https://github.com/louislam/uptime-kuma/blob/master/public/icon.svg" width="32" alt="Uptime Kuma" /> Uptime Kuma
-- <img src="https://github.com/NX211/homer-icons/blob/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
-- <img src="https://github.com/NX211/homer-icons/blob/master/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin
+- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec
+- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS
+- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma
+- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
+- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin
 
 ### Notes
 Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
