@@ -77,7 +77,7 @@ services:
   
   radarr:
     container_name: radarr_v3
-    image: linuxserver/radarr:preview
+    image: linuxserver/radarr:latest
     
     depends_on:
       - protonvpn
