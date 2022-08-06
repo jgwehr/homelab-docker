@@ -1,0 +1,55 @@
+version: "3.7"
+
+services:
+  protonvpn:
+    container_name: protonvpn
+    image: ghcr.io/tprasadtp/protonvpn:5.2
+
+    environment:
+      PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
+      PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
+
+      PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
+      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-US}
+    
+    networks:
+      - internet
+      - proxy
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
+    # Expose pyload container's port here!
+    expose:
+      - 8000
+    restart: unless-stopped
+
+    
+  # Your app using the VPN
+  # Here we use pyload as an example
+  pyload:
+    depends_on:
+      - protonvpn
+    container_name: pyload
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    image: linuxserver/pyload:latest
+    restart: unless-stopped
+    userns_mode: host
+    # Do not apply any networking configs
+    # on this container!
+    # All networking labels and settings should be defined
+    # on the vpn container.
+    network_mode: service:protonvpn
+    volumes:
+      - config:/config
+      - ./downloads/:/downloads/:rw
+volumes:
+  config:
+networks:
+  internet:
+  proxy:
+    internal: true
