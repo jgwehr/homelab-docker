@@ -132,24 +132,6 @@ services:
     #      memory: 1024M
     restart: unless-stopped
 
-  gloomhaven-helper:
-    container_name: gloomhaven-helper
-    image: grepnull/gloomhaven-helper-headless:8.4
-
-    ports:
-      - ${PORT_GLOOMHELP_BROADCAST}:58887/udp #broadcast
-      - ${PORT_GLOOMHELP_SERVER}:58888
-    
-    volumes:
-      - ${CONFIGDIR}/gloomhaven-helper:/root/.ghh
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 320M
-    restart: unless-stopped
-
   heimdall:
     container_name: heimdall
     image: ghcr.io/linuxserver/heimdall
