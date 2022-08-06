@@ -56,7 +56,7 @@ services:
   
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.3.2
+    image: crowdsecurity/crowdsec:v1.4.1
 
     depends_on:
       - caddy
