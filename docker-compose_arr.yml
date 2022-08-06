@@ -2,9 +2,9 @@ version: "3.7"
 
 services:
   protonvpn:
-    container_name: protonvpn
     image: ghcr.io/tprasadtp/protonvpn:5.2
-
+    container_name: protonvpn
+    
     environment:
       PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
       PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
@@ -25,31 +25,89 @@ services:
       - 8000
     restart: unless-stopped
 
-    
-  # Your app using the VPN
-  # Here we use pyload as an example
-  pyload:
+  qbittorrent:
+    container_name: qbittorrent
+    image: linuxserver/qbittorrent
+
     depends_on:
       - protonvpn
-    container_name: pyload
+    environment:
+        PUID: ${PUID}
+        PGID: ${PGID}
+        TZ: ${TZ}
+        UMASK_SET: 022
+        WEBUI_POR: ${PORT_TORRENT_UI}
+    volumes:
+        - ${CONFIGDIR}/qbt/config:/config
+        - ${DOWNLOADDIR}/seeding:/downloads
+        - ${DOWNLOADDIR}/tv:/tvdownloads 
+        - ${DOWNLOADDIR}/movies:/filmdownloads 
+        - ${DOWNLOADDIR}/music:/musicdownloads
+    network_mode: service:protonvpn
+    restart: unless-stopped
+
+  prowlarr:
+    container_name: prowlarr
+    image: hotio/prowlarr:testing
+    
+    depends_on:
+      - protonvpn
+      - qbittorrent
+
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-    image: linuxserver/pyload:latest
-    restart: unless-stopped
-    userns_mode: host
-    # Do not apply any networking configs
-    # on this container!
-    # All networking labels and settings should be defined
-    # on the vpn container.
-    network_mode: service:protonvpn
     volumes:
-      - config:/config
-      - ./downloads/:/downloads/:rw
-volumes:
-  config:
+      - ${CONFIGDIR}/prowlarr:/config
+    restart: unless-stopped
+    network_mode: service:protonvpn
+  
+  radarr:
+    container_name: radarr_v3
+    image: linuxserver/radarr:preview
+    
+    depends_on:
+      - protonvpn
+      - prowlarr
+      - qbittorrent
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/radarr3/config:/config
+        - ${DOWNLOADDIR}/movies:/downloads
+        - ${MEDIADIR}/temp/Films:/movies
+    restart: unless-stopped
+    network_mode: service:protonvpn
+    
+#  # Your app using the VPN
+#  # Here we use pyload as an example
+#  pyload:
+#    depends_on:
+#      - protonvpn
+#    container_name: pyload
+#    environment:
+#      PUID: ${PUID}
+#      PGID: ${PGID}
+#      TZ: ${TZ}
+#    image: linuxserver/pyload:latest
+#    restart: unless-stopped
+#    userns_mode: host
+#    # Do not apply any networking configs
+#    # on this container!
+#    # All networking labels and settings should be defined
+#    # on the vpn container.
+#    network_mode: service:protonvpn
+#    volumes:
+#      - config:/config
+#      - ./downloads/:/downloads/:rw
+
+
 networks:
   internet:
-  proxy:
+  vpn:
     internal: true
