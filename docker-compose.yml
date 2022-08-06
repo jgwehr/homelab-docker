@@ -56,7 +56,7 @@ services:
   
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.3.2
+    image: crowdsecurity/crowdsec:v1.4.1
 
     depends_on:
       - caddy
@@ -130,24 +130,6 @@ services:
     #    limits:
     #      cpus: '2'
     #      memory: 1024M
-    restart: unless-stopped
-
-  gloomhaven-helper:
-    container_name: gloomhaven-helper
-    image: grepnull/gloomhaven-helper-headless:8.4
-
-    ports:
-      - ${PORT_GLOOMHELP_BROADCAST}:58887/udp #broadcast
-      - ${PORT_GLOOMHELP_SERVER}:58888
-    
-    volumes:
-      - ${CONFIGDIR}/gloomhaven-helper:/root/.ghh
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 320M
     restart: unless-stopped
 
   heimdall:
