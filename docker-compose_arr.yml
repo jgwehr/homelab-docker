@@ -38,7 +38,7 @@ services:
         UMASK_SET: 022
         WEBUI_POR: ${PORT_TORRENT_UI}
     volumes:
-        - ${CONFIGDIR}/qbt/config:/config
+        - ${CONFIGDIR}/qbt:/config
         - ${DOWNLOADDIR}/seeding:/downloads
         - ${DOWNLOADDIR}/tv:/tvdownloads 
         - ${DOWNLOADDIR}/movies:/filmdownloads 
@@ -78,34 +78,11 @@ services:
       TZ: ${TZ}
     volumes:
         - /etc/localtime:/etc/localtime:ro
-        - ${CONFIGDIR}/radarr3/config:/config
+        - ${CONFIGDIR}/radarr3:/config
         - ${DOWNLOADDIR}/movies:/downloads
         - ${MEDIADIR}/temp/Films:/movies
     restart: unless-stopped
     network_mode: service:protonvpn
-    
-#  # Your app using the VPN
-#  # Here we use pyload as an example
-#  pyload:
-#    depends_on:
-#      - protonvpn
-#    container_name: pyload
-#    environment:
-#      PUID: ${PUID}
-#      PGID: ${PGID}
-#      TZ: ${TZ}
-#    image: linuxserver/pyload:latest
-#    restart: unless-stopped
-#    userns_mode: host
-#    # Do not apply any networking configs
-#    # on this container!
-#    # All networking labels and settings should be defined
-#    # on the vpn container.
-#    network_mode: service:protonvpn
-#    volumes:
-#      - config:/config
-#      - ./downloads/:/downloads/:rw
-
 
 networks:
   internet:
