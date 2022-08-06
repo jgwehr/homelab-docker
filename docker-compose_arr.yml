@@ -48,7 +48,7 @@ services:
         WEBUI_PORT: ${PORT_TORRENT_UI}
     volumes:
         - ${CONFIGDIR}/qbt:/config
-        - ${DOWNLOADDIR}:/downloads
+        - ${DOWNLOADDIR}:/data/downloads
     network_mode: service:protonvpn
     restart: unless-stopped
 
