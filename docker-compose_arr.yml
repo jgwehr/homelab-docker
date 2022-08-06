@@ -18,11 +18,11 @@ services:
 
     ports:
       - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
-      - ${PORT_TORRENT_TCP}:${PORT_TORRENT_TCP} #default 6881 
-      - ${PORT_TORRENT_UDP}:${PORT_TORRENT_UDP}/udp #default 6881 
-      - ${PORT_PROWLARR_UI}:${PORT_PROWLARR_UI} #default 9696
-      - ${PORT_RADARR_UI}:${PORT_RADARR_UI} #default 7878
-      - ${PORT_SONARR_UI}:${PORT_SONARR_UI} #default 7878
+      - ${PORT_TORRENT_TCP}:6881
+      - ${PORT_TORRENT_UDP}:6881/udp
+      - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_RADARR_UI}:7878
+      - ${PORT_SONARR_UI}:8989
 
     cap_add:
       - NET_ADMIN
