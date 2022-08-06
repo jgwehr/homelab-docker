@@ -36,7 +36,7 @@ services:
         PGID: ${PGID}
         TZ: ${TZ}
         UMASK_SET: 022
-        WEBUI_POR: ${PORT_TORRENT_UI}
+        WEBUI_PORT: ${PORT_TORRENT_UI}
     volumes:
         - ${CONFIGDIR}/qbt:/config
         - ${DOWNLOADDIR}/seeding:/downloads
