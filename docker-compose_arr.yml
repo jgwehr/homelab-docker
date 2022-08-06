@@ -22,7 +22,7 @@ services:
 
     # Expose pyload container's port here!
     expose:
-      - 8000
+      - ${PORT_TORRENT_UI}
     restart: unless-stopped
 
   qbittorrent:
