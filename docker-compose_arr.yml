@@ -14,7 +14,7 @@ services:
     
     networks:
       - internet
-      - proxy
+      - vpn
     cap_add:
       - NET_ADMIN
     devices:
