@@ -93,44 +93,6 @@ services:
           cpus: '1'
           memory: 128M
     restart: always
-  
-  jellyfin:
-    container_name: jellyfin
-    image: jellyfin/jellyfin
-
-    user: ${PUID}:${PGID}
-    group_add:
-      - ${GID_HARDWAREACC} # gid of your `render` group
-
-    networks:
-      - htpc-net
-      - caddy-net # provides access for the reverse proxy
-    
-    ports:
-      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
-      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
-      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
-      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
-
-    environment:
-      TZ: ${TZ}
-      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
-
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
-      - /dev/dri/card0:/dev/dri/card0
-
-    volumes:
-      - ${CONFIGDIR}/jellyfin:/config
-      - ${CACHEDIR}/jellyfin:/cache
-      - ${MEDIADIR}:/media:ro
-    
-    #deploy:
-    #  resources:
-    #    limits:
-    #      cpus: '2'
-    #      memory: 1024M
-    restart: unless-stopped
 
   heimdall:
     container_name: heimdall
@@ -175,6 +137,113 @@ services:
     restart: always
 
 ####################
+# Media
+####################
+
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin
+
+    user: ${PUID}:${PGID}
+    group_add:
+      - ${GID_HARDWAREACC} # gid of your `render` group
+
+    networks:
+      - htpc-net
+      - caddy-net # provides access for the reverse proxy
+    
+    ports:
+      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
+      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
+      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
+      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
+
+    environment:
+      TZ: ${TZ}
+      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
+
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
+      - /dev/dri/card0:/dev/dri/card0
+
+    volumes:
+      - ${CONFIGDIR}/jellyfin:/config
+      - ${CACHEDIR}/jellyfin:/cache
+      - ${MEDIADIR}:/media:ro
+    
+    #deploy:
+    #  resources:
+    #    limits:
+    #      cpus: '2'
+    #      memory: 1024M
+    restart: unless-stopped
+  
+  qbittorrent:
+    container_name: qbittorrent
+    image: linuxserver/qbittorrent
+
+    depends_on:
+      - protonvpn
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+        PUID: ${PUID}
+        PGID: ${PGID}
+        TZ: ${TZ}
+        UMASK_SET: 022
+        WEBUI_PORT: ${PORT_TORRENT_UI}
+
+    volumes:
+        - ${CONFIGDIR}/qbt:/config
+        - ${DOWNLOADDIR}:/data/downloads
+    restart: unless-stopped
+
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:develop
+
+    depends_on:
+      - protonvpn
+      - qbittorrent
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    volumes:
+      - ${CONFIGDIR}/prowlarr:/config
+
+    restart: unless-stopped
+    
+  
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr:latest
+    
+    depends_on:
+      - protonvpn
+      - prowlarr
+      - qbittorrent
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/radarr3:/config
+        - ${DATADIR}:/data
+    restart: unless-stopped
+
+
+####################
 # Back End Services
 ####################
 
@@ -198,6 +267,39 @@ services:
         limits:
           cpus: '1'
           memory: 32M  
+    restart: unless-stopped
+
+  protonvpn:
+    image: ghcr.io/tprasadtp/protonvpn:5.2
+    container_name: protonvpn
+    
+    environment:
+      PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
+      PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
+
+      PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
+      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-US}
+    
+    networks:
+      - peer2peer
+      - vpn
+
+    ports:
+      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
+      - ${PORT_TORRENT_TCP}:6881
+      - ${PORT_TORRENT_UDP}:6881/udp
+      - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_LIDARR_UI}:8686
+      - ${PORT_RADARR_UI}:7878
+      - ${PORT_SONARR_UI}:8989
+
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
+    expose:
+      - ${PORT_TORRENT_UI}
     restart: unless-stopped
 
   socky_proxy:
@@ -248,3 +350,6 @@ networks:
     name: caddy-net
   socky_proxy-net:
     name: socky_proxy-net
+  peer2peer:
+  vpn:
+    internal: true
