@@ -21,6 +21,7 @@ services:
       - ${PORT_TORRENT_TCP}:6881
       - ${PORT_TORRENT_UDP}:6881/udp
       - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_LIDARR_UI}:8686
       - ${PORT_RADARR_UI}:7878
       - ${PORT_SONARR_UI}:8989
 
@@ -47,10 +48,7 @@ services:
         WEBUI_PORT: ${PORT_TORRENT_UI}
     volumes:
         - ${CONFIGDIR}/qbt:/config
-        - ${DOWNLOADDIR}/seeding:/downloads
-        - ${DOWNLOADDIR}/tv:/tvdownloads 
-        - ${DOWNLOADDIR}/movies:/filmdownloads 
-        - ${DOWNLOADDIR}/music:/musicdownloads
+        - ${DOWNLOADDIR}:/downloads
     network_mode: service:protonvpn
     restart: unless-stopped
 
@@ -94,8 +92,7 @@ services:
     volumes:
         - /etc/localtime:/etc/localtime:ro
         - ${CONFIGDIR}/radarr3:/config
-        - ${DOWNLOADDIR}/movies:/downloads
-        - ${MEDIADIR}/temp/Films:/movies
+        - ${DATADIR}:/data
     restart: unless-stopped
     
 
