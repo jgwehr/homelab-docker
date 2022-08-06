@@ -48,7 +48,7 @@ services:
 
   prowlarr:
     container_name: prowlarr
-    image: hotio/prowlarr:testing
+    image: lscr.io/linuxserver/prowlarr:develop
     
     depends_on:
       - protonvpn
