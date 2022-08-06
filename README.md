@@ -24,8 +24,9 @@ Watchtower is intentionally avoided based off advice from the Selfhosted.show po
 Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)* and *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
 
 ## File System
+see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
-~
+
 ├── docker
 │  ├── .env
 │  └── docker-compose.yml
@@ -38,22 +39,11 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │
 └── data
    ├── downloads
-   │  ├── complete (tbd... presuming staging for metadata?)
-   │  │  ├── audiobooks
-   │  │  ├── movies
-   │  │  ├── music
-   │  │  ├── podcasts
-   │  │  └── tv
-   │  ├── incomplete
-   │  │  ├── audiobooks
-   │  │  ├── movies
-   │  │  ├── music
-   │  │  └── tv
-   │  └── torrents
-   │     ├── audiobooks
-   │     ├── movies
-   │     ├── music
-   │     └── tv
+   │  ├── audiobooks
+   │  ├── movies
+   │  ├── music
+   │  ├── podcasts
+   │  └── tv
    └── media
       ├── audiobooks
       ├── music
@@ -64,7 +54,12 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 ```
 
 ### These may be created with the following cmds
-`mkdir -p ~/{docker,server/{db,cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{complete/{audiobooks,music,podcasts,movies,tv},incomplete/{audiobooks,music,movies,tv},torrents/{audiobooks,music,movies,tv}}}}`
+`mkdir -p /{docker,server/{db,cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{audiobooks,music,podcasts,movies,tv}}}`
+
+### Recursively own the /data directory
+sudo chown -R $USER:$USER /data
+sudo chmod -R a=,a+rX,u+w,g+w /data
+
 
 ### Docker Compose (and needed files)
 This github repo represents this folder. It's safely committed to public repos and shouldn't contain anything sensitive.
