@@ -15,12 +15,20 @@ services:
     networks:
       - peer2peer
       - vpn
+
+    ports:
+      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
+      - ${PORT_TORRENT_TCP}:${PORT_TORRENT_TCP} #default 6881 
+      - ${PORT_TORRENT_UDP}:${PORT_TORRENT_UDP}/udp #default 6881 
+      - ${PORT_PROWLARR_UI}:${PORT_PROWLARR_UI} #default 9696
+      - ${PORT_RADARR_UI}:${PORT_RADARR_UI} #default 7878
+      - ${PORT_SONARR_UI}:${PORT_SONARR_UI} #default 7878
+
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
 
-    # Expose pyload container's port here!
     expose:
       - ${PORT_TORRENT_UI}
     restart: unless-stopped
@@ -49,19 +57,23 @@ services:
   prowlarr:
     container_name: prowlarr
     image: lscr.io/linuxserver/prowlarr:develop
-    
+
     depends_on:
       - protonvpn
       - qbittorrent
+
+    network_mode: service:protonvpn
 
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
+
     restart: unless-stopped
-    network_mode: service:protonvpn
+    
   
   radarr:
     container_name: radarr_v3
@@ -72,17 +84,20 @@ services:
       - prowlarr
       - qbittorrent
 
+    network_mode: service:protonvpn
+
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+
     volumes:
         - /etc/localtime:/etc/localtime:ro
         - ${CONFIGDIR}/radarr3:/config
         - ${DOWNLOADDIR}/movies:/downloads
         - ${MEDIADIR}/temp/Films:/movies
     restart: unless-stopped
-    network_mode: service:protonvpn
+    
 
 networks:
   peer2peer:
