@@ -13,7 +13,7 @@ services:
       PROTONVPN_SERVER: ${PROTONVPN_SERVER:-US}
     
     networks:
-      - internet
+      - peer2peer
       - vpn
     cap_add:
       - NET_ADMIN
@@ -85,6 +85,6 @@ services:
     network_mode: service:protonvpn
 
 networks:
-  internet:
+  peer2peer:
   vpn:
     internal: true
