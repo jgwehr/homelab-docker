@@ -222,7 +222,7 @@ services:
   
   radarr:
     container_name: radarr
-    image: linuxserver/radarr:latest
+    image: lscr.io/linuxserver/radarr:latest
     
     depends_on:
       - protonvpn
@@ -239,6 +239,28 @@ services:
     volumes:
         - /etc/localtime:/etc/localtime:ro
         - ${CONFIGDIR}/radarr3:/config
+        - ${DATADIR}:/data
+    restart: unless-stopped
+
+  sonarr:
+    container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:3.0.8
+
+    depends_on:
+      - protonvpn
+      - prowlarr
+      - qbittorrent
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/sonarr:/config
         - ${DATADIR}:/data
     restart: unless-stopped
 
