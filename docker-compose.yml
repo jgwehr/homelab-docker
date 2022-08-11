@@ -291,59 +291,37 @@ services:
     restart: unless-stopped
 
   protonvpn:
+    image: ghcr.io/tprasadtp/protonvpn:5.2
     container_name: protonvpn
-    image: lscr.io/linuxserver/wireguard:latest
+    
+    environment:
+      PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
+      PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
+
+      PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
+      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-US}
+    
+    networks:
+      - peer2peer
+      - vpn
+
+    ports:
+      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
+      - ${PORT_TORRENT_TCP}:6881
+      - ${PORT_TORRENT_UDP}:6881/udp
+      - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_LIDARR_UI}:8686
+      - ${PORT_RADARR_UI}:7878
+      - ${PORT_SONARR_UI}:8989
 
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
+    devices:
+      - /dev/net/tun:/dev/net/tun
 
-    volumes:
-      - ${CONFIGDIR}/wireguard:/config
-      - /lib/modules:/lib/modules:ro
-    ports:
-      - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
-      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
+    expose:
+      - ${PORT_TORRENT_UI}
     restart: unless-stopped
-
-#  protonvpn:
-#    image: ghcr.io/tprasadtp/protonvpn:5.2
-#    container_name: protonvpn
-#    
-#    environment:
-#      PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
-#      PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
-#
-#      PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
-#      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-US}
-#    
-#    networks:
-#      - peer2peer
-#      - vpn
-#
-#    ports:
-#      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
-#      - ${PORT_TORRENT_TCP}:6881
-#      - ${PORT_TORRENT_UDP}:6881/udp
-#      - ${PORT_PROWLARR_UI}:9696
-#      - ${PORT_LIDARR_UI}:8686
-#      - ${PORT_RADARR_UI}:7878
-#      - ${PORT_SONARR_UI}:8989
-#
-#    cap_add:
-#      - NET_ADMIN
-#    devices:
-#      - /dev/net/tun:/dev/net/tun
-#
-#    expose:
-#      - ${PORT_TORRENT_UI}
-#    restart: unless-stopped
 
   socky_proxy:
     container_name: socky_proxy
