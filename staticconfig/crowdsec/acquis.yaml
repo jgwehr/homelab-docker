@@ -14,4 +14,9 @@ filenames:
   - /var/log/auth.log
 labels:
   type: syslog
-
+---
+source: docker
+container_name:
+ - uptime-kuma
+labels:
+  type: uptime-kuma
