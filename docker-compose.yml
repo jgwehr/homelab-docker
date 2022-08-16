@@ -196,6 +196,12 @@ services:
     volumes:
         - ${CONFIGDIR}/qbt:/config
         - ${DOWNLOADDIR}:/data/downloads
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     restart: unless-stopped
 
   prowlarr:
@@ -216,6 +222,11 @@ services:
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
 
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     restart: unless-stopped
     
   
@@ -239,6 +250,12 @@ services:
         - /etc/localtime:/etc/localtime:ro
         - ${CONFIGDIR}/radarr3:/config
         - ${DATADIR}:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
     restart: unless-stopped
 
   sonarr:
@@ -261,6 +278,12 @@ services:
         - /etc/localtime:/etc/localtime:ro
         - ${CONFIGDIR}/sonarr:/config
         - ${DATADIR}:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
     restart: unless-stopped
 
 
@@ -287,7 +310,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 32M  
+          memory: 32M
     restart: unless-stopped
 
   protonvpn:
@@ -307,16 +330,23 @@ services:
       - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
       - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
 
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+
 
     volumes:
       - ${CONFIGDIR}/wireguard:/config
       - /lib/modules:/lib/modules:ro
 
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
     restart: unless-stopped
 
   socky_proxy:
