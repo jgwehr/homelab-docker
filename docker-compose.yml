@@ -97,7 +97,8 @@ services:
     container_name: dozzle
     image: amir20/dozzle:latest
 
-    ports: ${PORT_DOZZLE}:8080
+    ports:
+      - ${PORT_DOZZLE}:8080
 
     environment:
       - DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
