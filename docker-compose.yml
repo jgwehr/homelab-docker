@@ -329,8 +329,10 @@ services:
     ports:
       - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
       - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
-
-
+      - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_LIDARR_UI}:8686
+      - ${PORT_RADARR_UI}:7878
+      - ${PORT_SONARR_UI}:8989
 
     volumes:
       - ${CONFIGDIR}/wireguard:/config
