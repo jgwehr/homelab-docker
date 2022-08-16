@@ -269,7 +269,7 @@ services:
 
   sonarr:
     container_name: sonarr
-    image: lscr.io/linuxserver/sonarr:3.0.8
+    image: lscr.io/linuxserver/sonarr:3.0.9
 
     depends_on:
       - protonvpn
