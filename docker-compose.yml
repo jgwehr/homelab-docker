@@ -190,6 +190,19 @@ services:
     #      memory: 1024M
     restart: unless-stopped
   
+  jellyseerr:
+       container_name: jellyseerr
+       image: fallenbagel/jellyseerr:latest
+       
+       environment:
+          LOG_LEVEL: ${LOG_LEVEL}
+          TZ: ${TZ}
+       ports:
+            - ${PORT_HTPC_REQUESTS}:5055
+       volumes:
+            - ${CONFIGDIR}/jellyseerr:/app/config
+       restart: unless-stopped
+  
   qbittorrent:
     container_name: qbittorrent
     image: linuxserver/qbittorrent
