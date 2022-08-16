@@ -20,6 +20,7 @@ Includes:
 - <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr
 - <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/radarr.png" width="32" alt="Radarr" /> Radarr
 - <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent
+- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/qbittorrent.png" width="32" alt="qBitTorrent" /> Wireguard
 
 ### Notes
 Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
