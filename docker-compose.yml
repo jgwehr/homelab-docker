@@ -35,7 +35,6 @@ services:
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
       PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
 
-      PORT_RECIPE: ${PORT_RECIPE}
       PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
       PORT_UPKUMA: ${PORT_UPKUMA}
 
@@ -93,44 +92,6 @@ services:
           cpus: '1'
           memory: 128M
     restart: always
-  
-  jellyfin:
-    container_name: jellyfin
-    image: jellyfin/jellyfin
-
-    user: ${PUID}:${PGID}
-    group_add:
-      - ${GID_HARDWAREACC} # gid of your `render` group
-
-    networks:
-      - htpc-net
-      - caddy-net # provides access for the reverse proxy
-    
-    ports:
-      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
-      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
-      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
-      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
-
-    environment:
-      TZ: ${TZ}
-      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
-
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
-      - /dev/dri/card0:/dev/dri/card0
-
-    volumes:
-      - ${CONFIGDIR}/jellyfin:/config
-      - ${CACHEDIR}/jellyfin:/cache
-      - ${MEDIADIR}:/media:ro
-    
-    #deploy:
-    #  resources:
-    #    limits:
-    #      cpus: '2'
-    #      memory: 1024M
-    restart: unless-stopped
 
   heimdall:
     container_name: heimdall
@@ -175,6 +136,158 @@ services:
     restart: always
 
 ####################
+# Media
+####################
+
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin
+
+    user: ${PUID}:${PGID}
+    group_add:
+      - ${GID_HARDWAREACC} # gid of your `render` group
+
+    networks:
+      - htpc-net
+      - caddy-net # provides access for the reverse proxy
+    
+    ports:
+      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
+      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
+      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
+      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
+
+    environment:
+      TZ: ${TZ}
+      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
+
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
+      - /dev/dri/card0:/dev/dri/card0
+
+    volumes:
+      - ${CONFIGDIR}/jellyfin:/config
+      - ${CACHEDIR}/jellyfin:/cache
+      - ${MEDIADIR}:/media:ro
+    
+    #deploy:
+    #  resources:
+    #    limits:
+    #      cpus: '2'
+    #      memory: 1024M
+    restart: unless-stopped
+  
+  qbittorrent:
+    container_name: qbittorrent
+    image: linuxserver/qbittorrent
+
+    depends_on:
+      - protonvpn
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+        PUID: ${PUID}
+        PGID: ${PGID}
+        TZ: ${TZ}
+        UMASK_SET: 022
+        WEBUI_PORT: ${PORT_TORRENT_UI}
+
+    volumes:
+        - ${CONFIGDIR}/qbt:/config
+        - ${DOWNLOADDIR}:/data/downloads
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:develop
+
+    depends_on:
+      - protonvpn
+      - qbittorrent
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    volumes:
+      - ${CONFIGDIR}/prowlarr:/config
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+    
+  
+  radarr:
+    container_name: radarr
+    image: lscr.io/linuxserver/radarr:latest
+    
+    depends_on:
+      - protonvpn
+      - prowlarr
+      - qbittorrent
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/radarr3:/config
+        - ${DATADIR}:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+  sonarr:
+    container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:3.0.8
+
+    depends_on:
+      - protonvpn
+      - prowlarr
+      - qbittorrent
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/sonarr:/config
+        - ${DATADIR}:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+
+####################
 # Back End Services
 ####################
 
@@ -197,7 +310,45 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 32M  
+          memory: 32M
+    restart: unless-stopped
+
+  protonvpn:
+    container_name: protonvpn
+    image: lscr.io/linuxserver/wireguard:latest
+    
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    
+    networks:
+      - peer2peer
+      - vpn
+
+    ports:
+      - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
+      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
+      - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_LIDARR_UI}:8686
+      - ${PORT_RADARR_UI}:7878
+      - ${PORT_SONARR_UI}:8989
+
+    volumes:
+      - ${CONFIGDIR}/wireguard:/config
+      - /lib/modules:/lib/modules:ro
+
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
     restart: unless-stopped
 
   socky_proxy:
@@ -248,3 +399,8 @@ networks:
     name: caddy-net
   socky_proxy-net:
     name: socky_proxy-net
+  peer2peer:
+    name: peer2peer
+  vpn:
+    name: vpn
+    internal: true
