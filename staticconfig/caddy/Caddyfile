@@ -75,7 +75,7 @@ request.{$DOMAIN} {
 
   crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
 
-  reverse_proxy jellyfin:{$PORT_HTPC_REQUESTS}
+  reverse_proxy jellyseerr:{$PORT_HTPC_REQUESTS}
 
   log {
     level ERROR
@@ -110,7 +110,7 @@ status.{$DOMAIN} {
 
   encode zstd gzip
 
-  reverse_proxy uptime-kuma:3001
+  reverse_proxy uptime-kuma:{$PORT_UPKUMA}
 
   log {
     level ERROR
