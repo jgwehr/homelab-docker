@@ -98,6 +98,9 @@ services:
     container_name: dozzle
     image: amir20/dozzle:latest
 
+    depends_on:
+      - socky_proxy
+
     networks:
       - socky_proxy-net
 
