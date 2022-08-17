@@ -11,10 +11,10 @@ services:
       - jellyfin
       - uptime-kuma
 
-
     external_links:
       - crowdsec:crowdsec
       - jellyfin:jellyfin
+      - jellyseerr:jellyseerr
       - uptime_kuma:uptime_kuma
 
     networks:
@@ -36,6 +36,7 @@ services:
       PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
 
       PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
+      PORT_HTPC_REQUESTS: ${PORT_HTPC_REQUESTS}
       PORT_UPKUMA: ${PORT_UPKUMA}
 
     volumes:
@@ -191,17 +192,23 @@ services:
     restart: unless-stopped
   
   jellyseerr:
-       container_name: jellyseerr
-       image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    image: fallenbagel/jellyseerr:latest
        
-       environment:
-          LOG_LEVEL: ${LOG_LEVEL}
-          TZ: ${TZ}
-       ports:
-            - ${PORT_HTPC_REQUESTS}:5055
-       volumes:
-            - ${CONFIGDIR}/jellyseerr:/app/config
-       restart: unless-stopped
+    networks:
+      - htpc-net
+      - caddy-net # provides access for the reverse proxy
+
+    ports:
+      - ${PORT_HTPC_REQUESTS}:5055
+
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL}
+      TZ: ${TZ}
+
+    volumes:
+        - ${CONFIGDIR}/jellyseerr:/app/config
+    restart: unless-stopped
   
   qbittorrent:
     container_name: qbittorrent
