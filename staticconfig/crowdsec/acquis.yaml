@@ -4,12 +4,6 @@ container_name:
 labels:
   type: caddy
 ---
-source: docker
-container_name:
- - jellyfin
-labels:
-  type: jellyfin_log
----
 filenames:
   - /var/log/auth.log
 labels:
