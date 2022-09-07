@@ -20,3 +20,10 @@ container_name:
  - uptime-kuma
 labels:
   type: uptime-kuma
+---
+source: docker
+container_name:
+ - jellyseer
+labels:
+  type: ombi
+  
