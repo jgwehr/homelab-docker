@@ -39,6 +39,9 @@ services:
       PORT_HTPC_REQUESTS: ${PORT_HTPC_REQUESTS}
       PORT_UPKUMA: ${PORT_UPKUMA}
 
+    labels:
+      - "diun.enable=true"
+
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
@@ -87,6 +90,9 @@ services:
       - /var/log/auth.log:/logs/auth.log:ro
       - /var/log/syslog.log:/logs/syslog.log:ro
       
+    labels:
+      - "diun.enable=true"
+
     deploy:
       resources:
         limits:
@@ -106,6 +112,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+
     volumes:
       - ${CONFIGDIR}/heimdall:/config
     
@@ -126,6 +133,9 @@ services:
     ports:
       - ${PORT_UPKUMA}:3001
     
+    labels:
+      - "diun.enable=true"
+
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
     
@@ -144,6 +154,9 @@ services:
     container_name: dozzle
     image: amir20/dozzle:latest
 
+    depends_on:
+      - socky_proxy
+
     networks:
       - socky_proxy-net
 
@@ -153,6 +166,9 @@ services:
     environment:
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
     
+    labels:
+      - "diun.enable=true"
+
     deploy:
       resources:
         limits:
@@ -186,6 +202,9 @@ services:
       TZ: ${TZ}
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
 
+    labels:
+      - "diun.enable=true"
+
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
       - /dev/dri/card0:/dev/dri/card0
@@ -193,7 +212,7 @@ services:
     volumes:
       - ${CONFIGDIR}/jellyfin:/config
       - ${CACHEDIR}/jellyfin:/cache
-      - ${MEDIADIR}:/media:ro
+      - ${MEDIADIR}:/media:ro #naming, etc all handled by *arr apps
     
     #deploy:
     #  resources:
@@ -216,6 +235,9 @@ services:
     environment:
       LOG_LEVEL: ${LOG_LEVEL}
       TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
 
     volumes:
         - ${CONFIGDIR}/jellyseerr:/app/config
@@ -290,6 +312,9 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
 
+    labels:
+      - "diun.enable=true"
+
     volumes:
         - /etc/localtime:/etc/localtime:ro
         - ${CONFIGDIR}/radarr3:/config
@@ -317,6 +342,9 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -357,6 +385,39 @@ services:
           memory: 32M
     restart: unless-stopped
 
+  diun:
+    container_name: diun
+    image: ghcr.io/crazy-max/diun:4.22
+
+    depends_on:
+      - socky_proxy
+
+    networks:
+      - socky_proxy-net
+      
+    command: serve
+
+    environment:
+      TZ: ${TZ}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_JSON: "true"
+      DIUN_NOTIF_DISCORD_WEBHOOKURL: ${DIUN_NOTIF_DISCORD_WEBHOOKURL}
+      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+
+    labels:
+      - "diun.enable=true"
+    
+    volumes:
+      - ${STATICONFIGDIR}/diun/diun.yml:/diun.yml:ro
+      - ${CONFIGDIR}/diun:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 32M
+    restart: unless-stopped
+
   protonvpn:
     container_name: protonvpn
     image: lscr.io/linuxserver/wireguard:latest
@@ -377,6 +438,9 @@ services:
       - ${PORT_LIDARR_UI}:8686
       - ${PORT_RADARR_UI}:7878
       - ${PORT_SONARR_UI}:8989
+
+    labels:
+      - "diun.enable=true"
 
     volumes:
       - ${CONFIGDIR}/wireguard:/config
@@ -411,8 +475,12 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
-      CONTAINERS: 1 # crowdsec
+      CONTAINERS: 1 # crowdsec, diun
+      IMAGES: 1 # diun
       INFO: 1 # crowdsec
+
+    labels:
+      - "diun.enable=true"
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
