@@ -32,7 +32,12 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
 
-├── docker
+├── docker (this repo)
+|  ├── dockerfiles
+│  |  └── caddy.dockerfile
+|  ├── staticconfig
+│  |  └── crowdsec
+│  |     └── acquis.yaml
 │  ├── .env
 │  └── docker-compose.yml
 │
