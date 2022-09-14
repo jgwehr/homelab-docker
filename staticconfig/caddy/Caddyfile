@@ -1,10 +1,10 @@
 { # Global options block. Entirely optional, https is on by default
   email {$EMAIL} # Optional email key for lets encrypt
-  debug # this is optional; makes Caddy log more details
+  #debug # this is optional; makes Caddy log more details
   
   order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
   crowdsec {
-    api_url http://crowdsec:{$PORT_CROWDSEC_API} # the URL where your CrowdSec LAPI can be reached
+    api_url http://crowdsec:8080/ # the URL where your CrowdSec LAPI can be reached. Caddy connects directly, so use the default port 8080
     api_key {$BOUNCER_CADDY_TOKEN} # the secret API key for the bouncer to authenticate against LAPI
   }  
     

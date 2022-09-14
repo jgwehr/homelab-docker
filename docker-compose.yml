@@ -8,7 +8,9 @@ services:
       dockerfile: caddy.dockerfile #Custom build which uses duckdns
 
     depends_on:
+      - crowdsec
       - jellyfin
+      - jellyseerr
       - uptime-kuma
 
     external_links:
@@ -20,7 +22,6 @@ services:
     networks:
         - web
         - caddy-net
-        - htpc-net
 
     ports:
         - ${PORT_CADDY_HTTP}:80
@@ -33,7 +34,6 @@ services:
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
       
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
-      PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
 
       PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
       PORT_HTPC_REQUESTS: ${PORT_HTPC_REQUESTS}
@@ -46,7 +46,7 @@ services:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
       - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
-      - ${LOGDIR}/caddy:/server/logs/caddy ## check for /access.log
+      - ${LOGDIR}/caddy:/server/logs/caddy
 
     deploy:
       resources:
@@ -62,7 +62,6 @@ services:
     image: crowdsecurity/crowdsec:v1.4.1
 
     depends_on:
-      - caddy
       - socky_proxy
     
     networks:
@@ -241,6 +240,12 @@ services:
 
     volumes:
         - ${CONFIGDIR}/jellyseerr:/app/config
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
     restart: unless-stopped
   
   qbittorrent:
@@ -428,7 +433,6 @@ services:
       TZ: ${TZ}
     
     networks:
-      - peer2peer
       - vpn
 
     ports:
@@ -511,8 +515,6 @@ networks:
     name: caddy-net
   socky_proxy-net:
     name: socky_proxy-net
-  peer2peer:
-    name: peer2peer
   vpn:
     name: vpn
     internal: true
