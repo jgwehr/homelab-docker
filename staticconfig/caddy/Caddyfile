@@ -75,7 +75,7 @@ request.{$DOMAIN} {
 
   crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
 
-  reverse_proxy jellyseerr:{$PORT_HTPC_REQUESTS}
+  reverse_proxy jellyseerr:5055
 
   log {
     level ERROR
