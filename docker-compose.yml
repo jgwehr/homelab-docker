@@ -433,6 +433,7 @@ services:
       TZ: ${TZ}
     
     networks:
+      - peer2peer
       - vpn
 
     ports:
@@ -515,6 +516,8 @@ networks:
     name: caddy-net
   socky_proxy-net:
     name: socky_proxy-net
+  peer2peer:
+    name: peer2peer
   vpn:
     name: vpn
     internal: true
