@@ -8,19 +8,20 @@ services:
       dockerfile: caddy.dockerfile #Custom build which uses duckdns
 
     depends_on:
+      - crowdsec
       - jellyfin
+      - jellyseerr
       - uptime-kuma
-
 
     external_links:
       - crowdsec:crowdsec
       - jellyfin:jellyfin
+      - jellyseerr:jellyseerr
       - uptime_kuma:uptime_kuma
 
     networks:
         - web
         - caddy-net
-        - htpc-net
 
     ports:
         - ${PORT_CADDY_HTTP}:80
@@ -33,16 +34,19 @@ services:
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
       
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
-      PORT_CROWDSEC_API: ${PORT_CROWDSEC_API}
 
       PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
+      PORT_HTPC_REQUESTS: ${PORT_HTPC_REQUESTS}
       PORT_UPKUMA: ${PORT_UPKUMA}
 
+    labels:
+      - "diun.enable=true"
+
     volumes:
-      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile # Required. Needs to be an extension-less file NOT a directory
+      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
       - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
-      - ${LOGDIR}/caddy:/server/logs/caddy ## check for /access.log
+      - ${LOGDIR}/caddy:/server/logs/caddy
 
     deploy:
       resources:
@@ -58,7 +62,6 @@ services:
     image: crowdsecurity/crowdsec:v1.4.1
 
     depends_on:
-      - caddy
       - socky_proxy
     
     networks:
@@ -72,11 +75,11 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma"
+      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/ombi"
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
     volumes:
-      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - crowdsec-config:/etc/crowdsec/
       - crowdsec-db:/var/lib/crowdsec/data/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
@@ -86,25 +89,15 @@ services:
       - /var/log/auth.log:/logs/auth.log:ro
       - /var/log/syslog.log:/logs/syslog.log:ro
       
+    labels:
+      - "diun.enable=true"
+
     deploy:
       resources:
         limits:
           cpus: '1'
           memory: 128M
     restart: always
-
-  dozzle:
-    container_name: dozzle
-    image: amir20/dozzle:latest
-
-    networks:
-      - socky_proxy-net
-
-    ports:
-      - ${PORT_DOZZLE}:8080
-
-    environment:
-      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
 
   heimdall:
     container_name: heimdall
@@ -118,6 +111,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+
     volumes:
       - ${CONFIGDIR}/heimdall:/config
     
@@ -138,6 +132,9 @@ services:
     ports:
       - ${PORT_UPKUMA}:3001
     
+    labels:
+      - "diun.enable=true"
+
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
     
@@ -146,6 +143,36 @@ services:
         limits:
           cpus: '1'
           memory: 128M
+    restart: always
+
+####################
+# System Information
+####################
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+
+    depends_on:
+      - socky_proxy
+
+    networks:
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_DOZZLE}:8080
+
+    environment:
+      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+    
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
     restart: always
 
 ####################
@@ -174,6 +201,9 @@ services:
       TZ: ${TZ}
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
 
+    labels:
+      - "diun.enable=true"
+
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
       - /dev/dri/card0:/dev/dri/card0
@@ -181,13 +211,41 @@ services:
     volumes:
       - ${CONFIGDIR}/jellyfin:/config
       - ${CACHEDIR}/jellyfin:/cache
-      - ${MEDIADIR}:/media:ro
+      - ${MEDIADIR}:/media:ro #naming, etc all handled by *arr apps
     
     #deploy:
     #  resources:
     #    limits:
     #      cpus: '2'
     #      memory: 1024M
+    restart: unless-stopped
+  
+  jellyseerr:
+    container_name: jellyseerr
+    image: fallenbagel/jellyseerr:latest
+       
+    networks:
+      - htpc-net
+      - caddy-net # provides access for the reverse proxy
+
+    ports:
+      - ${PORT_HTPC_REQUESTS}:5055
+
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL}
+      TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+        - ${CONFIGDIR}/jellyseerr:/app/config
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
     restart: unless-stopped
   
   qbittorrent:
@@ -215,6 +273,12 @@ services:
         limits:
           cpus: '1'
           memory: 128M
+    healthcheck:
+      test: ls /sys/class/net/ | grep -o "eth[0-9*]|wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
+      interval: 30s
+      timeout: 4s
+      retries: 0
+      start_period: 10s
     restart: unless-stopped
 
   prowlarr:
@@ -259,6 +323,9 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
 
+    labels:
+      - "diun.enable=true"
+
     volumes:
         - /etc/localtime:/etc/localtime:ro
         - ${CONFIGDIR}/radarr3:/config
@@ -286,6 +353,9 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -326,6 +396,39 @@ services:
           memory: 32M
     restart: unless-stopped
 
+  diun:
+    container_name: diun
+    image: ghcr.io/crazy-max/diun:4.22
+
+    depends_on:
+      - socky_proxy
+
+    networks:
+      - socky_proxy-net
+      
+    command: serve
+
+    environment:
+      TZ: ${TZ}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_JSON: "true"
+      DIUN_NOTIF_DISCORD_WEBHOOKURL: ${DIUN_NOTIF_DISCORD_WEBHOOKURL}
+      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+
+    labels:
+      - "diun.enable=true"
+    
+    volumes:
+      - ${STATICONFIGDIR}/diun/diun.yml:/diun.yml:ro
+      - ${CONFIGDIR}/diun:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 32M
+    restart: unless-stopped
+
   protonvpn:
     container_name: protonvpn
     image: lscr.io/linuxserver/wireguard:latest
@@ -346,6 +449,9 @@ services:
       - ${PORT_LIDARR_UI}:8686
       - ${PORT_RADARR_UI}:7878
       - ${PORT_SONARR_UI}:8989
+
+    labels:
+      - "diun.enable=true"
 
     volumes:
       - ${CONFIGDIR}/wireguard:/config
@@ -380,8 +486,12 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
-      CONTAINERS: 1 # crowdsec
+      CONTAINERS: 1 # crowdsec, diun
+      IMAGES: 1 # diun
       INFO: 1 # crowdsec
+
+    labels:
+      - "diun.enable=true"
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

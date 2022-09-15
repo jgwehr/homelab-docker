@@ -4,12 +4,6 @@ container_name:
 labels:
   type: caddy
 ---
-source: docker
-container_name:
- - jellyfin
-labels:
-  type: jellyfin_log
----
 filenames:
   - /var/log/auth.log
 labels:
@@ -20,3 +14,10 @@ container_name:
  - uptime-kuma
 labels:
   type: uptime-kuma
+---
+source: docker
+container_name:
+ - jellyseer
+labels:
+  type: ombi
+  

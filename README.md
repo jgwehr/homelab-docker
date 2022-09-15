@@ -1,6 +1,6 @@
 A personal project as I start to learn how to run a Homelab. 
 
-![GitHub last commit](https://img.shields.io/github/last-commit/jgwehr/homelab-docker)
+![GitHub last commit](https://img.shields.io/github/last-commit/jgwehr/homelab-docker) ![GitHub Repo Stars](https://img.shields.io/github/stars/jgwehr/homelab-docker)
 
 Includes: 
 - Learning Docker, Docker Compose
@@ -11,16 +11,19 @@ Includes:
 
 # Technology
 - <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/radarr.png" width="32" alt="Radarr" /> Radarr
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent
-- <img src="https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/wireguard.png" width="32" alt="Wireguard" /> Wireguard
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle
+- <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyseerr.png" width="32" alt="Jellyseerr" /> Jellyseerr
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent
+- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/wireguard.png" width="32" alt="Wireguard" /> Wireguard
 
 ### Notes
 Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
@@ -32,7 +35,12 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
 
-├── docker
+├── docker (this repo)
+|  ├── dockerfiles
+│  |  └── caddy.dockerfile
+|  ├── staticconfig
+│  |  └── crowdsec
+│  |     └── acquis.yaml
 │  ├── .env
 │  └── docker-compose.yml
 │
