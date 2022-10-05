@@ -45,6 +45,7 @@ services:
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
       - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
       - ${LOGDIR}/caddy:/server/logs/caddy
+      - ${STATICDIR}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
 
     deploy:
       resources:

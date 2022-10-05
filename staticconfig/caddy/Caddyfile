@@ -145,6 +145,11 @@ recipe.{$DOMAIN} {
 
   encode zstd gzip
 
+  handle_path /media/* {
+			root * /www/tandoor
+			file_server
+		}
+
   reverse_proxy tandoor:8080
 
   log {
