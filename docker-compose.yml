@@ -171,7 +171,6 @@ services:
       - "diun.enable=true"
 
     volumes:
-      - ${STATICDIR}/tandoor:/opt/recipes/staticfiles
       - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
 
     deploy:
