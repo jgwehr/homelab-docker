@@ -163,6 +163,9 @@ services:
     env_file:
       - ${STATICONFIGDIR}/tandoor/tandoor.env
 
+    environment:
+      TIMEZONE: ${TZ}
+
     labels:
       - "diun.enable=true"
 
@@ -180,6 +183,9 @@ services:
   tandoor_db:
     container_name: tandoor_db
     image: postgres:11-alpine
+
+    env_file:
+      - ${STATICONFIGDIR}/tandoor/tandoor.env
 
     volumes:
       - /data/db/tandoor_db:/var/lib/postgresql/data
