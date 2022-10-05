@@ -156,9 +156,10 @@ services:
     
     networks:
       - caddy-net # provides access for the reverse proxy
+      - tandoor
 
     ports:
-      - ${PORT_TANDOOR}:80
+      - ${PORT_TANDOOR}:8080
 
     env_file:
       - ${STATICONFIGDIR}/tandoor/tandoor.env
@@ -170,8 +171,8 @@ services:
       - "diun.enable=true"
 
     volumes:
-      - /data/media/staticfiles/tandoor:/opt/recipes/staticfiles
-      - /data/media/staticfiles/tandoor_media:/opt/recipes/mediafiles
+      - ${STATICDIR}/tandoor:/opt/recipes/staticfiles
+      - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
 
     deploy:
       resources:
@@ -184,12 +185,28 @@ services:
     container_name: tandoor_db
     image: postgres:11-alpine
 
+    networks:
+      - tandoor
+
     env_file:
       - ${STATICONFIGDIR}/tandoor/tandoor.env
 
     volumes:
-      - /data/db/tandoor_db:/var/lib/postgresql/data
+      - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
 
+#    healthcheck:
+#      interval: 10s
+#      retries: 10
+#      test:
+#        - CMD
+#        - pg_isready
+#        - '-q'
+#        - '-d'
+#        - ${DB_NAME}
+#        - '-U'
+#        - ${DB_USER}
+#      timeout: 45s
+      
     deploy:
       resources:
         limits:
@@ -570,10 +587,14 @@ networks:
     external: true
   htpc-net:
     name: htpc-net
+  tandoor:
+    name: tandoor
+
   caddy-net:
     name: caddy-net
   socky_proxy-net:
     name: socky_proxy-net
+
   peer2peer:
     name: peer2peer
   vpn:

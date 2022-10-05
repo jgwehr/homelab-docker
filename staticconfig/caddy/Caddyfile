@@ -145,7 +145,7 @@ recipe.{$DOMAIN} {
 
   encode zstd gzip
 
-  reverse_proxy tandoor:80
+  reverse_proxy tandoor:8080
 
   log {
     level ERROR
