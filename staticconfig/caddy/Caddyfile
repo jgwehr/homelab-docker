@@ -123,6 +123,40 @@ status.{$DOMAIN} {
   }
 }
 
+recipe.{$DOMAIN} {
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    ?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+
+  encode zstd gzip
+
+  reverse_proxy tandoor:80
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 24h
+    }
+    format json
+  }
+}
 
 
 {$DOMAIN} {

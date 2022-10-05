@@ -11,21 +11,23 @@ services:
       - crowdsec
       - jellyfin
       - jellyseerr
+      - tandoor
       - uptime-kuma
 
     external_links:
       - crowdsec:crowdsec
       - jellyfin:jellyfin
       - jellyseerr:jellyseerr
+      - tandoor:tandoor
       - uptime_kuma:uptime_kuma
 
     networks:
-        - web
-        - caddy-net
+      - web
+      - caddy-net
 
     ports:
-        - ${PORT_CADDY_HTTP}:80
-        - ${PORT_CADDY_HTTPS}:443
+      - ${PORT_CADDY_HTTP}:80
+      - ${PORT_CADDY_HTTPS}:443
 
     environment:
       LOG_FILE: ${LOGDIR}/caddy/access.log
@@ -34,7 +36,6 @@ services:
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
       
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
-
 
     labels:
       - "diun.enable=true"
@@ -141,6 +142,55 @@ services:
           cpus: '1'
           memory: 128M
     restart: always
+
+####################
+# Recipes
+####################
+
+  tandoor:
+    container_name: tandoor
+    image: vabene1111/recipes:latest
+
+    depends_on:
+      - tandoor_db
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+
+    ports:
+      - ${PORT_TANDOOR}:80
+
+    env_file:
+      - ${STATICONFIGDIR}/tandoor/tandoor.env
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+      - /data/media/staticfiles/tandoor:/opt/recipes/staticfiles
+      - /data/media/staticfiles/tandoor_media:/opt/recipes/mediafiles
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    restart: unless-stopped
+
+  tandoor_db:
+    container_name: tandoor_db
+    image: postgres:11-alpine
+
+    volumes:
+      - /data/db/tandoor_db:/var/lib/postgresql/data
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
 
 ####################
 # System Information
@@ -302,7 +352,6 @@ services:
           cpus: '1'
           memory: 128M
     restart: unless-stopped
-    
   
   radarr:
     container_name: radarr
