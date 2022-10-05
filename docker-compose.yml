@@ -35,9 +35,6 @@ services:
       
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
 
-      PORT_HTPC_HTTP: ${PORT_HTPC_HTTP}
-      PORT_HTPC_REQUESTS: ${PORT_HTPC_REQUESTS}
-      PORT_UPKUMA: ${PORT_UPKUMA}
 
     labels:
       - "diun.enable=true"
