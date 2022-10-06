@@ -168,6 +168,8 @@ services:
 
     environment:
       TIMEZONE: ${TZ}
+      POSTGRES_HOST: ${TANDOOR_DB_NAME}
+      POSTGRES_USER: ${TANDOOR_DB_USER}
 
     labels:
       - "diun.enable=true"
@@ -203,9 +205,9 @@ services:
         - pg_isready
         - '-q'
         - '-d'
-        - ${DB_NAME}
+        - ${TANDOOR_DB_NAME}
         - '-U'
-        - ${DB_USER}
+        - ${TANDOOR_DB_USER}
       timeout: 45s
       
     deploy:
