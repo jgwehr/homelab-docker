@@ -153,7 +153,8 @@ services:
     image: vabene1111/recipes:latest
 
     depends_on:
-      - tandoor_db
+      tandoor_db:
+        condition: service_healthy
     
     networks:
       - caddy-net # provides access for the reverse proxy
@@ -194,18 +195,18 @@ services:
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
 
-#    healthcheck:
-#      interval: 10s
-#      retries: 10
-#      test:
-#        - CMD
-#        - pg_isready
-#        - '-q'
-#        - '-d'
-#        - ${DB_NAME}
-#        - '-U'
-#        - ${DB_USER}
-#      timeout: 45s
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${DB_NAME}
+        - '-U'
+        - ${DB_USER}
+      timeout: 45s
       
     deploy:
       resources:
