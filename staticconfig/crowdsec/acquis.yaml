@@ -20,4 +20,9 @@ container_name:
  - jellyseer
 labels:
   type: ombi
-  
+---
+source: docker
+container_name:
+ - tandoor_db
+labels:
+  type: postgres 
