@@ -10,6 +10,63 @@
     
 }
 
+############
+# Snippets #
+############
+(headers) {
+	header {
+        -server #anonymizes Caddy
+
+        # disable FLoC tracking
+        Permissions-Policy interest-cohort=()
+
+        #enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+        Content-Security-Policy "upgrade-insecure-requests"
+        header Location http:// https://
+
+        X-Content-Type-Options "nosniff" # disable clients from sniffing the media type
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin; no-referrer-when-downgrade"
+
+        # clickjacking protection
+        ?X-Frame-Options DENY
+
+        header_up X-Real-IP {vars.realip}
+	}
+}
+
+(main) {
+    crowdsec
+
+    respond /robots.txt 200 {
+        body "User-agent: *
+        Disallow: /
+        
+        User-agent: AdsBot-Google
+        Disallow: /
+
+        User-agent: AdsBot-Google-Mobile
+        Disallow: /"
+
+        close
+    }
+
+    encode zstd gzip
+
+    log {
+        level ERROR
+        output file {$LOG_FILE} {
+            roll_size 3MiB
+            roll_keep 5
+            roll_keep_for 48h
+        }
+        format json
+    }
+}
+
+
 
 # import *.caddy ## try this while storing individual sites in *.caddy files
 
@@ -124,26 +181,8 @@ status.{$DOMAIN} {
 }
 
 recipe.{$DOMAIN} {
-  header {
-    -server #anonymizes Caddy
-    
-    # disable FLoC tracking
-    Permissions-Policy interest-cohort=()
-
-    #enable HSTS
-    Strict-Transport-Security max-age=31536000;
-
-    # disable clients from sniffing the media type
-    ?X-Content-Type-Options nosniff
-
-    # clickjacking protection
-    ?X-Frame-Options DENY
-
-    # keep referrer data off of HTTP connections
-    ?Referrer-Policy no-referrer-when-downgrade
-  }
-
-  encode zstd gzip
+  import headers
+  import main
 
   handle_path /media/* {
 			root * /www/tandoor
@@ -151,16 +190,6 @@ recipe.{$DOMAIN} {
 		}
 
   reverse_proxy tandoor:8080
-
-  log {
-    level ERROR
-    output file {$LOG_FILE} {
-      roll_size 3MiB
-      roll_keep 5
-      roll_keep_for 24h
-    }
-    format json
-  }
 }
 
 
