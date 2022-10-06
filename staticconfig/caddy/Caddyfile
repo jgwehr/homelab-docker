@@ -40,7 +40,7 @@ jelly.{$DOMAIN} {
 
   crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
 
-  reverse_proxy jellyfin:{$PORT_HTPC_HTTP}
+  reverse_proxy jellyfin:8096
 
   log {
     level ERROR
@@ -110,7 +110,7 @@ status.{$DOMAIN} {
 
   encode zstd gzip
 
-  reverse_proxy uptime-kuma:{$PORT_UPKUMA}
+  reverse_proxy uptime-kuma:3001
 
   log {
     level ERROR
@@ -123,6 +123,45 @@ status.{$DOMAIN} {
   }
 }
 
+recipe.{$DOMAIN} {
+  header {
+    -server #anonymizes Caddy
+    
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
+
+    #enable HSTS
+    Strict-Transport-Security max-age=31536000;
+
+    # disable clients from sniffing the media type
+    ?X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    ?X-Frame-Options DENY
+
+    # keep referrer data off of HTTP connections
+    ?Referrer-Policy no-referrer-when-downgrade
+  }
+
+  encode zstd gzip
+
+  handle_path /media/* {
+			root * /www/tandoor
+			file_server
+		}
+
+  reverse_proxy tandoor:8080
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 24h
+    }
+    format json
+  }
+}
 
 
 {$DOMAIN} {
@@ -155,7 +194,7 @@ status.{$DOMAIN} {
   crowdsec # this executes the CrowdSec module; if an IP is denied, it won't get access to the reverse proxy
 
   # System Status page
-  reverse_proxy uptime-kuma:{$PORT_UPKUMA}
+  reverse_proxy uptime-kuma:3001
 
   # The negotiation endpoint is also proxied to Rocket
   #reverse_proxy /notifications/hub/negotiate 0.0.0.0:8080
