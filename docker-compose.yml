@@ -7,12 +7,15 @@ services:
       context: ${DOCKERDIR}
       dockerfile: caddy.dockerfile #Custom build which uses duckdns
 
+    profiles:
+      - core
+
     depends_on:
       - crowdsec
-      - jellyfin
-      - jellyseerr
-      - tandoor
-      - uptime-kuma
+#      - jellyfin
+#      - jellyseerr
+#      - tandoor
+#      - uptime-kuma
 
     external_links:
       - crowdsec:crowdsec
@@ -296,7 +299,11 @@ services:
   jellyseerr:
     container_name: jellyseerr
     image: fallenbagel/jellyseerr:latest
-       
+    
+    depends_on:
+      - sonarr
+      - radarr
+
     networks:
       - htpc-net
       - caddy-net # provides access for the reverse proxy
@@ -384,9 +391,7 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     
     depends_on:
-      - protonvpn
       - prowlarr
-      - qbittorrent
 
     network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
 
@@ -415,9 +420,7 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
 
     depends_on:
-      - protonvpn
       - prowlarr
-      - qbittorrent
 
     network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
 

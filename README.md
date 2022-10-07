@@ -29,6 +29,24 @@ Includes:
 ### Notes
 Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
 
+# Setup and Operation
+
+## Starting services
+
+Services are grouped into similar purposes via "Profiles". There are two primary goals:
+
+1.  Enable one docker-compose file to be useful in a variety of situations. A server with less resources can easily run a limited version without "fluff". Stacks can easily be started/stopped/restarted, which can help make testing or issue resolution faster
+1.  Mitigate docker timeouts. As more services are added, it's more likely a monolithic docker-compose would fail to run successfully.
+
+Start each stack using:
+- Core services, such as webservers and system proxies: `docker-compose --profile **core** up -d`
+- Debugging tools, not critical to normal operation but valuable for troubleshooting: `docker-compose --profile **debug** up -d`
+- Monitoring tools, keeping containers updated or inform on outages: `docker-compose --profile **monitor** up -d`
+- Media apps, Media Providers which can operate independently of Curators, Acquirers, and Indexers: `docker-compose --profile **media** up -d`
+- Recipe apps, for domestics: `docker-compose --profile **recipes** up -d`
+- Media Request apps, the Curators, Acquirers, and Indexers of video/audio: `docker-compose --profile **media-request** up -d`
+- Downloading tools, the Acquirers and Indexers of video/audio: `docker-compose --profile **downloads** up -d`
+
 # Project Structure
 Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)* and *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
 
@@ -46,12 +64,12 @@ see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 │  └── docker-compose.yml
 │
 ├── server
-│  ├── db
 │  ├── cache
 │  ├── config
 │  └── logs
 │
 └── data
+   ├── db
    ├── downloads
    │  ├── audiobooks
    │  ├── movies
@@ -68,7 +86,7 @@ see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
 
 ### These may be created with the following cmds
-`mkdir -p /{docker,server/{db,cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{audiobooks,music,podcasts,movies,tv}}}`
+`mkdir -p /{docker,server/{cache,config,logs},data/{db,media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{audiobooks,music,podcasts,movies,tv}}}`
 
 ### Recursively own the /data directory
 sudo chown -R $USER:$USER /data
@@ -121,7 +139,3 @@ Ports are controlled through variables to provide a central "fact check"
 # Optionals
 ### Caddy and DuckDns.org
 - If you do not use DuckDns.org and/or use another provider which needs a Caddy DNS module, alter `dockerfiles/caddy.dockerfile` appropriately
-- You can choose to alter docker-compose to point to [snoopeppers/caddy-duckdns](https://hub.docker.com/repository/docker/snoopeppers/caddy-duckdns) instead of having it build the image itself (though, naturally building it yourself will be more stable)
-- If you choose to handle Caddy in someother way (eg. don't containerize it) or do not need additional modules, I'd recommend
-  - deleting `dockerfiles/caddy.dockerfile`
-  - altering docker-compose as required
