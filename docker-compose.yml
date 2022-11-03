@@ -55,48 +55,6 @@ services:
     healthcheck:
       test: ["CMD", "caddy", "version"]
     restart: unless-stopped
-  
-  crowdsec:
-    container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.4.1
-
-    depends_on:
-      - socky_proxy
-    
-    networks:
-      - caddy-net # provides access for the reverse proxy
-      - socky_proxy-net
-
-    ports:
-      - ${PORT_CROWDSEC_API}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
-      - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
-
-    environment:
-      TZ: ${TZ}
-      GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/ombi crowdsecurity/pgsql"
-      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
-
-    volumes:
-      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
-      - crowdsec-config:/etc/crowdsec/
-      - crowdsec-db:/var/lib/crowdsec/data/
-    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
-
-      ## Log Files
-      - ${LOGDIR}/caddy:/var/log/caddy:ro ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
-      - /var/log/auth.log:/logs/auth.log:ro
-      - /var/log/syslog.log:/logs/syslog.log:ro
-      
-    labels:
-      - "diun.enable=true"
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: always
 
   heimdall:
     container_name: heimdall
@@ -578,6 +536,84 @@ services:
           memory: 32M
 
     restart: always
+
+
+####################
+# Security
+####################
+
+  crowdsec:
+    container_name: crowdsec
+    image: crowdsecurity/crowdsec:v1.4.1
+
+    depends_on:
+      - socky_proxy
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_CROWDSEC_API}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
+      - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
+
+    environment:
+      TZ: ${TZ}
+      GID: ${PGID}
+      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/ombi crowdsecurity/pgsql"
+      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
+
+    volumes:
+      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - crowdsec-config:/etc/crowdsec/
+      - crowdsec-db:/var/lib/crowdsec/data/
+    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
+
+      ## Log Files
+      - ${LOGDIR}/caddy:/var/log/caddy:ro ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
+      - /var/log/auth.log:/logs/auth.log:ro
+      - /var/log/syslog.log:/logs/syslog.log:ro
+      
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: always
+
+  endlessh:
+    image: lscr.io/linuxserver/endlessh:latest
+    container_name: endlessh
+
+    ports:
+      - ${PORT_SSHPROTECT:-22}:2222
+    
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      MSDELAY: ${ESSH_MSDELAY:-10000} #optional
+      MAXLINES: ${ESSH_MAXLINES:-32} #optional
+      MAXCLIENTS: ${ESSH_MAXCLIENTS:-4096} #optional
+      LOGFILE: ${DEBUG_LOG:-false} #optional. By default, the app logs to container log. If this is set to true, the log will be output to file under /config/logs/endlessh (/config needs to be mapped).
+      BINDFAMILY: ${ESSH_BINDFAMILY} #optional
+
+    #volumes:
+    #  - ${CONFIGDIR}/endlessh:/config #Required if LOGFILE is set to true.
+
+    labels:
+      - "diun.enable=true"
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 32M  
+    restart: unless-stopped
+
 
 ####################
 # Docker Environment
