@@ -18,16 +18,22 @@ services:
       - /dev/sr0:/dev/sr0
 
     volumes:
-      - ${CONFIGDIR}/ripping:/etc/arm/config
+      - ${STATICONFIGDIR}/automatic-ripping-machine/apprise.yaml:/etc/arm/config/apprise.yaml:ro
+      - ${STATICONFIGDIR}/automatic-ripping-machine/arm.yaml:/etc/arm/config/arm.yaml:ro
+      - ${STATICONFIGDIR}/automatic-ripping-machine/abcde.conf:/etc/arm/config/abcde.conf:ro
+
       - ${RIPPING_HOME}:/home/arm
       - ${LOGDIR}/ripping:/home/arm/logs
 
-      - ${DOWNLOADDIR}/radarr:/home/arm/media #testing. Sends files to a waiting space for Radarr to pick them up. Thus, doesn't support TV Series
-      #- ${DOWNLOADDIR}/lidarr:/home/arm/Music
+      - ${DOWNLOADDIR}/radarr:/home/arm/media/completed #testing. Sends files to a waiting space for Radarr to pick them up. Thus, doesn't support TV Series
+      - ${DOWNLOADDIR}/lidarr:/home/arm/Music # REMINDER: check CHOWN on this
+    #  - ${TRANSCODEDIR}/ripping/transcode:/home/arm/media/transcode/
+    #  - ${TRANSCODEDIR}/ripping/raw:/home/arm/media/raw/
+
 
     deploy:
       resources:
         limits:
           cpus: '3'
           memory: 4096M
-    restart: no
+    restart: 'no'
