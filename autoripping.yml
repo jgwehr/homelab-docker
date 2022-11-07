@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  automatic-ripping-machine:
+    container_name: automatic-ripping-machine
+    image: 1337server/automatic-ripping-machine:latest
+
+    privileged: true
+
+    ports:
+      - ${PORT_RIPPING}:8080
+
+    environment:
+      ARM_UID: ${RIPPING_UID}
+      ARM_GID: ${RIPPING_GID}
+
+    devices:
+      - /dev/sr0:/dev/sr0
+
+    volumes:
+      - ${CONFIGDIR}/ripping:/etc/arm/config
+      - ${RIPPING_HOME}:/home/arm
+      - ${LOGDIR}/ripping:/home/arm/logs
+
+      - ${DOWNLOADDIR}/radarr:/home/arm/media #testing. Sends files to a waiting space for Radarr to pick them up. Thus, doesn't support TV Series
+      #- ${DOWNLOADDIR}/lidarr:/home/arm/Music
+
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 4096M
+    restart: no
