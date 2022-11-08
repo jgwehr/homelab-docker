@@ -33,6 +33,6 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '3'
+          cpus: '5'
           memory: 2048M #for a single rip, ARM is not RAM limited.
     restart: 'no'
