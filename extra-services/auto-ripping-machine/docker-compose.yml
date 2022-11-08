@@ -24,10 +24,8 @@ services:
       - ${RIPPING_HOME}:/home/arm
       - ${LOGDIR}/ripping:/home/arm/logs
 
-      - ${DOWNLOADDIR}/rips/video:/home/arm/media/completed #
-      - ${DOWNLOADDIR}/rips/music:/home/arm/Music # REMINDER: check CHOWN on this
-    #  - ${TRANSCODEDIR}/ripping/transcode:/home/arm/media/transcode/
-    #  - ${TRANSCODEDIR}/ripping/raw:/home/arm/media/raw/
+      - ${DOWNLOADDIR}/rips/video:/home/arm/media/completed
+      - ${DOWNLOADDIR}/rips/music:/home/arm/Music
 
 
     deploy:
