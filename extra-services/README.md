@@ -8,4 +8,4 @@ The main concern is port reservation. This README also serves as documentation t
 
 | Service | Ports |
 | :-- | :-: |
-| auto-ripping-machine | tyty |
+| auto-ripping-machine | `7010` |
