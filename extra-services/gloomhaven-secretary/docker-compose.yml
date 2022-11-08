@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  gloomhaven:
+    container_name: gloomhaven
+    build: https://github.com/Lurkars/gloomhavensecretary.git
+    image: gloomhavensecretary
+
+    ports:
+      - ${PORT_GHS_CLIENT}:80
+
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+  gloomhaven-server:
+    container_name: gloomhaven-server
+    build: https://github.com/Lurkars/ghs-server.git
+    image: gloomhavensecretary-server
+
+    ports:
+      - ${PORT_GHS_SERVER}:80
+
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
