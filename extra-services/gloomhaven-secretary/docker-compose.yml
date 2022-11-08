@@ -3,7 +3,7 @@ version: "3.9"
 services:
   gloomhaven:
     container_name: gloomhaven
-    build: https://github.com/Lurkars/gloomhavensecretary.git
+    build: https://github.com/Lurkars/gloomhavensecretary.git#main
     image: gloomhavensecretary
 
     ports:
@@ -21,7 +21,7 @@ services:
 
   gloomhaven-server:
     container_name: gloomhaven-server
-    build: https://github.com/Lurkars/ghs-server.git
+    build: https://github.com/Lurkars/ghs-server.git#main
     image: gloomhavensecretary-server
 
     ports:
