@@ -455,7 +455,10 @@ services:
     volumes:
       - ${STATICONFIGDIR}/diun/diun.yml:/diun.yml:ro
       - ${CONFIGDIR}/diun:/data
-    
+
+    healthcheck:
+      test: ["CMD", "diun", "--version"]
+
     deploy:
       resources:
         limits:
