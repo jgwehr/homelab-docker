@@ -33,5 +33,5 @@ services:
       resources:
         limits:
           cpus: '3'
-          memory: 4096M
+          memory: 2048M #for a single rip, ARM is not RAM limited.
     restart: 'no'
