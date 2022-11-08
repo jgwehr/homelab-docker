@@ -19,6 +19,7 @@ services:
 
     volumes:
       - ${STATICONFIGDIR}/ripping:/etc/arm/config
+      - /etc/localtime:/etc/localtime:ro
 
       - ${RIPPING_HOME}:/home/arm
       - ${LOGDIR}/ripping:/home/arm/logs
