@@ -23,8 +23,8 @@ services:
       - ${RIPPING_HOME}:/home/arm
       - ${LOGDIR}/ripping:/home/arm/logs
 
-      - ${DOWNLOADDIR}/radarr:/home/arm/media/completed #testing. Sends files to a waiting space for Radarr to pick them up. Thus, doesn't support TV Series
-      - ${DOWNLOADDIR}/lidarr:/home/arm/Music # REMINDER: check CHOWN on this
+      - ${DOWNLOADDIR}/rips/video:/home/arm/media/completed #
+      - ${DOWNLOADDIR}/rips/music:/home/arm/Music # REMINDER: check CHOWN on this
     #  - ${TRANSCODEDIR}/ripping/transcode:/home/arm/media/transcode/
     #  - ${TRANSCODEDIR}/ripping/raw:/home/arm/media/raw/
 
