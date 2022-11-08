@@ -18,9 +18,7 @@ services:
       - /dev/sr0:/dev/sr0
 
     volumes:
-      - ${STATICONFIGDIR}/automatic-ripping-machine/apprise.yaml:/etc/arm/config/apprise.yaml:ro
-      - ${STATICONFIGDIR}/automatic-ripping-machine/arm.yaml:/etc/arm/config/arm.yaml:ro
-      - ${STATICONFIGDIR}/automatic-ripping-machine/abcde.conf:/etc/arm/config/abcde.conf:ro
+      - ${STATICONFIGDIR}/ripping:/etc/arm/config
 
       - ${RIPPING_HOME}:/home/arm
       - ${LOGDIR}/ripping:/home/arm/logs
