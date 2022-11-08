@@ -309,9 +309,9 @@ services:
     healthcheck:
       test: ls /sys/class/net/ | grep -o "eth[0-9*]|wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
       interval: 30s
-      timeout: 4s
-      retries: 0
-      start_period: 10s
+      timeout: 6s
+      retries: 3
+      start_period: 20s
     restart: unless-stopped
 
   prowlarr:
@@ -579,6 +579,9 @@ services:
       
     labels:
       - "diun.enable=true"
+
+    healthcheck:
+      test: ["CMD", "cscli", "version"]
 
     deploy:
       resources:
