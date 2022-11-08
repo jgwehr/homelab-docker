@@ -17,6 +17,9 @@ services:
     devices:
       - /dev/sr0:/dev/sr0
 
+    labels:
+      - "diun.enable=true"
+      
     volumes:
       - ${CONFIGDIR}/ripping:/etc/arm/config
       - /etc/localtime:/etc/localtime:ro
