@@ -44,7 +44,6 @@ services:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
       - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
-      - ${LOGDIR}/caddy:/server/logs/caddy
       - ${STATICDIR}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
 
     deploy:
@@ -295,6 +294,9 @@ services:
         UMASK_SET: 022
         WEBUI_PORT: ${PORT_TORRENT_UI}
 
+    labels:
+      - "diun.enable=true"
+
     volumes:
         - ${CONFIGDIR}/qbt:/config
         - ${DOWNLOADDIR}:/data/downloads
@@ -307,9 +309,9 @@ services:
     healthcheck:
       test: ls /sys/class/net/ | grep -o "eth[0-9*]|wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
       interval: 30s
-      timeout: 4s
-      retries: 0
-      start_period: 10s
+      timeout: 6s
+      retries: 3
+      start_period: 20s
     restart: unless-stopped
 
   prowlarr:
@@ -327,6 +329,9 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
 
+    labels:
+      - "diun.enable=true"
+      
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
 
@@ -414,7 +419,6 @@ services:
       TZ: ${TZ}
       SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
       TOKEN: ${DUCKDNS_TOKEN}
-      LOG_FILE: ${LOGDIR}/duckdns.log #optional
 
     volumes:
       - ${CONFIGDIR}/duckdns:/config #optional
@@ -570,12 +574,14 @@ services:
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
 
       ## Log Files
-      - ${LOGDIR}/caddy:/var/log/caddy:ro ## check https://hub.crowdsec.net/author/crowdsecurity/configurations/caddy-logs
       - /var/log/auth.log:/logs/auth.log:ro
       - /var/log/syslog.log:/logs/syslog.log:ro
       
     labels:
       - "diun.enable=true"
+
+    healthcheck:
+      test: ["CMD", "cscli", "version"]
 
     deploy:
       resources:
