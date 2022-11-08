@@ -294,6 +294,9 @@ services:
         UMASK_SET: 022
         WEBUI_PORT: ${PORT_TORRENT_UI}
 
+    labels:
+      - "diun.enable=true"
+
     volumes:
         - ${CONFIGDIR}/qbt:/config
         - ${DOWNLOADDIR}:/data/downloads
@@ -326,6 +329,9 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
 
+    labels:
+      - "diun.enable=true"
+      
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
 
