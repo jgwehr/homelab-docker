@@ -284,7 +284,8 @@ services:
     image: linuxserver/qbittorrent
 
     depends_on:
-      - protonvpn
+      protonvpn:
+        condition: service_healthy
 
     network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
 
@@ -637,18 +638,20 @@ networks:
   web:
     name: web
     external: true
+  caddy-net:
+    external:
+      name: caddy-net
+
   htpc-net:
     name: htpc-net
   tandoor:
     name: tandoor
-
-  caddy-net:
-    name: caddy-net
-  socky_proxy-net:
-    name: socky_proxy-net
 
   peer2peer:
     name: peer2peer
   vpn:
     name: vpn
     internal: true
+
+  socky_proxy-net:
+    name: socky_proxy-net
