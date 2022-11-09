@@ -16,7 +16,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 128M
     restart: unless-stopped
 
   gloomhaven-server:
@@ -25,7 +25,7 @@ services:
     image: gloomhavensecretary-server
 
     ports:
-      - ${PORT_GHS_SERVER}:80
+      - ${PORT_GHS_SERVER}:8080
 
     labels:
       - "diun.enable=true"
@@ -33,6 +33,6 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 256M
+          cpus: '1.5'
+          memory: 512M
     restart: unless-stopped
