@@ -6,6 +6,9 @@ services:
     build: https://github.com/Lurkars/gloomhavensecretary.git#main
     image: gloomhavensecretary
 
+    networks:
+      - caddy-net
+
     ports:
       - ${PORT_GHS_CLIENT}:80
 
@@ -33,6 +36,6 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.5'
-          memory: 512M
+          cpus: '0.5'
+          memory: 256M
     restart: unless-stopped

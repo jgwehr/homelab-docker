@@ -92,6 +92,13 @@ www.{$DOMAIN} {
   redir {$DOMAIN}{uri}
 }
 
+ghs.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy gloomhaven:8080
+}
+
 ghs-server.{$DOMAIN} {
   import headers
   import main
