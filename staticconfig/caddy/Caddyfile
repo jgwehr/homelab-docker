@@ -38,32 +38,32 @@
 }
 
 (main) {
-    crowdsec
+  crowdsec
 
-    respond /robots.txt 200 {
-        body "User-agent: *
-        Disallow: /
-        
-        User-agent: AdsBot-Google
-        Disallow: /
+  respond /robots.txt 200 {
+    body "User-agent: *
+    Disallow: /
+    
+    User-agent: AdsBot-Google
+    Disallow: /
 
-        User-agent: AdsBot-Google-Mobile
-        Disallow: /"
+    User-agent: AdsBot-Google-Mobile
+    Disallow: /"
 
-        close
+    close
+  }
+
+  encode zstd gzip
+
+  log {
+    level ERROR
+    output file {$LOG_FILE} {
+      roll_size 3MiB
+      roll_keep 5
+      roll_keep_for 48h
     }
-
-    encode zstd gzip
-
-    log {
-        level ERROR
-        output file {$LOG_FILE} {
-            roll_size 3MiB
-            roll_keep 5
-            roll_keep_for 48h
-        }
-        format json
-    }
+    format json
+  }
 }
 
 
@@ -74,40 +74,6 @@ localhost {
 
   respond "Hello, world!"
 }
-
-jelly.{$DOMAIN} {
-  import headers
-  import main
-
-  reverse_proxy jellyfin:8096
-}
-
-request.{$DOMAIN} {
-  import headers
-  import main
-
-  reverse_proxy jellyseerr:5055
-}
-
-status.{$DOMAIN} {
-  import headers
-  import main
-
-  reverse_proxy uptime-kuma:3001
-}
-
-recipe.{$DOMAIN} {
-  import headers
-  import main
-
-  handle_path /media/* {
-			root * /www/tandoor
-			file_server
-		}
-
-  reverse_proxy tandoor:8080
-}
-
 
 {$DOMAIN} {
   import headers
@@ -124,4 +90,44 @@ recipe.{$DOMAIN} {
 
 www.{$DOMAIN} {
   redir {$DOMAIN}{uri}
+}
+
+ghs-server.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy gloomhaven-server:8080
+}
+
+jelly.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy jellyfin:8096
+}
+
+recipe.{$DOMAIN} {
+  import headers
+  import main
+
+  handle_path /media/* {
+			root * /www/tandoor
+			file_server
+		}
+
+  reverse_proxy tandoor:8080
+}
+
+request.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy jellyseerr:5055
+}
+
+status.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy uptime-kuma:3001
 }

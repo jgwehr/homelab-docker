@@ -20,6 +20,7 @@ services:
       - jellyseerr:jellyseerr
       - tandoor:tandoor
       - uptime_kuma:uptime_kuma
+      - gloomhaven-server:gloomhaven-server #testing if they need to be on the same network
 
     networks:
       - web
