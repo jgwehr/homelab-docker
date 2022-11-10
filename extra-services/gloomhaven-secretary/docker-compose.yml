@@ -27,6 +27,9 @@ services:
     build: https://github.com/Lurkars/ghs-server.git#main
     image: gloomhavensecretary-server
 
+    networks:
+      - caddy-net
+      
     ports:
       - ${PORT_GHS_SERVER}:8080
 
@@ -39,3 +42,8 @@ services:
           cpus: '0.5'
           memory: 256M
     restart: unless-stopped
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true

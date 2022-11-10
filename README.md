@@ -37,7 +37,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
 
-├── docker (this repo)
+├── ~/docker (this repo)
 |  ├── dockerfiles
 │  |  └── caddy.dockerfile
 |  ├── staticconfig
@@ -46,13 +46,13 @@ see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 │  ├── .env
 │  └── docker-compose.yml
 │
-├── server
+├── /srv
 │  ├── db
 │  ├── cache
 │  ├── config
 │  └── logs
 │
-└── data
+└── /data
    ├── downloads
    │  ├── audiobooks
    │  ├── movies

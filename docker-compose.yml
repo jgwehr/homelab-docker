@@ -20,7 +20,6 @@ services:
       - jellyseerr:jellyseerr
       - tandoor:tandoor
       - uptime_kuma:uptime_kuma
-      - gloomhaven-server:gloomhaven-server #testing if they need to be on the same network
 
     networks:
       - web
@@ -639,8 +638,9 @@ networks:
     name: web
     external: true
   caddy-net:
-    external:
-      name: caddy-net
+    name: caddy-net
+    external: true
+    
 
   htpc-net:
     name: htpc-net

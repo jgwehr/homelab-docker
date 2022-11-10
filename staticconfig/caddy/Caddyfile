@@ -96,7 +96,7 @@ ghs.{$DOMAIN} {
   import headers
   import main
 
-  reverse_proxy gloomhaven:8080
+  reverse_proxy gloomhaven:80
 }
 
 ghs-server.{$DOMAIN} {
