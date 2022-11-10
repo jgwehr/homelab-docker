@@ -104,6 +104,12 @@ ghs-server.{$DOMAIN} {
   import main
 
   reverse_proxy gloomhaven-server:8080
+
+  @websockets {
+    header Connection *Upgrade*
+    header Upgrade websocket
+  }
+  reverse_proxy @websockets gloomhaven-server:8080
 }
 
 jelly.{$DOMAIN} {
