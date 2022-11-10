@@ -25,8 +25,8 @@ then
     docker container commit $varRepo/gloomhaven-secretary:latest $varRepo/gloomhaven-secretary:latest >/dev/null 2>&1
 
     echo Pushing images to DockerHub...
-    docker image push $varRepo/gloomhaven-secretary:$1
-    docker image push $varRepo/gloomhaven-secretary:$latest
+    docker image push $varRepo/gloomhaven-secretary:$1 >/dev/null 2>&1
+    docker image push $varRepo/gloomhaven-secretary:$latest >/dev/null 2>&1
 else
     echo Tag exist already for Client. Skipping.
 fi
@@ -41,12 +41,12 @@ then
     docker container commit $varRepo/gloomhaven-secretary-server:latest $varRepo/gloomhaven-secretary-server:latest >/dev/null 2>&1
 
     echo Pushing images to DockerHub...
-    docker image push $varRepo/gloomhaven-secretary-server:$1
-    docker image push $varRepo/gloomhaven-secretary-server:latest
+    docker image push $varRepo/gloomhaven-secretary-server:$1 >/dev/null 2>&1
+    docker image push $varRepo/gloomhaven-secretary-server:latest >/dev/null 2>&1
 else
     echo Tag exist already for Server. Skipping.
 fi
 
 echo
-docker image ls | grep gloomhaven-secretary
+docker image ls --filter "reference=$varRepo/gloomhaven-secretary*$1" --filter "reference=$varRepo/gloomhaven-secretary*latest" | grep gloomhaven-secretary
 echo
