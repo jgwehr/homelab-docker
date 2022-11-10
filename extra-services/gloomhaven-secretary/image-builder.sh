@@ -22,10 +22,11 @@ then
 
     # For simplicity sake, we assume we're only building the latest
     echo Committing container image to :latest ...
-    docker container commit $varRepo/gloomhaven-secretary:$1 $varRepo/gloomhaven-secretary:latest >/dev/null 2>&1
+    docker container commit $varRepo/gloomhaven-secretary:latest $varRepo/gloomhaven-secretary:latest >/dev/null 2>&1
 
     echo Pushing images to DockerHub...
-    docker image push --all-tags $varRepo/gloomhaven-secretary
+    docker image push $varRepo/gloomhaven-secretary:$1
+    docker image push $varRepo/gloomhaven-secretary:$latest
 else
     echo Tag exist already for Client. Skipping.
 fi
@@ -37,10 +38,11 @@ then
     docker build --rm -q --tag $varRepo/gloomhaven-secretary-server:$1 https://github.com/Lurkars/ghs-server.git#$1
 
     echo Committing container image to :latest ...
-    docker container commit $varRepo/gloomhaven-secretary-server:$1 $varRepo/gloomhaven-secretary-server:latest >/dev/null 2>&1
+    docker container commit $varRepo/gloomhaven-secretary-server:latest $varRepo/gloomhaven-secretary-server:latest >/dev/null 2>&1
 
     echo Pushing images to DockerHub...
-    docker image push --all-tags $varRepo/gloomhaven-secretary-server
+    docker image push $varRepo/gloomhaven-secretary-server:$1
+    docker image push $varRepo/gloomhaven-secretary-server:latest
 else
     echo Tag exist already for Server. Skipping.
 fi
