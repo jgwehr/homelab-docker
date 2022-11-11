@@ -631,7 +631,9 @@ services:
 
 volumes:
   crowdsec-config:
+    external: true
   crowdsec-db:
+    external: true
 
 networks:
   web:

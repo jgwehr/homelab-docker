@@ -17,6 +17,8 @@ sudo chmod -R a=,a+rX,u+w,g+w /data
 # Docker Setup
 docker network create web
 docker network create caddy-net
+docker volume create crowdsec-config
+docker volume create crowdsec-db
 
 
 # Print user info
