@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  gloomhaven:
+    container_name: gloomhaven
+    image: snoopeppers/gloomhaven-secretary
+
+    networks:
+      - caddy-net
+
+    ports:
+      - ${PORT_GHS_CLIENT}:80
+
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+  gloomhaven-server:
+    container_name: gloomhaven-server
+    image: snoopeppers/gloomhaven-secretary-server
+
+    networks:
+      - caddy-net
+      
+    ports:
+      - ${PORT_GHS_SERVER}:8080
+
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    restart: unless-stopped
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true

@@ -6,6 +6,8 @@ The main concern is port reservation. This README also serves as documentation t
 
 ### Ports
 
-| Service | Ports |
-| :-- | :-: |
-| auto-ripping-machine | `7010` |
+| Service               | Ports |
+| :--                   | :-: |
+| auto-ripping-machine  | `7010` |
+| Gloomhaven, Client    | `7020` |
+| Gloomhaven, Server    | `7021` |
