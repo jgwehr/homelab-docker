@@ -5,6 +5,11 @@ services:
     container_name: gloomhaven
     image: snoopeppers/gloomhaven-secretary
 
+    env_file:
+      - ../../env/core.env
+      - ../../env/ports.env
+      - ../../env/gloomhaven.env
+
     networks:
       - caddy-net
 
