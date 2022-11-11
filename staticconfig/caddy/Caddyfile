@@ -108,6 +108,8 @@ ghs-server.{$DOMAIN} {
   @websockets {
     header Connection *Upgrade*
     header Upgrade websocket
+    header_down Access-Control-Allow-Origin *
+    transparent
   }
   reverse_proxy @websockets gloomhaven-server:8080
 }
