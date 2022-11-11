@@ -26,3 +26,9 @@ container_name:
  - tandoor_db
 labels:
   type: postgres 
+---
+source: docker
+container_name:
+ - endlessh
+labels:
+  type: endlessh 

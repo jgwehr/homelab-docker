@@ -22,6 +22,7 @@ Includes:
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma
 - <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec
+- Endlessh
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle
 - <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun
@@ -54,7 +55,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
 
-├── docker (this repo)
+├── ~/docker (this repo)
 |  ├── dockerfiles
 │  |  └── caddy.dockerfile
 |  ├── staticconfig
@@ -63,13 +64,13 @@ see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 │  ├── .env
 │  └── docker-compose.yml
 │
-├── server
+├── /srv
+│  ├── db
 │  ├── cache
 │  ├── config
 │  └── logs
 │
-└── data
-   ├── db
+└── /data
    ├── downloads
    │  ├── audiobooks
    │  ├── movies
