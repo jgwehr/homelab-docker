@@ -49,28 +49,29 @@ Start each stack using:
 - Downloading tools, the Acquirers and Indexers of video/audio: `docker-compose --profile **downloads** up -d`
 
 # Project Structure
-Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)* and *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
+Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)*, [Where to Put Docker Compose](https://nickjanetakis.com/blog/docker-tip-76-where-to-put-docker-compose-projects-on-a-server) *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
 
 ## File System
-see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
-```
 
-├── ~/docker (this repo)
-|  ├── dockerfiles
-│  |  └── caddy.dockerfile
-|  ├── staticconfig
-│  |  └── crowdsec
-│  |     └── acquis.yaml
-│  ├── .env
-│  └── docker-compose.yml
-│
+```
 ├── /srv
-│  ├── db
+│  └── docker
+│  |  ├── config
+│  |  └── homelab-docker (this repo)
+|  |     ├── dockerfiles (for custom builds)
+│  |     |  └── builder-*.sh (for building files to upload)
+│  |     |  └── *.dockerfile (for adhoc builds)
+|  |     ├── env
+|  |     ├── staticconfig (service-specific configuration)
+│  |     |  └── * (for each service)
+│  |     |     └── *
+│  |     ├── .env
+│  |     └── docker-compose.yml
 │  ├── cache
-│  ├── config
 │  └── logs
 │
 └── /data
+   ├── db
    ├── downloads
    │  ├── audiobooks
    │  ├── movies
@@ -87,7 +88,8 @@ see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
 
 ### These may be created with the following cmds
-`mkdir -p /{docker,server/{cache,config,logs},data/{db,media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{audiobooks,music,podcasts,movies,tv}}}`
+`chmod +x start.sh`  
+`./start.sh`
 
 ### Recursively own the /data directory
 sudo chown -R $USER:$USER /data
