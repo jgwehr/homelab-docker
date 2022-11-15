@@ -12,10 +12,6 @@ services:
 
     depends_on:
       - crowdsec
-#      - jellyfin
-#      - jellyseerr
-#      - tandoor
-#      - uptime-kuma
 
     external_links:
       - crowdsec:crowdsec

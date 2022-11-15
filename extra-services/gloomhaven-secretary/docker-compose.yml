@@ -5,11 +5,6 @@ services:
     container_name: gloomhaven
     image: snoopeppers/gloomhaven-secretary
 
-    env_file:
-      - ../../env/core.env
-      - ../../env/ports.env
-      - ../../env/gloomhaven.env
-
     networks:
       - caddy-net
 
@@ -38,6 +33,9 @@ services:
 
     labels:
       - "diun.enable=true"
+
+    volumes:
+      - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
 
     deploy:
       resources:
