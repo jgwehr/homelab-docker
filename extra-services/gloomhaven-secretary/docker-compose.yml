@@ -34,6 +34,9 @@ services:
     labels:
       - "diun.enable=true"
 
+    volumes:
+      - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
+      
     deploy:
       resources:
         limits:
