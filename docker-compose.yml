@@ -552,7 +552,7 @@ services:
 
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.4.1
+    image: crowdsecurity/crowdsec:v1.4.2
 
     depends_on:
       - socky_proxy
@@ -568,7 +568,7 @@ services:
     environment:
       TZ: ${TZ}
       GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/ombi crowdsecurity/pgsql crowdsecurity/endlessh"
+      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/jellyseerr crowdsecurity/pgsql crowdsecurity/endlessh schiz0phr3ne/sonarr schiz0phr3ne/radarr schiz0phr3ne/prowlarr"
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
     volumes:
