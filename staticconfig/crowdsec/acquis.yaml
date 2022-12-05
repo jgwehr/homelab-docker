@@ -31,4 +31,23 @@ source: docker
 container_name:
  - endlessh
 labels:
-  type: endlessh 
+  type: endlessh
+---
+source: docker
+container_name:
+ - sonarr
+labels:
+  type: sonarr
+---
+source: docker
+container_name:
+ - radarr
+labels:
+  type: radarr
+---
+source: docker
+container_name:
+ - prowlarr
+labels:
+  type: prowlarr
+    
