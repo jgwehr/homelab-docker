@@ -19,7 +19,7 @@ source: docker
 container_name:
  - jellyseer
 labels:
-  type: ombi
+  type: jellyseerr
 ---
 source: docker
 container_name:
