@@ -19,6 +19,7 @@ Includes:
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/wireguard.png" width="32" alt="Wireguard" /> Wireguard
+- Gloomhaven Secretary
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma
 - <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec
@@ -30,29 +31,58 @@ Includes:
 ### Notes
 Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
 
+# Setup and Operation
+
+## Starting services
+
+### Explanation
+Services are grouped into similar purposes via "Profiles". There are two primary goals:
+
+1.  Enable one docker-compose file to be useful in a variety of situations. A server with less resources can easily run a limited version without "fluff". Stacks can easily be started/stopped/restarted, which can help make testing or issue resolution faster
+1.  Mitigate docker timeouts. As more services are added, it's more likely a monolithic docker-compose would fail to run successfully.
+1.  Less primary: I tried to get multiple docker-compose files to work with a shared collection of environment files (eg. `ports.env`). Unfortunately, Docker really doesn't like that. Symlinks or scripts are  an option, but prohibitively complex. Profiles appear to achieve the best combination of (1) "modularity" and (2) easy of env maintenance
+
+### Start each service
+`docker-compose --profile **stack** up -d`
+Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static" approach
+
+| Profile               | Services   | Note |
+| :--                   | :--:       | :-- |
+| `external` | docker-socket-proxy, crowdsec, endlessh, caddy, duckdns | Makes connecting to a publicly facing set of services possible, securely |
+| `admin` | docker-socket-proxy, uptime-kuma, heimdall | Local system management and status. Non-local access to Uptime Kuma requires  `external` |
+| `monitor` | docker-socket-proxy, dozzle, diun | Monitoring system health |
+| `downloads` | wireguard,  qbittorrent | Allow for secure file transfers, without additional overhead from library management |
+| `media-request` | jellyseerr, sonarr, radarr, prowlarr, wireguard,  qbittorrent | Full stack for end user media requests and file transfer. Non-local access to Jellyseerr requires  `external` |
+| `recipes` | tandoor_recipes, postres | Home recipes. Non-local access to tandoor requires  `external` |
+| `gloomhaven` | gloomhaven-secretary, ghs-server | Board games! Non-local access to client and server requires  `external` |
+| `ripping` | automatic-ripping machine | local-only, not required all the time |
+
+
 # Project Structure
-Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)* and *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
+Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)*, [Where to Put Docker Compose](https://nickjanetakis.com/blog/docker-tip-76-where-to-put-docker-compose-projects-on-a-server) *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
 
 ## File System
-see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
-```
 
-├── ~/docker (this repo)
-|  ├── dockerfiles
-│  |  └── caddy.dockerfile
-|  ├── staticconfig
-│  |  └── crowdsec
-│  |     └── acquis.yaml
-│  ├── .env
-│  └── docker-compose.yml
-│
+```
+├── /opt
+│  └── docker
+│     └── homelab-docker (this repo)
+|        ├── dockerfiles (for custom builds)
+│        |  └── builder-*.sh (for building files to upload)
+│        |  └── *.dockerfile (for adhoc builds)
+|        ├── staticconfig (service-specific configuration)
+│        |  └── * (for each service)
+│        |     └── *
+│        ├── .env
+│        └── docker-compose.yml
 ├── /srv
-│  ├── db
+│  └── docker
+│  |  └── config
 │  ├── cache
-│  ├── config
 │  └── logs
 │
 └── /data
+   ├── db
    ├── downloads
    │  ├── audiobooks
    │  ├── movies
@@ -69,7 +99,8 @@ see: https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/
 ```
 
 ### These may be created with the following cmds
-`mkdir -p /{docker,server/{db,cache,config,logs},data/{media/{audiobooks,music,pictures,podcasts,movies,tv},downloads/{audiobooks,music,podcasts,movies,tv}}}`
+`chmod +x start.sh`  
+`./start.sh`
 
 ### Recursively own the /data directory
 sudo chown -R $USER:$USER /data
@@ -77,6 +108,9 @@ sudo chmod -R a=,a+rX,u+w,g+w /data
 
 
 ### Docker Compose (and needed files)
+`/opt`
+*explanation: reserved for the installation of add-on application software packages*
+
 This github repo represents this folder. It's safely committed to public repos and shouldn't contain anything sensitive.
 
 Example files:
@@ -85,13 +119,8 @@ Example files:
 - ./dockerfiles/custom-build-for-caddy.dockerfile
 - ./staticonfig/caddy/Caddyfile
 
-
-Ideally, individual contexts are separated - distinct "stacks" which can be managed (up/down/restart/etc). Unfortuantely, I'm not smart enough for that yet.
-- Taking down a context to fix issues, modify config, or update images should be possible without taking down *other* contexts. *To correct an issue with Emby, it's not necessary to take down Heimdall*
-- Managing the overall Homelab's configuration in a single repo (aka, HERE) should be possible without an individual server needing to run *all* services. This allows for a given server/vm/box to run *certain* contexts - but not necessarily all - while keeping the project manageable. No doubt something like proxmox/kubernetes would have different opinions about this.
-
 ### Persistent Data and Configuration
-`~/server`
+`/srv`
 
 How you configure the apps and their current states. This is separated from the Docker Compose (ie. "setup") as these become specific to how *you* use the services - not how they're installed/maintained.
 
@@ -116,13 +145,18 @@ Let's recognize four kinds of Media Server roles containers/apps:
 
 
 ## Port Reservations
-Ports are controlled through variables to provide a central "fact check"
+Ports are controlled through variables to provide a central "fact check".
 
+WIP
+
+| Service               | Purpose   | Environment Variable      |
+| :--                   | :--       | :--                       |
+| Auto Ripping Machine  | Web       | PORT_RIPPING                |
+| Dozzle                | Web       | PORT_DOZZLE      |
+| Gloomhaven, Client    | Web       | PORT_GHS_CLIENT      |
+| Gloomhaven, Server    | Server    | PORT_GHS_SERVER      |
+| Tandoor               | Web        | PORT_TANDOOR                   |
 
 # Optionals
 ### Caddy and DuckDns.org
 - If you do not use DuckDns.org and/or use another provider which needs a Caddy DNS module, alter `dockerfiles/caddy.dockerfile` appropriately
-- You can choose to alter docker-compose to point to [snoopeppers/caddy-duckdns](https://hub.docker.com/repository/docker/snoopeppers/caddy-duckdns) instead of having it build the image itself (though, naturally building it yourself will be more stable)
-- If you choose to handle Caddy in someother way (eg. don't containerize it) or do not need additional modules, I'd recommend
-  - deleting `dockerfiles/caddy.dockerfile`
-  - altering docker-compose as required

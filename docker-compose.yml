@@ -1,18 +1,456 @@
 version: "3.9"
 
 services:
+
+####################
+# Admin
+####################
+
+  heimdall:
+    container_name: heimdall
+    image: ghcr.io/linuxserver/heimdall
+    profiles:
+      - admin
+    
+    ports:
+      - ${PORT_DASH_HTTP}:80
+      - ${PORT_DASH_HTTPS}:443
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    volumes:
+      - ${CONFIGDIR}/heimdall:/config
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+  uptime-kuma:
+    container_name: uptime_kuma
+    image: louislam/uptime-kuma
+    profiles:
+      - admin
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+    
+    ports:
+      - ${PORT_UPKUMA}:3001
+    
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+      - ${CONFIGDIR}/uptime-kuma:/app/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: always
+
+####################
+# Recipes
+####################
+
+  tandoor:
+    container_name: tandoor
+    image: vabene1111/recipes:latest
+    profiles:
+      - recipes
+
+    depends_on:
+      tandoor_db:
+        condition: service_healthy
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+      - tandoor
+
+    ports:
+      - ${PORT_TANDOOR}:8080
+
+    env_file:
+      - ${STATICONFIGDIR}/tandoor/tandoor.env
+
+    environment:
+      TIMEZONE: ${TZ}
+      POSTGRES_HOST: ${TANDOOR_DB_NAME}
+      POSTGRES_USER: ${TANDOOR_DB_USER}
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+      - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    restart: unless-stopped
+
+  tandoor_db:
+    container_name: tandoor_db
+    image: postgres:11-alpine
+    profiles:
+      - recipes
+
+    networks:
+      - tandoor
+
+    env_file:
+      - ${STATICONFIGDIR}/tandoor/tandoor.env
+
+    volumes:
+      - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${TANDOOR_DB_NAME}
+        - '-U'
+        - ${TANDOOR_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+####################
+# Media
+####################
+
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin
+    profiles:
+      - media
+      
+    user: ${PUID}:${PGID}
+    group_add:
+      - ${GID_HARDWAREACC} # gid of your `render` group
+
+    networks:
+      - htpc-net
+      - caddy-net # provides access for the reverse proxy
+    
+    ports:
+      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
+      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
+      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
+      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
+
+    environment:
+      TZ: ${TZ}
+      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
+
+    labels:
+      - "diun.enable=true"
+
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
+      - /dev/dri/card0:/dev/dri/card0
+
+    volumes:
+      - ${CONFIGDIR}/jellyfin:/config
+      - ${CACHEDIR}/jellyfin:/cache
+      - ${MEDIADIR}:/media:ro #naming, etc all handled by *arr apps
+    
+    #deploy:
+    #  resources:
+    #    limits:
+    #      cpus: '2'
+    #      memory: 1024M
+    restart: unless-stopped
+  
+  jellyseerr:
+    container_name: jellyseerr
+    image: fallenbagel/jellyseerr:latest
+    profiles:
+      - media-request
+
+    depends_on:
+      - sonarr
+      - radarr
+
+    networks:
+      - htpc-net
+      - caddy-net # provides access for the reverse proxy
+
+    ports:
+      - ${PORT_HTPC_REQUESTS}:5055
+
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL}
+      TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+        - ${CONFIGDIR}/jellyseerr:/app/config
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+  
+  qbittorrent:
+    container_name: qbittorrent
+    image: linuxserver/qbittorrent
+    profiles:
+      - downloads
+      - media-request
+
+    depends_on:
+      protonvpn:
+        condition: service_healthy
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+        PUID: ${PUID}
+        PGID: ${PGID}
+        TZ: ${TZ}
+        UMASK_SET: 022
+        WEBUI_PORT: ${PORT_TORRENT_UI}
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+        - ${CONFIGDIR}/qbt:/config
+        - ${DOWNLOADDIR}:/data/downloads
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    healthcheck:
+      test: ls /sys/class/net/ | grep -o "eth[0-9*]|wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
+      interval: 30s
+      timeout: 6s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:develop
+    profiles:
+      - media-request
+
+    depends_on:
+      - protonvpn
+      - qbittorrent
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
+      
+    volumes:
+      - ${CONFIGDIR}/prowlarr:/config
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+  
+  radarr:
+    container_name: radarr
+    image: lscr.io/linuxserver/radarr:latest
+    profiles:
+      - media-request
+    
+    depends_on:
+      - prowlarr
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/radarr3:/config
+        - ${DATADIR}:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+  sonarr:
+    container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:latest
+    profiles:
+      - media-request
+
+    depends_on:
+      - prowlarr
+
+    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/sonarr:/config
+        - ${DATADIR}:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+####################
+# Automatic Ripping Machine
+####################
+
+  automatic-ripping-machine:
+    container_name: automatic-ripping-machine
+    image: 1337server/automatic-ripping-machine:latest
+    profiles:
+      - ripping
+
+    privileged: true
+
+    ports:
+      - ${PORT_RIPPING}:8080
+
+    environment:
+      ARM_UID: ${RIPPING_UID}
+      ARM_GID: ${RIPPING_GID}
+
+    devices:
+      - /dev/sr0:/dev/sr0
+      
+    volumes:
+      - ${CONFIGDIR}/ripping:/etc/arm/config
+      - /etc/localtime:/etc/localtime:ro
+
+      - ${RIPPING_HOME}:/home/arm
+      - ${LOGDIR}/ripping:/home/arm/logs
+
+      - ${DOWNLOADDIR}/rips/video:/home/arm/media/completed
+      - ${DOWNLOADDIR}/rips/music:/home/arm/Music
+
+
+    deploy:
+      resources:
+        limits:
+          cpus: '5'
+          memory: 2048M #for a single rip, ARM is not RAM limited.
+    restart: 'no'
+
+####################
+# Gloomhaven
+####################
+
+  gloomhaven:
+    container_name: gloomhaven
+    image: snoopeppers/gloomhaven-secretary
+    profiles:
+      - gloomhaven
+
+    networks:
+      - caddy-net
+
+    ports:
+      - ${PORT_GHS_CLIENT}:80
+
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+  gloomhaven-server:
+    container_name: gloomhaven-server
+    image: ghcr.io/lurkars/ghs-server
+    profiles:
+      - gloomhaven
+
+    networks:
+      - caddy-net
+      
+    ports:
+      - ${PORT_GHS_SERVER}:8080
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+      - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    restart: unless-stopped
+
+####################
+# Back End Services
+####################
+
   caddy:
     container_name: caddy
     build:
       context: ${DOCKERDIR}
       dockerfile: caddy.dockerfile #Custom build which uses duckdns
+    profiles:
+      - external
 
     depends_on:
       - crowdsec
-      - jellyfin
-      - jellyseerr
-      - tandoor
-      - uptime-kuma
 
     external_links:
       - crowdsec:crowdsec
@@ -54,365 +492,12 @@ services:
     healthcheck:
       test: ["CMD", "caddy", "version"]
     restart: unless-stopped
-
-  heimdall:
-    container_name: heimdall
-    image: ghcr.io/linuxserver/heimdall
-    
-    ports:
-      - ${PORT_DASH_HTTP}:80
-      - ${PORT_DASH_HTTPS}:443
-
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-
-    volumes:
-      - ${CONFIGDIR}/heimdall:/config
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: unless-stopped
-
-  uptime-kuma:
-    container_name: uptime_kuma
-    image: louislam/uptime-kuma
-    
-    networks:
-      - caddy-net # provides access for the reverse proxy
-    
-    ports:
-      - ${PORT_UPKUMA}:3001
-    
-    labels:
-      - "diun.enable=true"
-
-    volumes:
-      - ${CONFIGDIR}/uptime-kuma:/app/data
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: always
-
-####################
-# Recipes
-####################
-
-  tandoor:
-    container_name: tandoor
-    image: vabene1111/recipes:latest
-
-    depends_on:
-      tandoor_db:
-        condition: service_healthy
-    
-    networks:
-      - caddy-net # provides access for the reverse proxy
-      - tandoor
-
-    ports:
-      - ${PORT_TANDOOR}:8080
-
-    env_file:
-      - ${STATICONFIGDIR}/tandoor/tandoor.env
-
-    environment:
-      TIMEZONE: ${TZ}
-      POSTGRES_HOST: ${TANDOOR_DB_NAME}
-      POSTGRES_USER: ${TANDOOR_DB_USER}
-
-    labels:
-      - "diun.enable=true"
-
-    volumes:
-      - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-    restart: unless-stopped
-
-  tandoor_db:
-    container_name: tandoor_db
-    image: postgres:11-alpine
-
-    networks:
-      - tandoor
-
-    env_file:
-      - ${STATICONFIGDIR}/tandoor/tandoor.env
-
-    volumes:
-      - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
-
-    healthcheck:
-      interval: 60s
-      retries: 10
-      test:
-        - CMD
-        - pg_isready
-        - '-q'
-        - '-d'
-        - ${TANDOOR_DB_NAME}
-        - '-U'
-        - ${TANDOOR_DB_USER}
-      timeout: 45s
-      
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: unless-stopped
-
-
-####################
-# System Information
-####################
-
-  dozzle:
-    container_name: dozzle
-    image: amir20/dozzle:latest
-
-    depends_on:
-      - socky_proxy
-
-    networks:
-      - socky_proxy-net
-
-    ports:
-      - ${PORT_DOZZLE}:8080
-
-    environment:
-      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
-    
-    labels:
-      - "diun.enable=true"
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 64M
-    restart: always
-
-####################
-# Media
-####################
-
-  jellyfin:
-    container_name: jellyfin
-    image: jellyfin/jellyfin
-
-    user: ${PUID}:${PGID}
-    group_add:
-      - ${GID_HARDWAREACC} # gid of your `render` group
-
-    networks:
-      - htpc-net
-      - caddy-net # provides access for the reverse proxy
-    
-    ports:
-      - ${PORT_HTPC_HTTP}:8096 #HTTP webUI
-      - ${PORT_HTPC_HTTPS}:8920 #HTTPS webUI
-      - ${PORT_HTPC_LOCAL}:7359/udp #optional. Allows clients to discover Jellyfin on the local network.
-      - ${PORT_HTPC_DLNA}:1900/udp #optional. Service discovery used by DNLA and clients.
-
-    environment:
-      TZ: ${TZ}
-      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
-
-    labels:
-      - "diun.enable=true"
-
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
-      - /dev/dri/card0:/dev/dri/card0
-
-    volumes:
-      - ${CONFIGDIR}/jellyfin:/config
-      - ${CACHEDIR}/jellyfin:/cache
-      - ${MEDIADIR}:/media:ro #naming, etc all handled by *arr apps
-    
-    #deploy:
-    #  resources:
-    #    limits:
-    #      cpus: '2'
-    #      memory: 1024M
-    restart: unless-stopped
   
-  jellyseerr:
-    container_name: jellyseerr
-    image: fallenbagel/jellyseerr:latest
-       
-    networks:
-      - htpc-net
-      - caddy-net # provides access for the reverse proxy
-
-    ports:
-      - ${PORT_HTPC_REQUESTS}:5055
-
-    environment:
-      LOG_LEVEL: ${LOG_LEVEL}
-      TZ: ${TZ}
-
-    labels:
-      - "diun.enable=true"
-
-    volumes:
-        - ${CONFIGDIR}/jellyseerr:/app/config
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-    restart: unless-stopped
-  
-  qbittorrent:
-    container_name: qbittorrent
-    image: linuxserver/qbittorrent
-
-    depends_on:
-      protonvpn:
-        condition: service_healthy
-
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
-
-    environment:
-        PUID: ${PUID}
-        PGID: ${PGID}
-        TZ: ${TZ}
-        UMASK_SET: 022
-        WEBUI_PORT: ${PORT_TORRENT_UI}
-
-    labels:
-      - "diun.enable=true"
-
-    volumes:
-        - ${CONFIGDIR}/qbt:/config
-        - ${DOWNLOADDIR}:/data/downloads
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    healthcheck:
-      test: ls /sys/class/net/ | grep -o "eth[0-9*]|wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
-      interval: 30s
-      timeout: 6s
-      retries: 3
-      start_period: 20s
-    restart: unless-stopped
-
-  prowlarr:
-    container_name: prowlarr
-    image: lscr.io/linuxserver/prowlarr:develop
-
-    depends_on:
-      - protonvpn
-      - qbittorrent
-
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
-
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-
-    labels:
-      - "diun.enable=true"
-      
-    volumes:
-      - ${CONFIGDIR}/prowlarr:/config
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: unless-stopped
-  
-  radarr:
-    container_name: radarr
-    image: lscr.io/linuxserver/radarr:latest
-    
-    depends_on:
-      - protonvpn
-      - prowlarr
-      - qbittorrent
-
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
-
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-
-    labels:
-      - "diun.enable=true"
-
-    volumes:
-        - /etc/localtime:/etc/localtime:ro
-        - ${CONFIGDIR}/radarr3:/config
-        - ${DATADIR}:/data
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-    restart: unless-stopped
-
-  sonarr:
-    container_name: sonarr
-    image: lscr.io/linuxserver/sonarr:latest
-
-    depends_on:
-      - protonvpn
-      - prowlarr
-      - qbittorrent
-
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
-
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-
-    labels:
-      - "diun.enable=true"
-
-    volumes:
-        - /etc/localtime:/etc/localtime:ro
-        - ${CONFIGDIR}/sonarr:/config
-        - ${DATADIR}:/data
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-    restart: unless-stopped
-
-
-####################
-# Back End Services
-####################
-
   duckdns:
     container_name: duckdns
     image: ghcr.io/linuxserver/duckdns
+    profiles:
+      - external
 
     environment:
       PUID: ${PUID}
@@ -434,6 +519,8 @@ services:
   diun:
     container_name: diun
     image: ghcr.io/crazy-max/diun:4.22
+    profiles:
+      - monitor
 
     depends_on:
       - socky_proxy
@@ -470,6 +557,9 @@ services:
   protonvpn:
     container_name: protonvpn
     image: lscr.io/linuxserver/wireguard:latest
+    profiles:
+      - downloads
+      - media-request
     
     environment:
       PUID: ${PUID}
@@ -514,6 +604,10 @@ services:
   socky_proxy:
     container_name: socky_proxy
     image: ghcr.io/tecnativa/docker-socket-proxy:0.1 # A security-enhanced proxy for the Docker Socket.
+    profiles:
+      - admin
+      - external
+      - monitor
 
     privileged: true
   
@@ -545,6 +639,37 @@ services:
 
     restart: always
 
+####################
+# System Information
+####################
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    profiles:
+      - monitor
+
+    depends_on:
+      - socky_proxy
+
+    networks:
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_DOZZLE}:8080
+
+    environment:
+      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+    
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
+    restart: always
 
 ####################
 # Security
@@ -553,6 +678,8 @@ services:
   crowdsec:
     container_name: crowdsec
     image: crowdsecurity/crowdsec:v1.4.2
+    profiles:
+      - external
 
     depends_on:
       - socky_proxy
@@ -597,6 +724,8 @@ services:
   endlessh:
     image: lscr.io/linuxserver/endlessh:latest
     container_name: endlessh
+    profiles:
+      - external
 
     ports:
       - ${PORT_SSHPROTECT:-22}:2222
@@ -643,7 +772,6 @@ networks:
     name: caddy-net
     external: true
     
-
   htpc-net:
     name: htpc-net
   tandoor:
