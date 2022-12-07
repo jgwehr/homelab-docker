@@ -173,7 +173,7 @@ services:
       - homepage.description=Media Streaming Server
       - homepage.widget.type=jellyfin
       - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_HTTP}
-      - homepage.widget.key=${HOMEPAGE_API_JELLYFIN}
+      - homepage.widget.key=${HOMEPAGE_JELLYFIN_API}
 
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
@@ -218,10 +218,10 @@ services:
       - homepage.name=Jellyseerr
       - homepage.icon=jellyseerr
       - homepage.href=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
-      - homepage.description=Media Streaming Server
-      - homepage.widget.type=jellyfin
+      - homepage.description=Request Movies and TV Shows
+      - homepage.widget.type=jellyseerr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
-      - homepage.widget.key=${HOMEPAGE_API_JELLYSEERR}
+      - homepage.widget.key=${HOMEPAGE_JELLYSEERR_API}
 
     volumes:
         - ${CONFIGDIR}/jellyseerr:/app/config
@@ -255,6 +255,15 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=qBittorrent
+      - homepage.icon=qbittorrent
+      - homepage.href=http://${SERVER_URL}:${PORT_TORRENT_UI}
+      - homepage.description=Torrent Management
+      - homepage.widget.type=qbittorrent
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_TORRENT_UI}
+      - homepage.widget.username=${HOMEPAGE_QBITTORENT_USERNAME}
+      - homepage.widget.password=${HOMEPAGE_QBITTORENT_PASSWORD}
 
     volumes:
         - ${CONFIGDIR}/qbt:/config
@@ -292,6 +301,14 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr
+      - homepage.href=http://${SERVER_URL}:${PORT_PROWLARR_UI}
+      - homepage.description=Indexer manager/proxy
+      - homepage.widget.type=prowlarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_PROWLARR_UI}
+      - homepage.widget.key=${HOMEPAGE_PROWLARR_API}
       
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
@@ -321,6 +338,14 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Radarr
+      - homepage.icon=radarr
+      - homepage.href=http://${SERVER_URL}:${PORT_RADARR_UI}
+      - homepage.description=Movie collection manager
+      - homepage.widget.type=radarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_RADARR_UI}
+      - homepage.widget.key=${HOMEPAGE_RADARR_API}
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -352,6 +377,14 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr
+      - homepage.href=http://${SERVER_URL}:${PORT_SONARR_UI}
+      - homepage.description=TV Show collection manager
+      - homepage.widget.type=sonarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SONARR_UI}
+      - homepage.widget.key=${HOMEPAGE_SONARR_API}
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
