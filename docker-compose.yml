@@ -1,58 +1,10 @@
 version: "3.9"
 
 services:
-  caddy:
-    container_name: caddy
-    build:
-      context: ${DOCKERDIR}
-      dockerfile: caddy.dockerfile #Custom build which uses duckdns
 
-    profiles:
-      - core
-
-    depends_on:
-      - crowdsec
-
-    external_links:
-      - crowdsec:crowdsec
-      - jellyfin:jellyfin
-      - jellyseerr:jellyseerr
-      - tandoor:tandoor
-      - uptime_kuma:uptime_kuma
-
-    networks:
-      - web
-      - caddy-net
-
-    ports:
-      - ${PORT_CADDY_HTTP}:80
-      - ${PORT_CADDY_HTTPS}:443
-
-    environment:
-      LOG_FILE: ${LOGDIR}/caddy/access.log
-      DOMAIN: ${DOMAIN}
-      EMAIL: ${EMAIL_ADMIN}
-      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
-      
-      BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
-
-    labels:
-      - "diun.enable=true"
-
-    volumes:
-      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
-      - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
-      - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
-      - ${STATICDIR}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 64M
-    healthcheck:
-      test: ["CMD", "caddy", "version"]
-    restart: unless-stopped
+####################
+# Admin
+####################
 
   heimdall:
     container_name: heimdall
@@ -172,37 +124,6 @@ services:
           cpus: '1'
           memory: 128M
     restart: unless-stopped
-
-
-####################
-# System Information
-####################
-
-  dozzle:
-    container_name: dozzle
-    image: amir20/dozzle:latest
-
-    depends_on:
-      - socky_proxy
-
-    networks:
-      - socky_proxy-net
-
-    ports:
-      - ${PORT_DOZZLE}:8080
-
-    environment:
-      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
-    
-    labels:
-      - "diun.enable=true"
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 64M
-    restart: always
 
 ####################
 # Media
@@ -404,11 +325,148 @@ services:
           memory: 256M
     restart: unless-stopped
 
+####################
+# Automatic Ripping Machine
+####################
+
+  automatic-ripping-machine:
+    container_name: automatic-ripping-machine
+    image: 1337server/automatic-ripping-machine:latest
+
+    privileged: true
+
+    ports:
+      - ${PORT_RIPPING}:8080
+
+    environment:
+      ARM_UID: ${RIPPING_UID}
+      ARM_GID: ${RIPPING_GID}
+
+    devices:
+      - /dev/sr0:/dev/sr0
+      
+    volumes:
+      - ${CONFIGDIR}/ripping:/etc/arm/config
+      - /etc/localtime:/etc/localtime:ro
+
+      - ${RIPPING_HOME}:/home/arm
+      - ${LOGDIR}/ripping:/home/arm/logs
+
+      - ${DOWNLOADDIR}/rips/video:/home/arm/media/completed
+      - ${DOWNLOADDIR}/rips/music:/home/arm/Music
+
+
+    deploy:
+      resources:
+        limits:
+          cpus: '5'
+          memory: 2048M #for a single rip, ARM is not RAM limited.
+    restart: 'no'
+
+####################
+# Gloomhaven
+####################
+
+  gloomhaven:
+    container_name: gloomhaven
+    image: snoopeppers/gloomhaven-secretary
+
+    networks:
+      - caddy-net
+
+    ports:
+      - ${PORT_GHS_CLIENT}:80
+
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+  gloomhaven-server:
+    container_name: gloomhaven-server
+    image: snoopeppers/gloomhaven-secretary-server
+
+    networks:
+      - caddy-net
+      
+    ports:
+      - ${PORT_GHS_SERVER}:8080
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+      - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    restart: unless-stopped
 
 ####################
 # Back End Services
 ####################
 
+  caddy:
+    container_name: caddy
+    build:
+      context: ${DOCKERDIR}
+      dockerfile: caddy.dockerfile #Custom build which uses duckdns
+
+    profiles:
+      - core
+
+    depends_on:
+      - crowdsec
+
+    external_links:
+      - crowdsec:crowdsec
+      - jellyfin:jellyfin
+      - jellyseerr:jellyseerr
+      - tandoor:tandoor
+      - uptime_kuma:uptime_kuma
+
+    networks:
+      - web
+      - caddy-net
+
+    ports:
+      - ${PORT_CADDY_HTTP}:80
+      - ${PORT_CADDY_HTTPS}:443
+
+    environment:
+      LOG_FILE: ${LOGDIR}/caddy/access.log
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL_ADMIN}
+      DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
+      
+      BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
+
+    labels:
+      - "diun.enable=true"
+
+    volumes:
+      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
+      - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
+      - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
+      - ${STATICDIR}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+    restart: unless-stopped
+  
   duckdns:
     container_name: duckdns
     image: ghcr.io/linuxserver/duckdns
@@ -544,6 +602,35 @@ services:
 
     restart: always
 
+####################
+# System Information
+####################
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+
+    depends_on:
+      - socky_proxy
+
+    networks:
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_DOZZLE}:8080
+
+    environment:
+      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+    
+    labels:
+      - "diun.enable=true"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 64M
+    restart: always
 
 ####################
 # Security

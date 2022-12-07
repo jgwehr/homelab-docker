@@ -138,6 +138,14 @@ Let's recognize four kinds of Media Server roles containers/apps:
 ## Port Reservations
 Ports are controlled through variables to provide a central "fact check"
 
+WIP
+
+| Service               | Directory                 | Ports     |
+| :--                   | :--                       | :-: |
+| Auto Ripping Machine  | auto-ripping-machine      | `7010`    |
+| Gloomhaven, Client    | gloomhaven-secretary      | `7020`    |
+| Gloomhaven, Server    | gloomhaven-secretary      | `7021`    |
+| Tandoor               | recipes                   | `7030`    |
 
 # Optionals
 ### Caddy and DuckDns.org
