@@ -12,6 +12,9 @@ services:
     profiles:
       - admin
 
+    networks:
+      - socky_proxy-net
+
     ports:
       - ${PORT_DASH_HTTP}:3000
 
@@ -44,7 +47,7 @@ services:
       - ${PORT_UPKUMA}:3001
     
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
@@ -86,7 +89,7 @@ services:
       POSTGRES_USER: ${TANDOOR_DB_USER}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
       - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
@@ -240,7 +243,7 @@ services:
         WEBUI_PORT: ${PORT_TORRENT_UI}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
         - ${CONFIGDIR}/qbt:/config
@@ -277,7 +280,7 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
       
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
@@ -306,7 +309,7 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -337,7 +340,7 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -408,7 +411,7 @@ services:
       - ${PORT_GHS_CLIENT}:80
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     deploy:
       resources:
@@ -430,7 +433,7 @@ services:
       - ${PORT_GHS_SERVER}:8080
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
       - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
@@ -481,7 +484,7 @@ services:
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
@@ -543,7 +546,7 @@ services:
       DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
     
     volumes:
       - ${STATICONFIGDIR}/diun/diun.yml:/diun.yml:ro
@@ -584,7 +587,7 @@ services:
       - ${PORT_SONARR_UI}:8989
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
       - ${CONFIGDIR}/wireguard:/config
@@ -631,7 +634,7 @@ services:
       INFO: 1 # crowdsec
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -667,7 +670,7 @@ services:
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
     
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     deploy:
       resources:
@@ -714,7 +717,7 @@ services:
       - /var/log/syslog.log:/logs/syslog.log:ro
       
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     healthcheck:
       test: ["CMD", "cscli", "version"]
@@ -749,7 +752,7 @@ services:
     #  - ${CONFIGDIR}/endlessh:/config #Required if LOGFILE is set to true.
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
 
     deploy:
       resources:
