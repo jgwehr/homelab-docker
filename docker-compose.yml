@@ -9,6 +9,8 @@ services:
   heimdall:
     container_name: heimdall
     image: ghcr.io/linuxserver/heimdall
+    profiles:
+      - admin
     
     ports:
       - ${PORT_DASH_HTTP}:80
@@ -32,6 +34,8 @@ services:
   uptime-kuma:
     container_name: uptime_kuma
     image: louislam/uptime-kuma
+    profiles:
+      - admin
     
     networks:
       - caddy-net # provides access for the reverse proxy
@@ -59,6 +63,8 @@ services:
   tandoor:
     container_name: tandoor
     image: vabene1111/recipes:latest
+    profiles:
+      - recipes
 
     depends_on:
       tandoor_db:
@@ -95,6 +101,8 @@ services:
   tandoor_db:
     container_name: tandoor_db
     image: postgres:11-alpine
+    profiles:
+      - recipes
 
     networks:
       - tandoor
@@ -132,7 +140,9 @@ services:
   jellyfin:
     container_name: jellyfin
     image: jellyfin/jellyfin
-
+    profiles:
+      - media
+      
     user: ${PUID}:${PGID}
     group_add:
       - ${GID_HARDWAREACC} # gid of your `render` group
@@ -173,7 +183,9 @@ services:
   jellyseerr:
     container_name: jellyseerr
     image: fallenbagel/jellyseerr:latest
-    
+    profiles:
+      - media-request
+
     depends_on:
       - sonarr
       - radarr
@@ -205,6 +217,9 @@ services:
   qbittorrent:
     container_name: qbittorrent
     image: linuxserver/qbittorrent
+    profiles:
+      - downloads
+      - media-request
 
     depends_on:
       protonvpn:
@@ -242,6 +257,8 @@ services:
   prowlarr:
     container_name: prowlarr
     image: lscr.io/linuxserver/prowlarr:develop
+    profiles:
+      - media-request
 
     depends_on:
       - protonvpn
@@ -270,6 +287,8 @@ services:
   radarr:
     container_name: radarr
     image: lscr.io/linuxserver/radarr:latest
+    profiles:
+      - media-request
     
     depends_on:
       - prowlarr
@@ -299,6 +318,8 @@ services:
   sonarr:
     container_name: sonarr
     image: lscr.io/linuxserver/sonarr:latest
+    profiles:
+      - media-request
 
     depends_on:
       - prowlarr
@@ -332,6 +353,8 @@ services:
   automatic-ripping-machine:
     container_name: automatic-ripping-machine
     image: 1337server/automatic-ripping-machine:latest
+    profiles:
+      - ripping
 
     privileged: true
 
@@ -370,6 +393,8 @@ services:
   gloomhaven:
     container_name: gloomhaven
     image: snoopeppers/gloomhaven-secretary
+    profiles:
+      - gloomhaven
 
     networks:
       - caddy-net
@@ -389,7 +414,9 @@ services:
 
   gloomhaven-server:
     container_name: gloomhaven-server
-    image: snoopeppers/gloomhaven-secretary-server
+    image: ghcr.io/lurkars/ghs-server
+    profiles:
+      - gloomhaven
 
     networks:
       - caddy-net
@@ -419,9 +446,8 @@ services:
     build:
       context: ${DOCKERDIR}
       dockerfile: caddy.dockerfile #Custom build which uses duckdns
-
     profiles:
-      - core
+      - external
 
     depends_on:
       - crowdsec
@@ -470,6 +496,8 @@ services:
   duckdns:
     container_name: duckdns
     image: ghcr.io/linuxserver/duckdns
+    profiles:
+      - external
 
     environment:
       PUID: ${PUID}
@@ -491,6 +519,8 @@ services:
   diun:
     container_name: diun
     image: ghcr.io/crazy-max/diun:4.22
+    profiles:
+      - monitor
 
     depends_on:
       - socky_proxy
@@ -527,6 +557,9 @@ services:
   protonvpn:
     container_name: protonvpn
     image: lscr.io/linuxserver/wireguard:latest
+    profiles:
+      - downloads
+      - media-request
     
     environment:
       PUID: ${PUID}
@@ -571,6 +604,10 @@ services:
   socky_proxy:
     container_name: socky_proxy
     image: ghcr.io/tecnativa/docker-socket-proxy:0.1 # A security-enhanced proxy for the Docker Socket.
+    profiles:
+      - admin
+      - external
+      - monitor
 
     privileged: true
   
@@ -609,6 +646,8 @@ services:
   dozzle:
     container_name: dozzle
     image: amir20/dozzle:latest
+    profiles:
+      - monitor
 
     depends_on:
       - socky_proxy
@@ -639,6 +678,8 @@ services:
   crowdsec:
     container_name: crowdsec
     image: crowdsecurity/crowdsec:v1.4.2
+    profiles:
+      - external
 
     depends_on:
       - socky_proxy
@@ -683,6 +724,8 @@ services:
   endlessh:
     image: lscr.io/linuxserver/endlessh:latest
     container_name: endlessh
+    profiles:
+      - external
 
     ports:
       - ${PORT_SSHPROTECT:-22}:2222
