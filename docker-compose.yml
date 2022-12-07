@@ -168,9 +168,12 @@ services:
       - diun.enable=true
       - homepage.group=Media
       - homepage.name=Jellyfin
-      - homepage.icon=jellyfin.png
-      - homepage.href=${JELLYFIN_URL}
+      - homepage.icon=jellyfin
+      - homepage.href=http://${SERVER_URL}:${PORT_HTPC_HTTP}
       - homepage.description=Media Streaming Server
+      - homepage.widget.type=jellyfin
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_HTTP}
+      - homepage.widget.key=${HOMEPAGE_API_JELLYFIN}
 
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
@@ -210,7 +213,15 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Media
+      - homepage.name=Jellyseerr
+      - homepage.icon=jellyseerr
+      - homepage.href=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
+      - homepage.description=Media Streaming Server
+      - homepage.widget.type=jellyfin
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
+      - homepage.widget.key=${HOMEPAGE_API_JELLYSEERR}
 
     volumes:
         - ${CONFIGDIR}/jellyseerr:/app/config
