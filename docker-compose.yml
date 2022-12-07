@@ -5,16 +5,15 @@ services:
 ####################
 # Admin
 ####################
-
-  heimdall:
-    container_name: heimdall
-    image: ghcr.io/linuxserver/heimdall
+  
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: homepage
     profiles:
       - admin
-    
+
     ports:
-      - ${PORT_DASH_HTTP}:80
-      - ${PORT_DASH_HTTPS}:443
+      - ${PORT_DASH_HTTP}:3000
 
     environment:
       PUID: ${PUID}
@@ -22,7 +21,7 @@ services:
       TZ: ${TZ}
 
     volumes:
-      - ${CONFIGDIR}/heimdall:/config
+      - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
     
     deploy:
       resources:
@@ -621,7 +620,7 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
-      CONTAINERS: 1 # crowdsec, diun
+      CONTAINERS: 1 # crowdsec, diun, homepage
       IMAGES: 1 # diun
       INFO: 1 # crowdsec
 
