@@ -75,12 +75,6 @@ services:
 # Docker Environment
 ####################
 
-volumes:
-  crowdsec-config:
-    external: true
-  crowdsec-db:
-    external: true
-
 networks:
   caddy-net:
     name: caddy-net
