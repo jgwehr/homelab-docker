@@ -24,8 +24,8 @@ services:
       TZ: ${TZ}
 
     volumes:
-      - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
-      - ${STATICONFIGDIR}/homepage/docker.yaml:/app/config/docker.yaml
+      - ${STATICONFIG}/homepage:/app/config:ro # Make sure your local config directory exists
+      #- ${STATICONFIG}/homepage/icons:/app/public/icons #for custom icons
     
     deploy:
       resources:
