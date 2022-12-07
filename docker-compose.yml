@@ -22,6 +22,7 @@ services:
 
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
+      - ${STATICONFIGDIR}/homepage/docker.yaml:/app/config/docker.yaml
     
     deploy:
       resources:
@@ -161,7 +162,12 @@ services:
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Media
+      - homepage.name=Jellyfin
+      - homepage.icon=jellyfin.png
+      - homepage.href=${JELLYFIN_URL}
+      - homepage.description=Media Streaming Server
 
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
