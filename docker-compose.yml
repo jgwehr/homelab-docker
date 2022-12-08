@@ -792,6 +792,42 @@ services:
           memory: 64M
     restart: always
 
+  scrutiny:
+    container_name: scrutiny
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+    profiles:
+      - monitor
+
+    ports:
+      - ${PORT_SCRUTINY}:8080 # webapp
+      - ${PORT_SCRUTINY_DB}:8086 # influxDB admin
+
+    labels:
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Scrutiny
+      - homepage.icon=scrutiny
+      - homepage.description=Harddrive Health Monitoring
+      - homepage.widget.type=scrutiny
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_DOZZLE}
+
+    volumes:
+      - /run/udev:/run/udev:ro
+      - ${CONFIGDIR}/scrutiny:/opt/scrutiny/config
+      - ${DBDIR}/scrutiny:/opt/scrutiny/influxdb
+
+    cap_add:
+      - SYS_RAWIO #necessary to allow smartctl permission to query your device SMART data 
+      - SYS_ADMIN #necessary for NVMe drives
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+
 ####################
 # Security
 ####################
