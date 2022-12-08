@@ -1,1 +1,3 @@
 title: homelab-docker
+backgroundOpacity: 0.5
+theme: dark # or light

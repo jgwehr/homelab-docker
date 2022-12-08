@@ -26,6 +26,7 @@ services:
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
       #- ${STATICCONFIG}/homepage/icons:/app/public/icons #for custom icons
+      #- ${STATICCONFIG}/homepage/images:/app/public/icons #for custom backgrounds
     
     deploy:
       resources:
@@ -50,7 +51,7 @@ services:
       - diun.enable=true
       - homepage.group=System
       - homepage.name=Uptime Kuma
-      - homepage.icon=uptimekuma
+      - homepage.icon=uptime-kuma
       - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
       - homepage.description=Service Uptime Monitoring
 
