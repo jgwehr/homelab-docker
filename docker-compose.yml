@@ -25,8 +25,8 @@ services:
 
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
-      - ${STATICDIR}/icons:/app/public/icons #Optional. for custom icons
-      - ${STATICDIR}/wallpaper:/app/public/images #Optional. for custom backgrounds
+      - ${STATICDIR}/icons:/app/public/icons:ro #Optional. for custom icons
+      - ${STATICDIR}/wallpaper:/app/public/images:ro #Optional. for custom backgrounds
     
     deploy:
       resources:
