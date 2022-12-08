@@ -444,7 +444,7 @@ services:
 
   gloomhaven:
     container_name: gloomhaven
-    image: snoopeppers/gloomhaven-secretary
+    image: ghcr.io/lurkars/ghs
     profiles:
       - gloomhaven
 
