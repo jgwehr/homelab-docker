@@ -1,0 +1,16 @@
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+
+- search:
+    provider: duckduckgo
+    target: _blank
+
+-  openmeteo:
+    label: # optional
+    latitude:
+    longitude:
+    timezone: # optional
+    units: metric
+    cache: 30 # Time in minutes to cache API responses, to stay within limits

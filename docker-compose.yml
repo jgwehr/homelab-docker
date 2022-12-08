@@ -5,16 +5,18 @@ services:
 ####################
 # Admin
 ####################
-
-  heimdall:
-    container_name: heimdall
-    image: ghcr.io/linuxserver/heimdall
+  
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: homepage
     profiles:
       - admin
-    
+
+    networks:
+      - socky_proxy-net
+
     ports:
-      - ${PORT_DASH_HTTP}:80
-      - ${PORT_DASH_HTTPS}:443
+      - ${PORT_DASH_HTTP}:3000
 
     environment:
       PUID: ${PUID}
@@ -22,7 +24,9 @@ services:
       TZ: ${TZ}
 
     volumes:
-      - ${CONFIGDIR}/heimdall:/config
+      - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
+      - ${STATICDIR}/icons:/app/public/icons:ro #Optional. for custom icons
+      - ${STATICDIR}/wallpaper:/app/public/images:ro #Optional. for custom backgrounds
     
     deploy:
       resources:
@@ -44,7 +48,12 @@ services:
       - ${PORT_UPKUMA}:3001
     
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Uptime Kuma
+      - homepage.icon=uptime-kuma
+      - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
+      - homepage.description=Service Uptime Monitoring
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
@@ -86,7 +95,12 @@ services:
       POSTGRES_USER: ${TANDOOR_DB_USER}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Home
+      - homepage.name=Tandoor
+      - homepage.icon=tandoorrecipes
+      - homepage.href=http://${SERVER_URL}:${PORT_TANDOOR}
+      - homepage.description=Recipes and Meal Planning
 
     volumes:
       - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
@@ -109,6 +123,12 @@ services:
 
     env_file:
       - ${STATICONFIGDIR}/tandoor/tandoor.env
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Tandoor DB
+      - homepage.icon=postgres
+      - homepage.description=Recipes Database
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
@@ -162,7 +182,15 @@ services:
       JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Media
+      - homepage.name=Jellyfin
+      - homepage.icon=jellyfin
+      - homepage.href=http://${SERVER_URL}:${PORT_HTPC_HTTP}
+      - homepage.description=Media Streaming Server
+      - homepage.widget.type=jellyfin
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_HTTP}
+      - homepage.widget.key=${HOMEPAGE_JELLYFIN_API}
 
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # VAAPI
@@ -202,7 +230,15 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Media
+      - homepage.name=Jellyseerr
+      - homepage.icon=jellyseerr
+      - homepage.href=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
+      - homepage.description=Request Movies and TV Shows
+      - homepage.widget.type=jellyseerr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
+      - homepage.widget.key=${HOMEPAGE_JELLYSEERR_API}
 
     volumes:
         - ${CONFIGDIR}/jellyseerr:/app/config
@@ -235,7 +271,16 @@ services:
         WEBUI_PORT: ${PORT_TORRENT_UI}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=qBittorrent
+      - homepage.icon=qbittorrent
+      - homepage.href=http://${SERVER_URL}:${PORT_TORRENT_UI}
+      - homepage.description=Torrent Management
+      - homepage.widget.type=qbittorrent
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_TORRENT_UI}
+      - homepage.widget.username=${HOMEPAGE_QBITTORENT_USERNAME}
+      - homepage.widget.password=${HOMEPAGE_QBITTORENT_PASSWORD}
 
     volumes:
         - ${CONFIGDIR}/qbt:/config
@@ -247,7 +292,7 @@ services:
           cpus: '1'
           memory: 128M
     healthcheck:
-      test: ls /sys/class/net/ | grep -o "eth[0-9*]|wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
+      test: ls /sys/class/net/ | grep -o "wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
       interval: 30s
       timeout: 6s
       retries: 3
@@ -261,8 +306,10 @@ services:
       - media-request
 
     depends_on:
-      - protonvpn
-      - qbittorrent
+      protonvpn:
+        condition: service_healthy
+      qbittorrent:
+        condition: service_started
 
     network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
 
@@ -272,7 +319,15 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr
+      - homepage.href=http://${SERVER_URL}:${PORT_PROWLARR_UI}
+      - homepage.description=Indexer manager/proxy
+      - homepage.widget.type=prowlarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_PROWLARR_UI}
+      - homepage.widget.key=${HOMEPAGE_PROWLARR_API}
       
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
@@ -301,7 +356,15 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Radarr
+      - homepage.icon=radarr
+      - homepage.href=http://${SERVER_URL}:${PORT_RADARR_UI}
+      - homepage.description=Movie collection manager
+      - homepage.widget.type=radarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_RADARR_UI}
+      - homepage.widget.key=${HOMEPAGE_RADARR_API}
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -332,7 +395,15 @@ services:
       TZ: ${TZ}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr
+      - homepage.href=http://${SERVER_URL}:${PORT_SONARR_UI}
+      - homepage.description=TV Show collection manager
+      - homepage.widget.type=sonarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SONARR_UI}
+      - homepage.widget.key=${HOMEPAGE_SONARR_API}
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -365,6 +436,12 @@ services:
       ARM_UID: ${RIPPING_UID}
       ARM_GID: ${RIPPING_GID}
 
+    labels:
+      - homepage.group=Downloads
+      - homepage.name=Automatic Ripping Machine
+      - homepage.href=http://${SERVER_URL}:${PORT_RIPPING}
+      - homepage.description=Disk-in Music/Movie Ripping
+
     devices:
       - /dev/sr0:/dev/sr0
       
@@ -392,7 +469,7 @@ services:
 
   gloomhaven:
     container_name: gloomhaven
-    image: snoopeppers/gloomhaven-secretary
+    image: ghcr.io/lurkars/ghs
     profiles:
       - gloomhaven
 
@@ -403,7 +480,13 @@ services:
       - ${PORT_GHS_CLIENT}:80
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Games
+      - homepage.name=Gloomhaven Secretariat
+      - homepage.icon=/icons/ghs.png
+      - homepage.href=http://${SERVER_URL}:${PORT_GHS_CLIENT}
+      - homepage.description=Gloomhaven Ability and Initiative tracker
+      
 
     deploy:
       resources:
@@ -425,7 +508,12 @@ services:
       - ${PORT_GHS_SERVER}:8080
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Back End
+      - homepage.name=Gloomhaven Secretariat Server
+      - homepage.icon=/icons/ghs.png
+      - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
+      - homepage.description=Backend for GLoomhaven Secretariat
 
     volumes:
       - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
@@ -476,7 +564,11 @@ services:
       BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Wild West
+      - homepage.name=Caddy
+      - homepage.icon=caddy
+      - homepage.description=Reverse Proxy
 
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
@@ -506,6 +598,12 @@ services:
       SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
       TOKEN: ${DUCKDNS_TOKEN}
 
+    labels:
+      - diun.enable=true
+      - homepage.group=Wild West
+      - homepage.name=DuckDNS
+      - homepage.icon=duckdns
+      - homepage.description=Dynamic DNS for external access
     volumes:
       - ${CONFIGDIR}/duckdns:/config #optional
 
@@ -538,7 +636,11 @@ services:
       DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Diun
+      - homepage.icon=/icons/diun.png
+      - homepage.description=Docker Image update Notifications
     
     volumes:
       - ${STATICONFIGDIR}/diun/diun.yml:/diun.yml:ro
@@ -579,7 +681,11 @@ services:
       - ${PORT_SONARR_UI}:8989
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Back End
+      - homepage.name=ProtonVPN
+      - homepage.icon=wireguard
+      - homepage.description=VPN for Downloads
 
     volumes:
       - ${CONFIGDIR}/wireguard:/config
@@ -621,16 +727,25 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
-      CONTAINERS: 1 # crowdsec, diun
+      CONTAINERS: 1 # crowdsec, diun, homepage
       IMAGES: 1 # diun
       INFO: 1 # crowdsec
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Back End
+      - homepage.name=Docker Socket Proxy
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     
+    healthcheck:
+      test: wget --spider http://${SERVER_URL}:${PORT_SOCKY_PROXY}/version || exit 1
+      interval: "30s"
+      timeout: "5s"
+      retries: 3
+      start_period: "30s"
+
     deploy:
       resources:
         limits:
@@ -662,7 +777,13 @@ services:
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
     
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Dozzle
+      - homepage.icon=dozzle
+      - homepage.href=http://${SERVER_URL}:${PORT_DOZZLE}
+      - homepage.description=Docker Logs
+
 
     deploy:
       resources:
@@ -709,7 +830,13 @@ services:
       - /var/log/syslog.log:/logs/syslog.log:ro
       
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Wild West
+      - homepage.name=Crowdsec
+      - homepage.icon=crowdsec
+      - homepage.href=https://app.crowdsec.net/login?next=/instances
+      - homepage.description=Crowd-sourced Intrusion Prevention
+
 
     healthcheck:
       test: ["CMD", "cscli", "version"]
@@ -744,7 +871,11 @@ services:
     #  - ${CONFIGDIR}/endlessh:/config #Required if LOGFILE is set to true.
 
     labels:
-      - "diun.enable=true"
+      - diun.enable=true
+      - homepage.group=Wild West
+      - homepage.name=EndlessH
+      - homepage.icon=endlessh
+      - homepage.description=SSH Tarpit
 
     deploy:
       resources:

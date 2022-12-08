@@ -3,7 +3,7 @@
 
 cd /srv
 mkdir -p {docker/config,cache,logs}
-cd /srv/docker
+cd /opt/docker
 git clone https://github.com/jgwehr/homelab-docker.git
 
 
