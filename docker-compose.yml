@@ -809,7 +809,7 @@ services:
       - homepage.icon=scrutiny
       - homepage.description=Harddrive Health Monitoring
       - homepage.widget.type=scrutiny
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_DOZZLE}
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SCRUTINY}
 
     volumes:
       - /run/udev:/run/udev:ro
