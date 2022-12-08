@@ -807,10 +807,14 @@ services:
       - homepage.group=System
       - homepage.name=Scrutiny
       - homepage.icon=scrutiny
+      - homepage.href=http://${SERVER_URL}:${PORT_SCRUTINY}
       - homepage.description=Harddrive Health Monitoring
       - homepage.widget.type=scrutiny
       - homepage.widget.url=http://${SERVER_URL}:${PORT_SCRUTINY}
 
+    devices:
+      - /dev/sda*
+    
     volumes:
       - /run/udev:/run/udev:ro
       - ${CONFIGDIR}/scrutiny:/opt/scrutiny/config
