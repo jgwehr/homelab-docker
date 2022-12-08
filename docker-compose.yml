@@ -483,6 +483,7 @@ services:
       - diun.enable=true
       - homepage.group=Games
       - homepage.name=Gloomhaven Secretariat
+      - homepage.icon=/icons/ghs.png
       - homepage.href=http://${SERVER_URL}:${PORT_GHS_CLIENT}
       - homepage.description=Gloomhaven Ability and Initiative tracker
       
@@ -510,6 +511,7 @@ services:
       - diun.enable=true
       - homepage.group=Back End
       - homepage.name=Gloomhaven Secretariat Server
+      - homepage.icon=/icons/ghs.png
       - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
       - homepage.description=Backend for GLoomhaven Secretariat
 
@@ -637,7 +639,7 @@ services:
       - diun.enable=true
       - homepage.group=System
       - homepage.name=Diun
-      - homepage.icon=diun
+      - homepage.icon=/icons/diun.png
       - homepage.description=Docker Image update Notifications
     
     volumes:
