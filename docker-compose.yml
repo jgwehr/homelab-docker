@@ -813,7 +813,8 @@ services:
       - homepage.widget.url=http://${SERVER_URL}:${PORT_SCRUTINY}
 
     devices:
-      - /dev/sda*
+      - /dev/sda
+      - /dev/sdb
     
     volumes:
       - /run/udev:/run/udev:ro
