@@ -25,8 +25,8 @@ services:
 
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
-      #- ${STATICCONFIG}/homepage/icons:/app/public/icons #for custom icons
-      #- ${STATICCONFIG}/homepage/images:/app/public/icons #for custom backgrounds
+      - ${STATICDIR}/icons:/app/public/icons #Optional. for custom icons
+      - ${STATICDIR}/wallpaper:/app/public/images #Optional. for custom backgrounds
     
     deploy:
       resources:
@@ -680,7 +680,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=Downloads
+      - homepage.group=Back End
       - homepage.name=ProtonVPN
       - homepage.icon=wireguard
       - homepage.description=VPN for Downloads
