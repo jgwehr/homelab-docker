@@ -10,7 +10,7 @@ Includes:
 - Self-Hosting for Friends, such as: SheetAble, Minecraft
 
 # Technology
-- <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/heimdall.png" width="32" alt="Heimdall" /> Heimdall
+- Homepage
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/tandoorrecipes.png" width="32" alt="Tandoor Recipes" /> Tandoor Recipes
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin
 - <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyseerr.png" width="32" alt="Jellyseerr" /> Jellyseerr
@@ -49,8 +49,8 @@ Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static
 | Profile               | Services   | Note |
 | :--                   | :--:       | :-- |
 | `external` | docker-socket-proxy, crowdsec, endlessh, caddy, duckdns | Makes connecting to a publicly facing set of services possible, securely |
-| `admin` | docker-socket-proxy, uptime-kuma, heimdall | Local system management and status. Non-local access to Uptime Kuma requires  `external` |
-| `monitor` | docker-socket-proxy, dozzle, diun | Monitoring system health |
+| `admin` | docker-socket-proxy, uptime-kuma, homepage | Local system management and status. Non-local access to Uptime Kuma requires  `external` |
+| `monitor` | docker-socket-proxy, dozzle, diun, scrutiny | Monitoring system health |
 | `downloads` | wireguard,  qbittorrent | Allow for secure file transfers, without additional overhead from library management |
 | `media-request` | jellyseerr, sonarr, radarr, prowlarr, wireguard,  qbittorrent | Full stack for end user media requests and file transfer. Non-local access to Jellyseerr requires  `external` |
 | `recipes` | tandoor_recipes, postres | Home recipes. Non-local access to tandoor requires  `external` |
