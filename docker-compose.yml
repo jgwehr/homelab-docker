@@ -292,7 +292,7 @@ services:
           cpus: '1'
           memory: 128M
     healthcheck:
-      test: ls /sys/class/net/ | grep -o "eth[0-9*]|wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
+      test: ls /sys/class/net/ | grep -o "wg[0-9*]" > /dev/null || exit 1 # VPN Killswitch. Check to see if the wg0 interface is available, or fail. the protonvpn container supplies wg0.
       interval: 30s
       timeout: 6s
       retries: 3
@@ -306,8 +306,10 @@ services:
       - media-request
 
     depends_on:
-      - protonvpn
-      - qbittorrent
+      protonvpn:
+        condition: service_healthy
+      qbittorrent:
+        condition: service_started
 
     network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
 
