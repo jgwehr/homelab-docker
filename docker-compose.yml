@@ -48,6 +48,11 @@ services:
     
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Uptime Kuma
+      - homepage.icon=uptimekuma
+      - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
+      - homepage.description=Service Uptime Monitoring
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
@@ -119,7 +124,7 @@ services:
       - ${STATICONFIGDIR}/tandoor/tandoor.env
 
     labels:
-      - homepage.group=Home
+      - homepage.group=Back End
       - homepage.name=Tandoor DB
       - homepage.icon=postgres
       - homepage.description=Recipes Database
@@ -500,7 +505,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=Games
+      - homepage.group=Back End
       - homepage.name=Gloomhaven Secretariat Server
       - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
       - homepage.description=Backend for GLoomhaven Secretariat
@@ -555,7 +560,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=System
+      - homepage.group=Wild West
       - homepage.name=Caddy
       - homepage.icon=caddy
       - homepage.description=Reverse Proxy
@@ -590,7 +595,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=System
+      - homepage.group=Wild West
       - homepage.name=DuckDNS
       - homepage.icon=duckdns
       - homepage.description=Dynamic DNS for external access
@@ -672,7 +677,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=System
+      - homepage.group=Downloads
       - homepage.name=ProtonVPN
       - homepage.icon=wireguard
       - homepage.description=VPN for Downloads
@@ -723,6 +728,8 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Docker Socket Proxy
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -762,6 +769,7 @@ services:
       - homepage.group=System
       - homepage.name=Dozzle
       - homepage.icon=dozzle
+      - homepage.href=http://${SERVER_URL}:${PORT_DOZZLE}
       - homepage.description=Docker Logs
 
 
@@ -811,7 +819,7 @@ services:
       
     labels:
       - diun.enable=true
-      - homepage.group=System
+      - homepage.group=Wild West
       - homepage.name=Crowdsec
       - homepage.icon=crowdsec
       - homepage.href=https://app.crowdsec.net/login?next=/instances
@@ -852,7 +860,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=System
+      - homepage.group=Wild West
       - homepage.name=EndlessH
       - homepage.icon=endlessh
       - homepage.description=SSH Tarpit
