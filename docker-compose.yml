@@ -90,6 +90,11 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=Home
+      - homepage.name=Tandoor
+      - homepage.icon=tandoorrecipes
+      - homepage.href=http://${SERVER_URL}:${PORT_TANDOOR}
+      - homepage.description=Recipes and Meal Planning
 
     volumes:
       - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
@@ -112,6 +117,12 @@ services:
 
     env_file:
       - ${STATICONFIGDIR}/tandoor/tandoor.env
+
+    labels:
+      - homepage.group=Home
+      - homepage.name=Tandoor DB
+      - homepage.icon=postgres
+      - homepage.description=Recipes Database
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
@@ -417,6 +428,12 @@ services:
       ARM_UID: ${RIPPING_UID}
       ARM_GID: ${RIPPING_GID}
 
+    labels:
+      - homepage.group=Downloads
+      - homepage.name=Automatic Ripping Machine
+      - homepage.href=http://${SERVER_URL}:${PORT_RIPPING}
+      - homepage.description=Disk-in Music/Movie Ripping
+
     devices:
       - /dev/sr0:/dev/sr0
       
@@ -456,6 +473,11 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=Games
+      - homepage.name=Gloomhaven Secretariat
+      - homepage.href=http://${SERVER_URL}:${PORT_GHS_CLIENT}
+      - homepage.description=Gloomhaven Ability and Initiative tracker
+      
 
     deploy:
       resources:
@@ -478,6 +500,10 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=Games
+      - homepage.name=Gloomhaven Secretariat Server
+      - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
+      - homepage.description=Backend for GLoomhaven Secretariat
 
     volumes:
       - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
@@ -529,6 +555,10 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Caddy
+      - homepage.icon=caddy
+      - homepage.description=Reverse Proxy
 
     volumes:
       - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
@@ -558,6 +588,12 @@ services:
       SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
       TOKEN: ${DUCKDNS_TOKEN}
 
+    labels:
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=DuckDNS
+      - homepage.icon=duckdns
+      - homepage.description=Dynamic DNS for external access
     volumes:
       - ${CONFIGDIR}/duckdns:/config #optional
 
@@ -591,6 +627,10 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Diun
+      - homepage.icon=diun
+      - homepage.description=Docker Image update Notifications
     
     volumes:
       - ${STATICONFIGDIR}/diun/diun.yml:/diun.yml:ro
@@ -632,6 +672,10 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=ProtonVPN
+      - homepage.icon=wireguard
+      - homepage.description=VPN for Downloads
 
     volumes:
       - ${CONFIGDIR}/wireguard:/config
@@ -715,6 +759,11 @@ services:
     
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Dozzle
+      - homepage.icon=dozzle
+      - homepage.description=Docker Logs
+
 
     deploy:
       resources:
@@ -762,6 +811,12 @@ services:
       
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Crowdsec
+      - homepage.icon=crowdsec
+      - homepage.href=https://app.crowdsec.net/login?next=/instances
+      - homepage.description=Crowd-sourced Intrusion Prevention
+
 
     healthcheck:
       test: ["CMD", "cscli", "version"]
@@ -797,6 +852,10 @@ services:
 
     labels:
       - diun.enable=true
+      - homepage.group=System
+      - homepage.name=EndlessH
+      - homepage.icon=endlessh
+      - homepage.description=SSH Tarpit
 
     deploy:
       resources:
