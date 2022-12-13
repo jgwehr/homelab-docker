@@ -1,15 +1,13 @@
 # File System
-
-
 cd /srv
 mkdir -p {docker/config,cache,logs}
 cd /opt/docker
-git clone https://github.com/jgwehr/homelab-docker.git
+git clone https://github.com/jgwehr/homelab-docker.git homelab
 
 
 cd /data
 mkdir -p db
-mkdir -p downloads/{audiobooks,music,podcasts,movies,tv}}
+mkdir -p downloads/{audiobooks,music,podcasts,movies,tv}
 mkdir -p media/{audiobooks,music,pictures,podcasts,movies,tv}
 sudo chown -R $USER:$USER /data
 sudo chmod -R a=,a+rX,u+w,g+w /data

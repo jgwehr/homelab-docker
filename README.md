@@ -76,11 +76,9 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │        ├── .env
 │        └── docker-compose.yml
 ├── /srv
-│  └── docker
-│  |  └── config
+│  ├── docker
 │  ├── cache
 │  └── logs
-│
 └── /data
    ├── db
    ├── downloads
@@ -99,6 +97,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 ```
 
 ### These may be created with the following cmds
+`cd scripts`
 `chmod +x start.sh`  
 `./start.sh`
 
