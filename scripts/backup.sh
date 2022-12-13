@@ -2,8 +2,8 @@ varDate=$(date +%Y%m%d)
 varBackupDir=/home/user/backup
 varConfigDir=/srv/docker
 
-cd $varBackupDir
-mkdir $varDate && cd $varDate
+mkdir $varBackupDir/$varDate
+cd $varBackupDir/$varDate
 
 # Database backups
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
@@ -52,3 +52,8 @@ cp -rpi $varConfigDir/uptime-kuma/kuma.db-shm $varBackupDir/$varDate/uptime-kuma
 
 mkdir -p $varBackupDir/$varDate/wireguard
 cp -rpi $varConfigDir/wireguard/wg0.conf $varBackupDir/$varDate/wireguard
+
+
+# Zip file
+cd $varBackupDir
+zip -r -9 $varDate $varDate > /dev/null 2>&1
