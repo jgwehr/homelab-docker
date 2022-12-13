@@ -1,4 +1,4 @@
-varDate=$(date +"%Y%m%d - %a %b %d %Y")
+varDate=$(date +%Y%m%d)
 varBackupDir=/home/user/backup
 varConfigDir=/srv/docker
 
