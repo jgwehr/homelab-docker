@@ -179,7 +179,7 @@ services:
 
     environment:
       TZ: ${TZ}
-      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
+      JELLYFIN_PublishedServerUrl: ${SERVER_URL}:${PORT_HTPC_HTTP} #optional. The Server URL to publish in udp Auto Discovery response.
 
     labels:
       - diun.enable=true

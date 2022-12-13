@@ -76,11 +76,12 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │        ├── .env
 │        └── docker-compose.yml
 ├── /srv
-│  ├── docker
+│  ├── docker (for container's configurations)
 │  ├── cache
 │  └── logs
 └── /data
    ├── db
+   ├── staticfiles
    ├── downloads
    │  ├── audiobooks
    │  ├── movies

@@ -5,7 +5,7 @@ cd /opt/docker
 git clone https://github.com/jgwehr/homelab-docker.git homelab
 
 
-cd /data
+cd /mnt/storage #or otherwise /data
 mkdir -p db
 mkdir -p downloads/{audiobooks,music,podcasts,movies,tv}
 mkdir -p media/{audiobooks,music,pictures,podcasts,movies,tv}
@@ -14,6 +14,9 @@ sudo chmod -R a=,a+rX,u+w,g+w /data
 
 
 # Docker Setup
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
 docker network create web
 docker network create caddy-net
 docker volume create crowdsec-config
