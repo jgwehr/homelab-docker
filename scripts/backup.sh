@@ -1,9 +1,9 @@
-varDate=$(date +%Y%m%d)
-varBackupDir=~/backup
+varDate=$(date +"%Y%m%d - %a %b %d %Y")
+varBackupDir=/home/user/backup
 varConfigDir=/srv/docker
 
 cd $varBackupDir
-mkdir $varDate
+mkdir $varDate && cd $varDate
 
 # Database backups
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
@@ -37,7 +37,7 @@ varTempSonarrBackup=$(ls -Art $varConfigDir/sonarr/Backups/scheduled | tail -n 1
 cp -rpi $varConfigDir/sonarr/Backups/scheduled/$varTempSonarrBackup $varBackupDir/$varDate/sonarr
 
 mkdir -p $varBackupDir/$varDate/qbittorrent
-cp -rpi $varConfigDir/qbr/qBittorrent/qBittorrent.conf $varBackupDir/$varDate/qbittorrent
+cp -rpi $varConfigDir/qbt/qBittorrent/qBittorrent.conf $varBackupDir/$varDate/qbittorrent
 
 mkdir -p $varBackupDir/$varDate/ripping
 cp -rpi $varConfigDir/ripping $varBackupDir/$varDate/ripping
