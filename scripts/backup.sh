@@ -1,16 +1,20 @@
 varDate=$(date +%Y%m%d)
 varBackupDir=/home/user/backup
 varConfigDir=/srv/docker
+varOptDir=/opt/docker/homelab-docker
 
 mkdir $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
 # Database backups
+echo Backing up Databases...
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
 
 
 
 # Docker config backups
+echo Backing up Docker Configs...
+
 mkdir -p $varBackupDir/$varDate/ghs && cp -rpi $varConfigDir/ghs $varBackupDir/$varDate/ghs
 
 mkdir -p $varBackupDir/$varDate/homepage && cp -rpi $varConfigDir/homepage/*.yaml $varBackupDir/$varDate/homepage
@@ -53,7 +57,12 @@ cp -rpi $varConfigDir/uptime-kuma/kuma.db-shm $varBackupDir/$varDate/uptime-kuma
 mkdir -p $varBackupDir/$varDate/wireguard
 cp -rpi $varConfigDir/wireguard/wg0.conf $varBackupDir/$varDate/wireguard
 
+# Environment Files
+echo Backing up .env...
+cp -rpi $varOptDir/.env $varBackupDir/$varDate
+
 
 # Zip file
+echo Creating Zip...
 cd $varBackupDir
 zip -r -9 $varDate $varDate > /dev/null 2>&1
