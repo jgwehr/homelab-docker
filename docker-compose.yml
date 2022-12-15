@@ -162,6 +162,7 @@ services:
     image: jellyfin/jellyfin
     profiles:
       - media
+      - media-request
       
     user: ${PUID}:${PGID}
     group_add:
@@ -217,6 +218,7 @@ services:
     depends_on:
       - sonarr
       - radarr
+      - jellyfin # for authentication
 
     networks:
       - htpc-net
