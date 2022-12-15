@@ -630,7 +630,6 @@ services:
 
     environment:
       TZ: ${TZ}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
       LOG_JSON: "true"
       DIUN_NOTIF_DISCORD_WEBHOOKURL: ${DIUN_NOTIF_DISCORD_WEBHOOKURL}
       DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
