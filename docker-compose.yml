@@ -338,7 +338,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 500M
     restart: unless-stopped
   
   radarr:
