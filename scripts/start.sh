@@ -9,8 +9,9 @@ cd /mnt/storage #or otherwise /data
 mkdir -p db
 mkdir -p downloads/{audiobooks,music,podcasts,movies,tv}
 mkdir -p media/{audiobooks,music,pictures,podcasts,movies,tv}
-sudo chown -R $USER:$USER /data
-sudo chmod -R a=,a+rX,u+w,g+w /data
+mkdir -p staticfiles
+sudo chown -R $USER:$USER /mnt/storage/{db,downloads,media,staticfiles}
+sudo chmod -R a=,a+rX,u+w,g+w /mnt/storage/{db,downloads,media,staticfiles}
 
 
 # Docker Setup
