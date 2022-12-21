@@ -61,6 +61,13 @@ cp -rpi $varConfigDir/wireguard/wg0.conf $varBackupDir/$varDate/wireguard
 echo Backing up .env...
 cp -rpi $varOptDir/.env $varBackupDir/$varDate
 
+# SnapRaid
+echo Backing up SnapRaid Conf...
+cp -rpi /etc/snapraid.conf $varBackupDir/$varDate
+
+echo Backing up SnapRaid Runner...
+cp -rpi /opt/snapraid-runner/snapraid-runner.conf $varBackupDir/$varDate
+
 
 # Zip file
 echo Creating Zip...

@@ -13,6 +13,10 @@ mkdir -p staticfiles
 sudo chown -R $USER:$USER /mnt/storage/{db,downloads,media,staticfiles}
 sudo chmod -R a=,a+rX,u+w,g+w /mnt/storage/{db,downloads,media,staticfiles}
 
+# SnapRaid
+cp /opt/docker/homelab/configtemplates/snapraid/snapraid.conf /etc/snapraid.conf
+mkdir -p /var/snapraid
+
 
 # Docker Setup
 sudo groupadd docker
