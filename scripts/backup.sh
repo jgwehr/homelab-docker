@@ -1,9 +1,9 @@
 varDate=$(date +%Y%m%d)
 varBackupDir=/home/user/backup
 varConfigDir=/srv/docker
-varOptDir=/opt/docker/homelab-docker
+varOptDir=/opt/docker/homelab
 
-mkdir $varBackupDir/$varDate
+mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
 # Database backups
@@ -51,8 +51,6 @@ cp -rpi $varConfigDir/scrutiny $varBackupDir/$varDate/scrutiny
 
 mkdir -p $varBackupDir/$varDate/uptime-kuma
 cp -rpi $varConfigDir/uptime-kuma/kuma.db $varBackupDir/$varDate/uptime-kuma
-cp -rpi $varConfigDir/uptime-kuma/kuma.db-wal $varBackupDir/$varDate/uptime-kuma
-cp -rpi $varConfigDir/uptime-kuma/kuma.db-shm $varBackupDir/$varDate/uptime-kuma
 
 mkdir -p $varBackupDir/$varDate/wireguard
 cp -rpi $varConfigDir/wireguard/wg0.conf $varBackupDir/$varDate/wireguard
