@@ -567,12 +567,13 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=Admin
+      - homepage.group=Network
       - homepage.name=Pihole
       - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
       - homepage.description=Network-wide Adblocking and DNS
       - homepage.widget.type=pihole
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
+      - homepage.widget.key=
 
     volumes:
       - ${CONFIGDIR}/pihole/pihole:/etc/pihole
@@ -598,7 +599,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=Admin
+      - homepage.group=Network
       - homepage.name=Unbound
       - homepage.description=A validating, recursive, caching DNS resolver
 
