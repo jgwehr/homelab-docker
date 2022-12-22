@@ -87,7 +87,7 @@ services:
       - ${PORT_TANDOOR}:8080
 
     env_file:
-      - ${STATICONFIGDIR}/tandoor/tandoor.env
+      - ${STATICCONFIGDIR}/tandoor/tandoor.env
 
     environment:
       TIMEZONE: ${TZ}
@@ -122,7 +122,7 @@ services:
       - tandoor
 
     env_file:
-      - ${STATICONFIGDIR}/tandoor/tandoor.env
+      - ${STATICCONFIGDIR}/tandoor/tandoor.env
 
     labels:
       - homepage.group=Back End
@@ -162,6 +162,7 @@ services:
     image: jellyfin/jellyfin
     profiles:
       - media
+      - media-request
       
     user: ${PUID}:${PGID}
     group_add:
@@ -179,7 +180,7 @@ services:
 
     environment:
       TZ: ${TZ}
-      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL} #optional. The Server URL to publish in udp Auto Discovery response.
+      JELLYFIN_PublishedServerUrl: ${SERVER_URL}:${PORT_HTPC_HTTP} #optional. The Server URL to publish in udp Auto Discovery response.
 
     labels:
       - diun.enable=true
@@ -217,6 +218,7 @@ services:
     depends_on:
       - sonarr
       - radarr
+      - jellyfin # for authentication
 
     networks:
       - htpc-net
@@ -336,7 +338,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 500M
     restart: unless-stopped
   
   radarr:
@@ -571,7 +573,7 @@ services:
       - homepage.description=Reverse Proxy
 
     volumes:
-      - ${STATICONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
+      - ${STATICCONFIGDIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
       - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
       - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
       - ${STATICDIR}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
@@ -630,7 +632,6 @@ services:
 
     environment:
       TZ: ${TZ}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
       LOG_JSON: "true"
       DIUN_NOTIF_DISCORD_WEBHOOKURL: ${DIUN_NOTIF_DISCORD_WEBHOOKURL}
       DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
@@ -643,7 +644,7 @@ services:
       - homepage.description=Docker Image update Notifications
     
     volumes:
-      - ${STATICONFIGDIR}/diun/diun.yml:/diun.yml:ro
+      - ${STATICCONFIGDIR}/diun/diun.yml:/diun.yml:ro
       - ${CONFIGDIR}/diun:/data
 
     healthcheck:
@@ -861,7 +862,7 @@ services:
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
     volumes:
-      - ${STATICONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - ${STATICCONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - crowdsec-config:/etc/crowdsec/
       - crowdsec-db:/var/lib/crowdsec/data/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
