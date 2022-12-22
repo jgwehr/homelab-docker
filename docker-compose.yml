@@ -528,6 +528,68 @@ services:
     restart: unless-stopped
 
 ####################
+# Network
+####################
+
+  pihole:
+  # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+    container_name: pihole
+    hostname: pihole
+    image: pihole/pihole:latest
+    
+    depends_on:
+      - unbound
+
+    networks:
+      dns-net:
+        ipv4_address: 172.20.0.2
+
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    ports:
+      - ${PORT_PIHOLE_WEB:-80}:80
+      - ${PORT_PIHOLE_WEBSSL:-443}:443
+      - ${PORT_PIHOLE_TCP:-53}:53/tcp
+      - ${PORT_PIHOLE_UDP:-53}:53/udp
+    #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
+
+    environment:
+      TZ: ${TZ}
+      WEBPASSWORD: ${PIHOLE_PASSWORD}
+      FTLCONF_REPLY_ADDR4: ${PIHOLE_FTLCONF_REPLY_ADDR4}
+      PIHOLE_DNS_: unbound#5053
+      DHCP_ACTIVE: ${PIHOLE_DHCP_ACTIVE:-false}
+      PIHOLE_DOMAIN: ${PIHOLE_DOMAIN:-lan}
+
+      TEMPERATUREUNIT: ${PIHOLE_TEMPUNIT:-c}
+      WEBTHEME: ${PIHOLE_WEBTHEME:-default-dark}
+
+    volumes:
+      - ${CONFIGDIR}/pihole/pihole:/etc/pihole
+      - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d  
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+
+    cap_add:
+      - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
+
+    healthcheck:
+      test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+    restart: unless-stopped
+
+  unbound:
+    container_name: unbound
+    image: mvance/unbound-rpi:latest
+    networks:
+      dns-net:
+        ipv4_address: 172.20.0.3
+
+    volumes:
+      - ${CONFIGDIR}/unbound:/opt/unbound/etc/unbound
+
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+
+####################
 # Back End Services
 ####################
 
@@ -955,6 +1017,12 @@ networks:
   vpn:
     name: vpn
     internal: true
+  dns-net:
+    name: dns-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
   socky_proxy-net:
     name: socky_proxy-net
