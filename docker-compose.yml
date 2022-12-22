@@ -536,6 +536,8 @@ services:
     container_name: pihole
     hostname: pihole
     image: pihole/pihole:latest
+    profiles:
+      - network
     
     depends_on:
       - unbound
@@ -587,6 +589,9 @@ services:
   unbound:
     container_name: unbound
     image: mvance/unbound-rpi:latest
+    profiles:
+      - network
+      
     networks:
       dns-net:
         ipv4_address: 172.20.0.3
