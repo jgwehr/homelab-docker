@@ -588,10 +588,10 @@ services:
 
   unbound:
     container_name: unbound
-    image: mvance/unbound-rpi:latest
+    image: mvance/unbound:latest
     profiles:
       - network
-      
+
     networks:
       dns-net:
         ipv4_address: 172.20.0.3
