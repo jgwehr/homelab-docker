@@ -557,10 +557,11 @@ services:
     environment:
       TZ: ${TZ}
       WEBPASSWORD: ${PIHOLE_PASSWORD}
-      FTLCONF_REPLY_ADDR4: ${PIHOLE_FTLCONF_REPLY_ADDR4}
+      FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
       PIHOLE_DNS_: unbound#5053
       DHCP_ACTIVE: ${PIHOLE_DHCP_ACTIVE:-false}
       PIHOLE_DOMAIN: ${PIHOLE_DOMAIN:-lan}
+      DNSMASQ_LISTENING: 'all'
 
       TEMPERATUREUNIT: ${PIHOLE_TEMPUNIT:-c}
       WEBTHEME: ${PIHOLE_WEBTHEME:-default-dark}
@@ -569,6 +570,7 @@ services:
       - diun.enable=true
       - homepage.group=Network
       - homepage.name=Pihole
+      - homepage.icon=pihole
       - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
       - homepage.description=Network-wide Adblocking and DNS
       - homepage.widget.type=pihole
@@ -577,11 +579,12 @@ services:
 
     volumes:
       - ${CONFIGDIR}/pihole/pihole:/etc/pihole
-      - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d  
+      - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
+      - ${CONFIGDIR}/pihole/resolv.conf:/etc/resolv.conf
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
 
-    cap_add:
-      - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
+    #cap_add:
+    #  - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
 
     healthcheck:
       test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
