@@ -249,7 +249,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
   
   qbittorrent:
@@ -377,7 +377,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
 
   sonarr:
@@ -416,7 +416,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
 
 ####################
@@ -586,6 +586,11 @@ services:
     #cap_add:
     #  - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
 
+
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     healthcheck:
       test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
     restart: unless-stopped
@@ -610,6 +615,10 @@ services:
     volumes:
       - ${CONFIGDIR}/unbound:/opt/unbound/etc/unbound
 
+    deploy:
+      resources:
+        limits:
+          memory: 128M
     healthcheck:
       disable: true
     restart: unless-stopped
@@ -669,7 +678,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
+          memory: 128M
     healthcheck:
       test: ["CMD", "caddy", "version"]
     restart: unless-stopped
@@ -877,7 +886,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
+          memory: 128M
     restart: always
 
   scrutiny:
