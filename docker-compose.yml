@@ -571,7 +571,7 @@ services:
       - homepage.group=Network
       - homepage.name=Pihole
       - homepage.icon=pihole
-      - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
+      - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}/admin
       - homepage.description=Network-wide Adblocking and DNS
       - homepage.widget.type=pihole
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
@@ -604,6 +604,7 @@ services:
       - diun.enable=true
       - homepage.group=Network
       - homepage.name=Unbound
+      - homepage.icon=pihole-unbound
       - homepage.description=A validating, recursive, caching DNS resolver
 
     volumes:
