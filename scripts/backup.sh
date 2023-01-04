@@ -43,11 +43,17 @@ cp -rpi $varConfigDir/sonarr/Backups/scheduled/$varTempSonarrBackup $varBackupDi
 mkdir -p $varBackupDir/$varDate/qbittorrent
 cp -rpi $varConfigDir/qbt/qBittorrent/qBittorrent.conf $varBackupDir/$varDate/qbittorrent
 
+mkdir -p $varBackupDir/$varDate/pihole
+cp -rpi $varConfigDir/pihole $varBackupDir/$varDate/pihole
+
 mkdir -p $varBackupDir/$varDate/ripping
 cp -rpi $varConfigDir/ripping $varBackupDir/$varDate/ripping
 
 mkdir -p $varBackupDir/$varDate/scrutiny
 cp -rpi $varConfigDir/scrutiny $varBackupDir/$varDate/scrutiny
+
+mkdir -p $varBackupDir/$varDate/unbound
+cp -rpi $varConfigDir/unbound $varBackupDir/$varDate/unbound
 
 mkdir -p $varBackupDir/$varDate/uptime-kuma
 cp -rpi $varConfigDir/uptime-kuma/kuma.db $varBackupDir/$varDate/uptime-kuma
