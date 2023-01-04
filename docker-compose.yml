@@ -595,6 +595,41 @@ services:
       test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
     restart: unless-stopped
 
+  speedtest-tracker:
+    container_name: speedtest-tracker
+    image: ghcr.io/alexjustesen/speedtest-tracker:latest
+    profiles:
+      - network
+
+    ports:
+      - ${PORT_SPEEDTEST}:80
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Speedtest Tracker
+      - homepage.icon=speedtest-tracker
+      - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
+      - homepage.description=Build a history of your internet's performance
+      - homepage.widget.type=speedtest
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
+
+    volumes:
+      - ${CONFIGDIR}/speedtest-tracker:/config
+
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    restart: unless-stopped
+    
+
+
   unbound:
     container_name: unbound
     image: mvance/unbound:latest
