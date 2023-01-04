@@ -254,7 +254,7 @@ services:
   
   qbittorrent:
     container_name: qbittorrent
-    image: linuxserver/qbittorrent
+    image: ghcr.io/linuxserver/qbittorrent
     profiles:
       - downloads
       - media-request
@@ -343,7 +343,7 @@ services:
   
   radarr:
     container_name: radarr
-    image: lscr.io/linuxserver/radarr:latest
+    image: ghcr.io/linuxserver/radarr:latest
     profiles:
       - media-request
     
@@ -382,7 +382,7 @@ services:
 
   sonarr:
     container_name: sonarr
-    image: lscr.io/linuxserver/sonarr:latest
+    image: ghcr.io/linuxserver/sonarr:latest
     profiles:
       - media-request
 
@@ -746,7 +746,7 @@ services:
 
   protonvpn:
     container_name: protonvpn
-    image: lscr.io/linuxserver/wireguard:latest
+    image: ghcr.io/linuxserver/wireguard:latest
     profiles:
       - downloads
       - media-request
@@ -978,7 +978,7 @@ services:
     restart: always
 
   endlessh:
-    image: lscr.io/linuxserver/endlessh:latest
+    image: ghcr.io/linuxserver/endlessh:latest
     container_name: endlessh
     profiles:
       - external
