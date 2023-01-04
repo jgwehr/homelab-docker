@@ -1,3 +1,11 @@
+varBackupDir=/home/user/backup
+varConfigDir=/srv/docker
+varOptDir=/opt/docker/homelab
+
+
+
+
+
 # File System
 cd /srv
 mkdir -p {docker/config,cache,logs}
@@ -14,8 +22,16 @@ sudo chown -R $USER:$USER /mnt/storage/{db,downloads,media,staticfiles}
 sudo chmod -R a=,a+rX,u+w,g+w /mnt/storage/{db,downloads,media,staticfiles}
 
 # SnapRaid
-cp /opt/docker/homelab/configtemplates/snapraid/snapraid.conf /etc/snapraid.conf
+cp $varOptDir/configtemplates/snapraid/snapraid.conf /etc/snapraid.conf
 mkdir -p /var/snapraid
+
+
+# Pihole
+cp -rpi $varOptDir/configtemplates/pihole/resolv.conf $varConfigDir/pihole/resolv.conf
+
+# Unbound
+cp -rpi $varOptDir/configtemplates/unbound/* $varConfigDir/unbound
+
 
 
 # Docker Setup
@@ -24,6 +40,7 @@ sudo usermod -aG docker $USER
 
 docker network create web
 docker network create caddy-net
+docker network create -d bridge --subnet 172.20.0.0/16 dns-net
 docker volume create crowdsec-config
 docker volume create crowdsec-db
 

@@ -249,12 +249,12 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
   
   qbittorrent:
     container_name: qbittorrent
-    image: linuxserver/qbittorrent
+    image: ghcr.io/linuxserver/qbittorrent
     profiles:
       - downloads
       - media-request
@@ -343,7 +343,7 @@ services:
   
   radarr:
     container_name: radarr
-    image: lscr.io/linuxserver/radarr:latest
+    image: ghcr.io/linuxserver/radarr:latest
     profiles:
       - media-request
     
@@ -377,12 +377,12 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
 
   sonarr:
     container_name: sonarr
-    image: lscr.io/linuxserver/sonarr:latest
+    image: ghcr.io/linuxserver/sonarr:latest
     profiles:
       - media-request
 
@@ -416,7 +416,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
 
 ####################
@@ -528,6 +528,102 @@ services:
     restart: unless-stopped
 
 ####################
+# Network
+####################
+
+  pihole:
+  # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+    container_name: pihole
+    hostname: pihole
+    image: pihole/pihole:latest
+    profiles:
+      - network
+    
+    depends_on:
+      - unbound
+
+    networks:
+      dns-net:
+        ipv4_address: 172.20.0.2
+
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    ports:
+      - ${PORT_PIHOLE_WEB:-80}:80
+      - ${PORT_PIHOLE_WEBSSL:-443}:443
+      - ${PORT_PIHOLE_TCP:-53}:53/tcp
+      - ${PORT_PIHOLE_UDP:-53}:53/udp
+    #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
+
+    environment:
+      TZ: ${TZ}
+      WEBPASSWORD: ${PIHOLE_PASSWORD}
+      FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
+      PIHOLE_DNS_: unbound#5053
+      DHCP_ACTIVE: ${PIHOLE_DHCP_ACTIVE:-false}
+      PIHOLE_DOMAIN: ${PIHOLE_DOMAIN:-lan}
+      DNSMASQ_LISTENING: 'all'
+
+      TEMPERATUREUNIT: ${PIHOLE_TEMPUNIT:-c}
+      WEBTHEME: ${PIHOLE_WEBTHEME:-default-dark}
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Pihole
+      - homepage.icon=pihole
+      - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}/admin
+      - homepage.description=Network-wide Adblocking and DNS
+      - homepage.widget.type=pihole
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
+      - homepage.widget.key=${HOMEPAGE_PIHOLE_API}
+
+    volumes:
+      - ${CONFIGDIR}/pihole/pihole:/etc/pihole
+      - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
+      - ${CONFIGDIR}/pihole/resolv.conf:/etc/resolv.conf
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+
+    #cap_add:
+    #  - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
+
+
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+    restart: unless-stopped
+
+  unbound:
+    container_name: unbound
+    image: mvance/unbound:latest
+    profiles:
+      - network
+
+    networks:
+      dns-net:
+        ipv4_address: 172.20.0.3
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Unbound
+      - homepage.icon=pihole-unbound
+      - homepage.description=A validating, recursive, caching DNS resolver
+
+    volumes:
+      - ${CONFIGDIR}/unbound:/opt/unbound/etc/unbound
+
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+
+####################
 # Back End Services
 ####################
 
@@ -582,7 +678,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
+          memory: 128M
     healthcheck:
       test: ["CMD", "caddy", "version"]
     restart: unless-stopped
@@ -659,7 +755,7 @@ services:
 
   protonvpn:
     container_name: protonvpn
-    image: lscr.io/linuxserver/wireguard:latest
+    image: ghcr.io/linuxserver/wireguard:latest
     profiles:
       - downloads
       - media-request
@@ -790,7 +886,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 64M
+          memory: 128M
     restart: always
 
   scrutiny:
@@ -891,7 +987,7 @@ services:
     restart: always
 
   endlessh:
-    image: lscr.io/linuxserver/endlessh:latest
+    image: ghcr.io/linuxserver/endlessh:latest
     container_name: endlessh
     profiles:
       - external
@@ -955,6 +1051,12 @@ networks:
   vpn:
     name: vpn
     internal: true
+  dns-net:
+    name: dns-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
   socky_proxy-net:
     name: socky_proxy-net
