@@ -50,7 +50,7 @@ Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static
 | `network` | pihole, unbound, speedtest-tracker | Tools to support your home internet |
 | `monitor` | docker-socket-proxy, dozzle, diun, scrutiny | Monitoring system health |
 | `downloads` | wireguard,  qbittorrent | Allow for secure file transfers, without additional overhead from library management |
-| `media-request` | jellyseerr, sonarr, radarr, prowlarr, wireguard,  qbittorrent | Full stack for end user media requests and file transfer. Non-local access to Jellyseerr requires  `external` |
+| `media-request` | jellyseerr, sonarr, radarr, prowlarr, wireguard,  qbittorrent, podgrab | Full stack for end user media requests and file transfer. Non-local access to Jellyseerr requires  `external` |
 | `recipes` | tandoor_recipes, postres | Home recipes. Non-local access to tandoor requires  `external` |
 | `gloomhaven` | gloomhaven-secretary, ghs-server | Board games! Non-local access to client and server requires  `external` |
 | `ripping` | automatic-ripping machine | local-only, not required all the time |

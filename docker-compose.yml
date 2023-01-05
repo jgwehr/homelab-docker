@@ -419,6 +419,36 @@ services:
           memory: 512M
     restart: unless-stopped
 
+  podgrab:
+    container_name: podgrab
+    image: ghcr.io/akhilrex/podgrab
+    profiles:
+      - media-request
+
+    ports:
+      - ${PORT_PODGRAB}:8080
+
+    environment:
+      - CHECK_FREQUENCY=1800
+
+    labels:
+      - homepage.group=Media
+      - homepage.name=Podgrab
+      - homepage.href=http://${SERVER_URL}:${PORT_PODGRAB}
+      - homepage.description=Podcast manager/downloader/archiver tool to download podcast episodes
+
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ${CONFIGDIR}/podgrab:/config
+        - ${MEDIADIR}/podcasts:/assets
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    restart: unless-stopped
+
 ####################
 # Automatic Ripping Machine
 ####################
