@@ -20,7 +20,7 @@ Includes:
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/scrutiny.png" width="32" alt="Scrutiny" /> Scrutiny | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr |  |
 | <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent |  |
 | Endlessh | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/wireguard.png" width="32" alt="Wireguard" /> Wireguard |  |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma |  |  |
+| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma | Podgrab |  |
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pihole.png" width="32" alt="Pihole" /> Pihole |  |  |
 | <img src="https://github.com/walkxcode/dashboard-icons/blob/main/png/pihole-unbound.png" width="32" alt="Unbound" /> Unbound |  |  |
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/speedtest-tracker.png" width="32" alt="Speedtest Tracker" /> Speedtest Tracker |  |  |
@@ -49,7 +49,7 @@ Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static
 | `admin` | docker-socket-proxy, uptime-kuma, homepage | Local system management and status. Non-local access to Uptime Kuma requires  `external` |
 | `network` | pihole, unbound, speedtest-tracker | Tools to support your home internet |
 | `monitor` | docker-socket-proxy, dozzle, diun, scrutiny | Monitoring system health |
-| `downloads` | wireguard,  qbittorrent | Allow for secure file transfers, without additional overhead from library management |
+| `downloads` | wireguard,  qbittorrent, podgrab | Allow for secure file transfers, without additional overhead from library management |
 | `media-request` | jellyseerr, sonarr, radarr, prowlarr, wireguard,  qbittorrent, podgrab | Full stack for end user media requests and file transfer. Non-local access to Jellyseerr requires  `external` |
 | `recipes` | tandoor_recipes, postres | Home recipes. Non-local access to tandoor requires  `external` |
 | `gloomhaven` | gloomhaven-secretary, ghs-server | Board games! Non-local access to client and server requires  `external` |

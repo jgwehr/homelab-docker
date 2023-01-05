@@ -424,6 +424,7 @@ services:
     image: ghcr.io/akhilrex/podgrab
     profiles:
       - media-request
+      - downloads
 
     ports:
       - ${PORT_PODGRAB}:8080
