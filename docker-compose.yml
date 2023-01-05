@@ -558,7 +558,7 @@ services:
       TZ: ${TZ}
       WEBPASSWORD: ${PIHOLE_PASSWORD}
       FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
-      PIHOLE_DNS_: unbound#5053
+      PIHOLE_DNS_: 172.20.0.3#5053
       DHCP_ACTIVE: ${PIHOLE_DHCP_ACTIVE:-false}
       PIHOLE_DOMAIN: ${PIHOLE_DOMAIN:-lan}
       DNSMASQ_LISTENING: 'all'
@@ -594,6 +594,39 @@ services:
     healthcheck:
       test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
     restart: unless-stopped
+
+  speedtest-tracker:
+    container_name: speedtest-tracker
+    image: ghcr.io/alexjustesen/speedtest-tracker:latest
+    profiles:
+      - network
+
+    ports:
+      - ${PORT_SPEEDTEST}:80
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Speedtest Tracker
+      - homepage.icon=speedtest-tracker
+      - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
+      - homepage.description=Build a history of your internet's performance
+
+    volumes:
+      - ${CONFIGDIR}/speedtest-tracker:/config
+
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    restart: unless-stopped
+    
+
 
   unbound:
     container_name: unbound
