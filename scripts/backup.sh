@@ -46,6 +46,9 @@ cp -rpi $varConfigDir/qbt/qBittorrent/qBittorrent.conf $varBackupDir/$varDate/qb
 mkdir -p $varBackupDir/$varDate/pihole
 cp -rpi $varConfigDir/pihole $varBackupDir/$varDate/pihole
 
+mkdir -p $varBackupDir/$varDate/podgrab
+cp -rpi $varConfigDir/podgrab $varBackupDir/$varDate/podgrab
+
 mkdir -p $varBackupDir/$varDate/ripping
 cp -rpi $varConfigDir/ripping $varBackupDir/$varDate/ripping
 
