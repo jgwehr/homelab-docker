@@ -581,8 +581,8 @@ services:
     ports:
       - ${PORT_PIHOLE_WEB:-80}:80
       - ${PORT_PIHOLE_WEBSSL:-443}:443
-      - ${PORT_PIHOLE_TCP:-53}:53/tcp
-      - ${PORT_PIHOLE_UDP:-53}:53/udp
+      - ${SERVER_URL}:${PORT_PIHOLE_TCP:-53}:53/tcp
+      - ${SERVER_URL}:${PORT_PIHOLE_UDP:-53}:53/udp
     #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
 
     environment:
