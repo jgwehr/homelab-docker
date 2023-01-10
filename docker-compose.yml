@@ -27,6 +27,10 @@ services:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
       - ${STATICDIR}/icons:/app/public/icons:ro #Optional. for custom icons
       - ${STATICDIR}/wallpaper:/app/public/images:ro #Optional. for custom backgrounds
+
+      - ${SYS_DISK1}:/dev/sda1:ro #harddrive space monitoring
+      - ${SYS_DISK2}:/dev/sdb1:ro #harddrive space monitoring
+      - ${SYS_DISK3}:/dev/sdc1:ro #harddrive space monitoring
     
     deploy:
       resources:
@@ -350,7 +354,8 @@ services:
     depends_on:
       - prowlarr
 
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+    ports:
+      - ${PORT_RADARR_UI}:7878
 
     environment:
       PUID: ${PUID}
@@ -389,7 +394,8 @@ services:
     depends_on:
       - prowlarr
 
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+    ports:
+      - ${PORT_SONARR_UI}:8989
 
     environment:
       PUID: ${PUID}
@@ -581,8 +587,8 @@ services:
     ports:
       - ${PORT_PIHOLE_WEB:-80}:80
       - ${PORT_PIHOLE_WEBSSL:-443}:443
-      - ${PORT_PIHOLE_TCP:-53}:53/tcp
-      - ${PORT_PIHOLE_UDP:-53}:53/udp
+      - ${SERVER_URL}:${PORT_PIHOLE_TCP:-53}:53/tcp
+      - ${SERVER_URL}:${PORT_PIHOLE_UDP:-53}:53/udp
     #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
 
     environment:
@@ -837,9 +843,6 @@ services:
       - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
       - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
       - ${PORT_PROWLARR_UI}:9696
-      - ${PORT_LIDARR_UI}:8686
-      - ${PORT_RADARR_UI}:7878
-      - ${PORT_SONARR_UI}:8989
 
     labels:
       - diun.enable=true
@@ -1000,7 +1003,7 @@ services:
 
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.4.2
+    image: crowdsecurity/crowdsec:v1.4.4
     profiles:
       - external
 
