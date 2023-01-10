@@ -1,7 +1,14 @@
 - resources:
+    label: System
     cpu: true
     memory: true
     disk: /
+
+- resources:
+    label: Storage
+    expanded: true
+    disk:
+        - /dev/sda1
 
 - search:
     provider: duckduckgo

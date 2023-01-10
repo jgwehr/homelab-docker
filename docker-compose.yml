@@ -27,6 +27,10 @@ services:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
       - ${STATICDIR}/icons:/app/public/icons:ro #Optional. for custom icons
       - ${STATICDIR}/wallpaper:/app/public/images:ro #Optional. for custom backgrounds
+
+      - ${SYS_DISK1}:/dev/sda1:ro #harddrive space monitoring
+      - ${SYS_DISK2}:/dev/sdb1:ro #harddrive space monitoring
+      - ${SYS_DISK3}:/dev/sdc1:ro #harddrive space monitoring
     
     deploy:
       resources:
