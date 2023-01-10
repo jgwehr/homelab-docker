@@ -354,7 +354,8 @@ services:
     depends_on:
       - prowlarr
 
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+    ports:
+      - ${PORT_RADARR_UI}:7878
 
     environment:
       PUID: ${PUID}
@@ -393,7 +394,8 @@ services:
     depends_on:
       - prowlarr
 
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+    ports:
+      - ${PORT_SONARR_UI}:8989
 
     environment:
       PUID: ${PUID}
@@ -841,9 +843,6 @@ services:
       - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
       - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
       - ${PORT_PROWLARR_UI}:9696
-      - ${PORT_LIDARR_UI}:8686
-      - ${PORT_RADARR_UI}:7878
-      - ${PORT_SONARR_UI}:8989
 
     labels:
       - diun.enable=true
