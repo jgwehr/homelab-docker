@@ -1003,7 +1003,7 @@ services:
 
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.4.2
+    image: crowdsecurity/crowdsec:v1.4.4
     profiles:
       - external
 
