@@ -240,10 +240,12 @@ services:
       - homepage.group=Media
       - homepage.name=Jellyseerr
       - homepage.icon=jellyseerr
-      - homepage.href=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
+      - homepage.href=http://${SERVER_URL}:${PORT_HTPC_REQUESTS:-5055}  #use default if not set
+      # homepage.href: http://localhost:${PORT_HTPC_REQUESTS:-5055} # for local connection
+      # homepage.href: http://${TS_NODE:?error}.${TAILNET:?error}.ts.net:${PORT_HTPC_REQUESTS:-5055}  # for tailscale connection
       - homepage.description=Request Movies and TV Shows
       - homepage.widget.type=jellyseerr
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
+      - homepage.widget.url=http://jellyseerr:5055 # direct connection
       - homepage.widget.key=${HOMEPAGE_JELLYSEERR_API}
 
     volumes:
