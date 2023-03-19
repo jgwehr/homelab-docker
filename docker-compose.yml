@@ -58,6 +58,9 @@ services:
       - homepage.icon=uptime-kuma
       - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
       - homepage.description=Service Uptime Monitoring
+      - homepage.widget.type=uptimekuma
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
+      - homepage.widget.slug=statuspageslug
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
