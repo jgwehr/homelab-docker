@@ -592,7 +592,7 @@ services:
       - homepage.group=Lifestyle
       - homepage.name=Pinry
       - homepage.icon=/icons/pinry.png
-      - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
+      - homepage.href=http://${SERVER_URL}:${PORT_PINRY}
       - homepage.description=Save, tag, and share images, videos and webpages
 
     volumes:
