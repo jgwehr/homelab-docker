@@ -656,6 +656,8 @@ services:
       - homepage.icon=speedtest-tracker
       - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
       - homepage.description=Build a history of your internet's performance
+      - homepage.widget.type=speedtest
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
 
     volumes:
       - ${CONFIGDIR}/speedtest-tracker:/config
