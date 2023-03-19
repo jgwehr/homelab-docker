@@ -25,8 +25,8 @@ services:
 
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
-      - ${STATICDIR}/icons:/app/public/icons:ro #Optional. for custom icons
-      - ${STATICDIR}/wallpaper:/app/public/images:ro #Optional. for custom backgrounds
+      - ${STATICDIR}/icons:/app/public/icons #Optional. for custom icons
+      - ${STATICDIR}/wallpaper:/app/public/images #Optional. for custom backgrounds
 
       - ${SYS_DISK1}:/dev/sda1:ro #harddrive space monitoring
       - ${SYS_DISK2}:/dev/sdb1:ro #harddrive space monitoring
@@ -58,6 +58,9 @@ services:
       - homepage.icon=uptime-kuma
       - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
       - homepage.description=Service Uptime Monitoring
+      - homepage.widget.type=uptimekuma
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
+      - homepage.widget.slug=statuspageslug
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
@@ -653,6 +656,8 @@ services:
       - homepage.icon=speedtest-tracker
       - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
       - homepage.description=Build a history of your internet's performance
+      - homepage.widget.type=speedtest
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
 
     volumes:
       - ${CONFIGDIR}/speedtest-tracker:/config
@@ -1003,7 +1008,7 @@ services:
 
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.4.4
+    image: crowdsecurity/crowdsec:v1.4.6
     profiles:
       - external
 
