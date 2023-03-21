@@ -140,6 +140,13 @@ request.{$DOMAIN} {
   reverse_proxy jellyseerr:5055
 }
 
+pin.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy pinry:80
+}
+
 status.{$DOMAIN} {
   import headers
   import main

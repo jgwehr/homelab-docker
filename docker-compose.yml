@@ -103,7 +103,7 @@ services:
 
     labels:
       - diun.enable=true
-      - homepage.group=Home
+      - homepage.group=Lifestyle
       - homepage.name=Tandoor
       - homepage.icon=tandoorrecipes
       - homepage.href=http://${SERVER_URL}:${PORT_TANDOOR}
@@ -566,6 +566,45 @@ services:
           cpus: '0.5'
           memory: 256M
     restart: unless-stopped
+
+####################
+# Lifestyle
+####################
+
+  pinry:
+    container_name: pinry
+    image: getpinry/pinry
+    profiles:
+      - lifestyle
+
+    networks:
+      - caddy-net
+
+    ports:
+      - ${PORT_PINRY}:80
+
+    environment:
+      - ALLOW_NEW_REGISTRATIONS=True
+      - SECRET_KEY=${PINRY_SECRETKEY}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Pinry
+      - homepage.icon=/icons/pinry.png
+      - homepage.href=http://${SERVER_URL}:${PORT_PINRY}
+      - homepage.description=Save, tag, and share images, videos and webpages
+
+    volumes:
+      - ${CONFIGDIR}/pinry:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    restart: unless-stopped
+
 
 ####################
 # Network
