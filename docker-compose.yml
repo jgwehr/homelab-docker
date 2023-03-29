@@ -865,24 +865,32 @@ services:
           memory: 32M
     restart: unless-stopped
 
-  postgres:
-    container_name: postgres
+  rallly_db:
+    container_name: rallly_db
     image: postgres:alpine
 
     profiles:
       - calendar
 
     networks:
-      - database
+      - rallly
+
+    ports:
+      - ${PORT_RALLLY_DB}:5432
+
+    environment:
+      - POSTGRES_USER: ${RALLLY_DB_USER}
+      - POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
+      - POSTGRES_DB: ${RALLLY_DB_NAME}
 
     labels:
       - homepage.group=Back End
-      - homepage.name=Postgres DB
+      - homepage.name=Rallly | Postgres DB
       - homepage.icon=postgres
       - homepage.description=Database for Rallly
 
     volumes:
-      - ${DBDIR}/postgres:/var/lib/postgresql/data
+      - ${DBDIR}/rallly:/var/lib/postgresql/data
 
     healthcheck:
       interval: 60s
@@ -1191,9 +1199,9 @@ networks:
     name: htpc-net
   tandoor:
     name: tandoor
+  rallly:
+    name: rallly
 
-  database:
-    name: database
   peer2peer:
     name: peer2peer
   vpn:
