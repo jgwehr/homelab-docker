@@ -620,6 +620,7 @@ services:
 
     environment:
       DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:${PORT_RALLLY_DB}/${RALLLY_DB_NAME}
+      SECRET_PASSWORD: ${RALLLY_SECRETKEY}
     
     labels:
       - diun.enable=true
