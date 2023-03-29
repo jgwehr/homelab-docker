@@ -615,6 +615,10 @@ services:
       - caddy-net
       - rallly-net
 
+    depends_on:
+      rallly_db:
+        condition: service_healthy
+
     ports:
       - ${PORT_RALLLY}:3000
 
