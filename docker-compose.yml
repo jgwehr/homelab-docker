@@ -584,8 +584,8 @@ services:
       - ${PORT_PINRY}:80
 
     environment:
-      - ALLOW_NEW_REGISTRATIONS=True
-      - SECRET_KEY=${PINRY_SECRETKEY}
+      ALLOW_NEW_REGISTRATIONS: 'True'
+      SECRET_KEY: ${PINRY_SECRETKEY}
     
     labels:
       - diun.enable=true
@@ -605,6 +605,39 @@ services:
           memory: 256M
     restart: unless-stopped
 
+rallly:
+    container_name: rallly
+    image: lukevella/rallly:latest
+    profiles:
+      - lifestyle
+
+    networks:
+      - caddy-net
+      - rallly
+
+    ports:
+      - ${PORT_RALLLY}:3000
+
+    environment:
+      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:5432/${RALLLY_DB_NAME}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Pinry
+      - homepage.icon=/icons/pinry.png
+      - homepage.href=http://${SERVER_URL}:${PORT_PINRY}
+      - homepage.description=Save, tag, and share images, videos and webpages
+
+    volumes:
+      - ${CONFIGDIR}/pinry:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    restart: unless-stopped
 
 ####################
 # Network
