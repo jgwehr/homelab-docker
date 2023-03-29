@@ -879,9 +879,9 @@ services:
       - ${PORT_RALLLY_DB}:5432
 
     environment:
-      - POSTGRES_USER: ${RALLLY_DB_USER}
-      - POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
-      - POSTGRES_DB: ${RALLLY_DB_NAME}
+      POSTGRES_USER: ${RALLLY_DB_USER}
+      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
+      POSTGRES_DB: ${RALLLY_DB_NAME}
 
     labels:
       - homepage.group=Back End
@@ -899,8 +899,10 @@ services:
         - CMD
         - pg_isready
         - '-q'
+        - '-d'
+        - ${RALLLY_DB_NAME}
         - '-U'
-        - ${}
+        - ${RALLLY_DB_USER}
       timeout: 45s
       
     deploy:
