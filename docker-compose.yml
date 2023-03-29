@@ -613,7 +613,7 @@ rallly:
 
   networks:
     - caddy-net
-    - rallly
+    - rallly-net
 
   ports:
     - ${PORT_RALLLY}:3000
@@ -906,7 +906,7 @@ rallly:
       - calendar
 
     networks:
-      - rallly
+      - rallly-net
 
     ports:
       - ${PORT_RALLLY_DB}:5432
@@ -1234,8 +1234,8 @@ networks:
     name: htpc-net
   tandoor:
     name: tandoor
-  rallly:
-    name: rallly
+  rallly-net:
+    name: rallly-net
 
   peer2peer:
     name: peer2peer
