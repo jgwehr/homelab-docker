@@ -623,8 +623,14 @@ services:
       - ${PORT_RALLLY}:3000
 
     environment:
-      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:${PORT_RALLLY_DB}/${RALLLY_DB_NAME}
+      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:5432/${RALLLY_DB_NAME}
       SECRET_PASSWORD: ${RALLLY_SECRETKEY}
+      SUPPORT_EMAIL: ${RALLLY_SUPPORTEMAIL}
+      SMTP_HOST: ${RALLLY_SMTP_HOST}
+      SMTP_PORT:  ${RALLLY_SMTP_PORT}
+      SMTP_SECURE: ${RALLLY_SMTP_SECURE}
+      SMTP_USER: ${RALLLY_SMTP_USER}
+      SMTP_PWD: ${RALLLY_SMTP_PASSWORD}
     
     labels:
       - diun.enable=true
