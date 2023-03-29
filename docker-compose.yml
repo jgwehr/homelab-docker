@@ -619,18 +619,18 @@ services:
       - ${PORT_RALLLY}:3000
 
     environment:
-      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:5432/${RALLLY_DB_NAME}
+      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:${PORT_RALLLY_DB}/${RALLLY_DB_NAME}
     
     labels:
       - diun.enable=true
       - homepage.group=Lifestyle
-      - homepage.name=Pinry
-      - homepage.icon=/icons/pinry.png
-      - homepage.href=http://${SERVER_URL}:${PORT_PINRY}
-      - homepage.description=Save, tag, and share images, videos and webpages
+      - homepage.name=Rallly
+      - homepage.icon=/icons/rallly.png
+      - homepage.href=http://${SERVER_URL}:${PORT_RALLLY}
+      - homepage.description=Schedule hangouts with friends
 
     volumes:
-      - ${CONFIGDIR}/pinry:/data
+      - ${CONFIGDIR}/rallly:/data
     
     deploy:
       resources:
