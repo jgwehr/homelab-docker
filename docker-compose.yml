@@ -706,8 +706,6 @@ services:
         limits:
           memory: 128M
     restart: unless-stopped
-    
-
 
   unbound:
     container_name: unbound
@@ -865,6 +863,43 @@ services:
         limits:
           cpus: '1'
           memory: 32M
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres
+    image: postgres:alpine
+
+    profiles:
+      - calendar
+
+    networks:
+      - database
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Postgres DB
+      - homepage.icon=postgres
+      - homepage.description=Database for Rallly
+
+    volumes:
+      - ${DBDIR}/postgres:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-U'
+        - ${}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     restart: unless-stopped
 
   protonvpn:
@@ -1157,6 +1192,8 @@ networks:
   tandoor:
     name: tandoor
 
+  database:
+    name: database
   peer2peer:
     name: peer2peer
   vpn:
