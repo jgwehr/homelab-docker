@@ -625,8 +625,11 @@ services:
     environment:
       DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:5432/${RALLLY_DB_NAME}
       SECRET_PASSWORD: ${RALLLY_SECRETKEY}
+      AUTH_REQUIRED: true
+      DISABLE_LANDING_PAGE: true
       SUPPORT_EMAIL: ${RALLLY_SUPPORTEMAIL}
-      NEXT_PUBLIC_BASE_URL: htttps://meet.${DOMAIN}
+      NEXT_PUBLIC_BASE_URL: https://meet.${DOMAIN} # defined in the Caddyfile
+
       SMTP_HOST: ${RALLLY_SMTP_HOST}
       SMTP_PORT:  ${RALLLY_SMTP_PORT}
       SMTP_SECURE: ${RALLLY_SMTP_SECURE}
