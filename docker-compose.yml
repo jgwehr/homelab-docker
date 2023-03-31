@@ -88,7 +88,7 @@ services:
     
     networks:
       - caddy-net # provides access for the reverse proxy
-      - tandoor
+      - tandoor-net
 
     ports:
       - ${PORT_TANDOOR}:8080
@@ -98,8 +98,6 @@ services:
 
     environment:
       TIMEZONE: ${TZ}
-      POSTGRES_HOST: ${TANDOOR_DB_NAME}
-      POSTGRES_USER: ${TANDOOR_DB_USER}
 
     labels:
       - diun.enable=true
@@ -121,21 +119,22 @@ services:
 
   tandoor_db:
     container_name: tandoor_db
-    image: postgres:11-alpine
+    image: postgres:alpine
+
     profiles:
       - recipes
 
     networks:
-      - tandoor
+      - tandoor-net
 
     env_file:
       - ${STATICCONFIGDIR}/tandoor/tandoor.env
 
     labels:
       - homepage.group=Back End
-      - homepage.name=Tandoor DB
+      - homepage.name=Tandoor | Postgres DB
       - homepage.icon=postgres
-      - homepage.description=Recipes Database
+      - homepage.description=Database for Tandoor recipes
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
@@ -1247,8 +1246,8 @@ networks:
     
   htpc-net:
     name: htpc-net
-  tandoor:
-    name: tandoor
+  tandoor-net:
+    name: tandoor-net
   rallly-net:
     name: rallly-net
 
