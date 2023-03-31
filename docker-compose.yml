@@ -584,8 +584,8 @@ services:
       - ${PORT_PINRY}:80
 
     environment:
-      - ALLOW_NEW_REGISTRATIONS=True
-      - SECRET_KEY=${PINRY_SECRETKEY}
+      ALLOW_NEW_REGISTRATIONS: 'True'
+      SECRET_KEY: ${PINRY_SECRETKEY}
     
     labels:
       - diun.enable=true
@@ -605,6 +605,54 @@ services:
           memory: 256M
     restart: unless-stopped
 
+  rallly:
+    container_name: rallly
+    image: lukevella/rallly:latest
+    profiles:
+      - calendar
+
+    networks:
+      - caddy-net
+      - rallly-net
+
+    depends_on:
+      rallly_db:
+        condition: service_healthy
+
+    ports:
+      - ${PORT_RALLLY}:3000
+
+    environment:
+      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:5432/${RALLLY_DB_NAME}
+      SECRET_PASSWORD: ${RALLLY_SECRETKEY}
+      AUTH_REQUIRED: true
+      DISABLE_LANDING_PAGE: true
+      SUPPORT_EMAIL: ${RALLLY_SUPPORTEMAIL}
+      NEXT_PUBLIC_BASE_URL: https://meet.${DOMAIN} # defined in the Caddyfile
+
+      SMTP_HOST: ${RALLLY_SMTP_HOST}
+      SMTP_PORT:  ${RALLLY_SMTP_PORT}
+      SMTP_SECURE: ${RALLLY_SMTP_SECURE}
+      SMTP_USER: ${RALLLY_SMTP_USER}
+      SMTP_PWD: ${RALLLY_SMTP_PASSWORD}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Rallly
+      - homepage.icon=/icons/rallly.png
+      - homepage.href=http://${SERVER_URL}:${PORT_RALLLY}
+      - homepage.description=Schedule hangouts with friends
+
+    volumes:
+      - ${CONFIGDIR}/rallly:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 256M
+    restart: unless-stopped
 
 ####################
 # Network
@@ -706,8 +754,6 @@ services:
         limits:
           memory: 128M
     restart: unless-stopped
-    
-
 
   unbound:
     container_name: unbound
@@ -865,6 +911,53 @@ services:
         limits:
           cpus: '1'
           memory: 32M
+    restart: unless-stopped
+
+  rallly_db:
+    container_name: rallly_db
+    image: postgres:alpine
+
+    profiles:
+      - calendar
+
+    networks:
+      - rallly-net
+
+    ports:
+      - ${PORT_RALLLY_DB}:5432
+
+    environment:
+      POSTGRES_USER: ${RALLLY_DB_USER}
+      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
+      POSTGRES_DB: ${RALLLY_DB_NAME}
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Rallly | Postgres DB
+      - homepage.icon=postgres
+      - homepage.description=Database for Rallly
+
+    volumes:
+      - ${DBDIR}/rallly:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${RALLLY_DB_NAME}
+        - '-U'
+        - ${RALLLY_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     restart: unless-stopped
 
   protonvpn:
@@ -1156,6 +1249,8 @@ networks:
     name: htpc-net
   tandoor:
     name: tandoor
+  rallly-net:
+    name: rallly-net
 
   peer2peer:
     name: peer2peer
