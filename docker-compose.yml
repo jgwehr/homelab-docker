@@ -25,8 +25,8 @@ services:
 
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
-      - ${STATICDIR}/icons:/app/public/icons:ro #Optional. for custom icons
-      - ${STATICDIR}/wallpaper:/app/public/images:ro #Optional. for custom backgrounds
+      - ${STATICDIR}/icons:/app/public/icons #Optional. for custom icons
+      - ${STATICDIR}/wallpaper:/app/public/images #Optional. for custom backgrounds
 
       - ${SYS_DISK1}:/dev/sda1:ro #harddrive space monitoring
       - ${SYS_DISK2}:/dev/sdb1:ro #harddrive space monitoring
@@ -58,6 +58,9 @@ services:
       - homepage.icon=uptime-kuma
       - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
       - homepage.description=Service Uptime Monitoring
+      - homepage.widget.type=uptimekuma
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
+      - homepage.widget.slug=statuspageslug
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
@@ -85,7 +88,7 @@ services:
     
     networks:
       - caddy-net # provides access for the reverse proxy
-      - tandoor
+      - tandoor-net
 
     ports:
       - ${PORT_TANDOOR}:8080
@@ -95,12 +98,10 @@ services:
 
     environment:
       TIMEZONE: ${TZ}
-      POSTGRES_HOST: ${TANDOOR_DB_NAME}
-      POSTGRES_USER: ${TANDOOR_DB_USER}
 
     labels:
       - diun.enable=true
-      - homepage.group=Home
+      - homepage.group=Lifestyle
       - homepage.name=Tandoor
       - homepage.icon=tandoorrecipes
       - homepage.href=http://${SERVER_URL}:${PORT_TANDOOR}
@@ -118,21 +119,22 @@ services:
 
   tandoor_db:
     container_name: tandoor_db
-    image: postgres:11-alpine
+    image: postgres:alpine
+
     profiles:
       - recipes
 
     networks:
-      - tandoor
+      - tandoor-net
 
     env_file:
       - ${STATICCONFIGDIR}/tandoor/tandoor.env
 
     labels:
       - homepage.group=Back End
-      - homepage.name=Tandoor DB
+      - homepage.name=Tandoor | Postgres DB
       - homepage.icon=postgres
-      - homepage.description=Recipes Database
+      - homepage.description=Database for Tandoor recipes
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
@@ -565,6 +567,131 @@ services:
     restart: unless-stopped
 
 ####################
+# Lifestyle
+####################
+
+  changedetection:
+    container_name: changedetection
+    image: ghcr.io/dgtlmoon/changedetection.io
+
+    profiles:
+      - lifestyle
+    
+    ports:
+      - ${PORT_CHANGEDETECTION}:5000
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Change Detection
+      - homepage.icon=/icons/changedetection.png
+      - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
+      - homepage.description=Website monitoring and change detection
+      - homepage.widget.type=changedetectionio
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
+      - homepage.widget.key=${HOMEPAGE_CHANGEDETECTION_API}
+
+    volumes:
+      - ${CONFIGDIR}/changedetection:/datastore
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+    restart: unless-stopped
+  
+  pinry:
+    container_name: pinry
+    image: getpinry/pinry
+
+    profiles:
+      - lifestyle
+
+    networks:
+      - caddy-net
+
+    ports:
+      - ${PORT_PINRY}:80
+
+    environment:
+      ALLOW_NEW_REGISTRATIONS: 'True'
+      SECRET_KEY: ${PINRY_SECRETKEY}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Pinry
+      - homepage.icon=/icons/pinry.png
+      - homepage.href=http://${SERVER_URL}:${PORT_PINRY}
+      - homepage.description=Save, tag, and share images, videos and webpages
+
+    volumes:
+      - ${CONFIGDIR}/pinry:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    restart: unless-stopped
+
+  rallly:
+    container_name: rallly
+    image: lukevella/rallly:latest
+
+    profiles:
+      - calendar
+
+    networks:
+      - caddy-net
+      - rallly-net
+
+    depends_on:
+      rallly_db:
+        condition: service_healthy
+
+    ports:
+      - ${PORT_RALLLY}:3000
+
+    environment:
+      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:5432/${RALLLY_DB_NAME}
+      SECRET_PASSWORD: ${RALLLY_SECRETKEY}
+      AUTH_REQUIRED: true
+      DISABLE_LANDING_PAGE: true
+      SUPPORT_EMAIL: ${RALLLY_SUPPORTEMAIL}
+      NEXT_PUBLIC_BASE_URL: https://meet.${DOMAIN} # defined in the Caddyfile
+
+      SMTP_HOST: ${RALLLY_SMTP_HOST}
+      SMTP_PORT:  ${RALLLY_SMTP_PORT}
+      SMTP_SECURE: ${RALLLY_SMTP_SECURE}
+      SMTP_USER: ${RALLLY_SMTP_USER}
+      SMTP_PWD: ${RALLLY_SMTP_PASSWORD}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Rallly
+      - homepage.icon=/icons/rallly.png
+      - homepage.href=http://${SERVER_URL}:${PORT_RALLLY}
+      - homepage.description=Schedule hangouts with friends
+
+    volumes:
+      - ${CONFIGDIR}/rallly:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 256M
+    restart: unless-stopped
+
+####################
 # Network
 ####################
 
@@ -653,6 +780,8 @@ services:
       - homepage.icon=speedtest-tracker
       - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
       - homepage.description=Build a history of your internet's performance
+      - homepage.widget.type=speedtest
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
 
     volumes:
       - ${CONFIGDIR}/speedtest-tracker:/config
@@ -662,8 +791,6 @@ services:
         limits:
           memory: 128M
     restart: unless-stopped
-    
-
 
   unbound:
     container_name: unbound
@@ -821,6 +948,53 @@ services:
         limits:
           cpus: '1'
           memory: 32M
+    restart: unless-stopped
+
+  rallly_db:
+    container_name: rallly_db
+    image: postgres:alpine
+
+    profiles:
+      - calendar
+
+    networks:
+      - rallly-net
+
+    ports:
+      - ${PORT_RALLLY_DB}:5432
+
+    environment:
+      POSTGRES_USER: ${RALLLY_DB_USER}
+      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
+      POSTGRES_DB: ${RALLLY_DB_NAME}
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Rallly | Postgres DB
+      - homepage.icon=postgres
+      - homepage.description=Database for Rallly
+
+    volumes:
+      - ${DBDIR}/rallly:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${RALLLY_DB_NAME}
+        - '-U'
+        - ${RALLLY_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     restart: unless-stopped
 
   protonvpn:
@@ -1003,7 +1177,7 @@ services:
 
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.4.4
+    image: crowdsecurity/crowdsec:v1.4.6
     profiles:
       - external
 
@@ -1110,8 +1284,10 @@ networks:
     
   htpc-net:
     name: htpc-net
-  tandoor:
-    name: tandoor
+  tandoor-net:
+    name: tandoor-net
+  rallly-net:
+    name: rallly-net
 
   peer2peer:
     name: peer2peer

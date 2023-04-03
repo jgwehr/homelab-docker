@@ -121,6 +121,13 @@ jelly.{$DOMAIN} {
   reverse_proxy jellyfin:8096
 }
 
+meet.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy rallly:3000
+}
+
 recipe.{$DOMAIN} {
   import headers
   import main
@@ -138,6 +145,13 @@ request.{$DOMAIN} {
   import main
 
   reverse_proxy jellyseerr:5055
+}
+
+pin.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy pinry:80
 }
 
 status.{$DOMAIN} {
