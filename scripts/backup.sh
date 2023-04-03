@@ -15,6 +15,10 @@ sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
 # Docker config backups
 echo Backing up Docker Configs...
 
+mkdir -p $varBackupDir/$varDate/changedetection
+varTempChangeDetectionBackup=$(ls -Art $varConfigDir/changedetection/*.zip | tail -n 1)
+cp -rpi $varTempChangeDetectionBackup $varBackupDir/$varDate/changedetection
+
 mkdir -p $varBackupDir/$varDate/ghs && cp -rpi $varConfigDir/ghs $varBackupDir/$varDate
 
 mkdir -p $varBackupDir/$varDate/homepage && cp -rpi $varConfigDir/homepage/*.yaml $varBackupDir/$varDate/homepage
