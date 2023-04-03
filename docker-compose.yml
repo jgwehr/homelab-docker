@@ -753,8 +753,6 @@ services:
     profiles:
       - paperless
 
-    user: ${PUID}:${PGID}
-
     depends_on:
       paperless_db:
         condition: service_healthy
@@ -787,7 +785,11 @@ services:
       - homepage.name=Paperless
       - homepage.icon=paperless
       - homepage.href=http://${SERVER_URL}:${PORT_PAPERLESS}
-      - homepage.description=Scan, index and archive all your physical documents 
+      - homepage.description=Scan, index and archive all your physical documents
+      - homepage.widget.type=paperlessngx
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_PAPERLESS}
+      - homepage.widget.username=${HOMEPAGE_PAPERLESS_USERNAME}
+      - homepage.widget.password=${HOMEPAGE_PAPERLESS_PASSWORD}
 
     volumes:
       - ${CONFIGDIR}/paperless:/usr/src/paperless/data
@@ -818,6 +820,12 @@ services:
 
     networks:
       - paperless-net
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=redis | Redis
+      - homepage.icon=postgres
+      - homepage.description=Broker for Paperless
 
     volumes:
       - ${DBDIR}/paperless-redis:/data
