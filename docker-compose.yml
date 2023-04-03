@@ -589,7 +589,7 @@ services:
       - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Change Detection
-      - homepage.icon=changedetectionio
+      - homepage.icon=/icons/changedetection.png
       - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
       - homepage.description=Website monitoring and change detection
       - homepage.widget.type=changedetectionio
