@@ -641,6 +641,10 @@ services:
           memory: 256M
     restart: unless-stopped
 
+####################
+# Rallly
+####################
+
   rallly:
     container_name: rallly
     image: lukevella/rallly:latest
@@ -689,6 +693,53 @@ services:
         limits:
           cpus: '0.7'
           memory: 256M
+    restart: unless-stopped
+
+  rallly_db:
+    container_name: rallly_db
+    image: postgres:alpine
+
+    profiles:
+      - calendar
+
+    networks:
+      - rallly-net
+
+    ports:
+      - ${PORT_RALLLY_DB}:5432
+
+    environment:
+      POSTGRES_USER: ${RALLLY_DB_USER}
+      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
+      POSTGRES_DB: ${RALLLY_DB_NAME}
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Rallly | Postgres DB
+      - homepage.icon=postgres
+      - homepage.description=Database for Rallly
+
+    volumes:
+      - ${DBDIR}/rallly:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${RALLLY_DB_NAME}
+        - '-U'
+        - ${RALLLY_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
     restart: unless-stopped
 
 ####################
@@ -948,53 +999,6 @@ services:
         limits:
           cpus: '1'
           memory: 32M
-    restart: unless-stopped
-
-  rallly_db:
-    container_name: rallly_db
-    image: postgres:alpine
-
-    profiles:
-      - calendar
-
-    networks:
-      - rallly-net
-
-    ports:
-      - ${PORT_RALLLY_DB}:5432
-
-    environment:
-      POSTGRES_USER: ${RALLLY_DB_USER}
-      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
-      POSTGRES_DB: ${RALLLY_DB_NAME}
-
-    labels:
-      - homepage.group=Back End
-      - homepage.name=Rallly | Postgres DB
-      - homepage.icon=postgres
-      - homepage.description=Database for Rallly
-
-    volumes:
-      - ${DBDIR}/rallly:/var/lib/postgresql/data
-
-    healthcheck:
-      interval: 60s
-      retries: 10
-      test:
-        - CMD
-        - pg_isready
-        - '-q'
-        - '-d'
-        - ${RALLLY_DB_NAME}
-        - '-U'
-        - ${RALLLY_DB_USER}
-      timeout: 45s
-      
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
     restart: unless-stopped
 
   protonvpn:
