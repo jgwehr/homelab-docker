@@ -570,9 +570,46 @@ services:
 # Lifestyle
 ####################
 
+  changedetection:
+    container_name: changedetection
+    image: ghcr.io/dgtlmoon/changedetection.io
+
+    profiles:
+      - lifestyle
+    
+    ports:
+      - ${PORT_CHANGEDETECTION}:5000
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Change Detection
+      - homepage.icon=/icons/changedetection.png
+      - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
+      - homepage.description=Website monitoring and change detection
+      - homepage.widget.type=changedetectionio
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
+      - homepage.widget.key=${HOMEPAGE_CHANGEDETECTION_API}
+
+    volumes:
+      - ${CONFIGDIR}/changedetection:/datastore
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+    restart: unless-stopped
+  
   pinry:
     container_name: pinry
     image: getpinry/pinry
+
     profiles:
       - lifestyle
 
@@ -607,6 +644,7 @@ services:
   rallly:
     container_name: rallly
     image: lukevella/rallly:latest
+
     profiles:
       - calendar
 
