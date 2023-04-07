@@ -104,7 +104,7 @@ services:
       - homepage.group=Lifestyle
       - homepage.name=Tandoor
       - homepage.icon=tandoorrecipes
-      - homepage.href=http://${EXTERNAL_TANDOOR}:${PORT_TANDOOR}
+      - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}
       - homepage.description=Recipes and Meal Planning
 
     volumes:
@@ -628,7 +628,7 @@ services:
       - homepage.group=Lifestyle
       - homepage.name=Pinry
       - homepage.icon=/icons/pinry.png
-      - homepage.href=http://${EXTERNAL_PINRY}:${PORT_PINRY}
+      - homepage.href=http://${EXTERNAL_PINRY}.${DOMAIN}
       - homepage.description=Save, tag, and share images, videos and webpages
 
     volumes:
