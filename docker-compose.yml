@@ -1162,6 +1162,13 @@ services:
 
     shm_size: 2gb
 
+    labels:
+      - diun.enable=true
+      - homepage.group=Back End
+      - homepage.name=Firefox
+      - homepage.icon=firefox
+      - homepage.description=Headless browser for ChangeDetection
+
     deploy:
       resources:
         limits:
