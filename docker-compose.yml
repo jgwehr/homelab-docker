@@ -525,7 +525,7 @@ services:
       - homepage.group=Games
       - homepage.name=Gloomhaven Secretariat
       - homepage.icon=/icons/ghs.png
-      - homepage.href=http://${SERVER_URL}:${PORT_GHS_CLIENT}
+      - homepage.href=http://${EXTERNAL_GHS}.${DOMAIN}
       - homepage.description=Gloomhaven Ability and Initiative tracker
       
 
@@ -554,7 +554,7 @@ services:
       - homepage.name=Gloomhaven Secretariat Server
       - homepage.icon=/icons/ghs.png
       - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
-      - homepage.description=Backend for GLoomhaven Secretariat
+      - homepage.description=Backend for Gloomhaven Secretariat
 
     volumes:
       - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
@@ -576,6 +576,9 @@ services:
 
     profiles:
       - lifestyle
+
+    depends_on:
+      - firefox
     
     ports:
       - ${PORT_CHANGEDETECTION}:5000
@@ -584,6 +587,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      WEBDRIVER_URL: http://firefox:${PORT_FIREFOX}
 
     labels:
       - diun.enable=true
@@ -823,7 +827,7 @@ services:
 
     labels:
       - homepage.group=Back End
-      - homepage.name=redis | Redis
+      - homepage.name=Paperless | Redis
       - homepage.icon=redis
       - homepage.description=Broker for Paperless
 
@@ -1146,6 +1150,25 @@ services:
           memory: 32M
     restart: unless-stopped
 
+  firefox:
+    container_name: firefox
+    image: selenium/standalone-firefox:4.8.3-20230404
+
+    profiles:
+      - lifestyle
+
+    ports:
+      - ${PORT_FIREFOX}:4444
+
+    shm_size: 2gb
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    restart: unless-stopped
+  
   protonvpn:
     container_name: protonvpn
     image: ghcr.io/linuxserver/wireguard:latest
@@ -1160,6 +1183,7 @@ services:
     
     networks:
       - vpn
+      - peer2
 
     ports:
       - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
