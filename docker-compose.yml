@@ -1183,7 +1183,7 @@ services:
     
     networks:
       - vpn
-      - peer2
+      - peer2peer
 
     ports:
       - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
@@ -1464,6 +1464,8 @@ networks:
   paperless-net:
     name: paperless-net
 
+  peer2peer:
+    name: peer2peer
   vpn:
     name: vpn
     internal: true
