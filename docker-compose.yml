@@ -578,7 +578,7 @@ services:
       - lifestyle
 
     depends_on:
-      - firefox
+      - chrome
     
     ports:
       - ${PORT_CHANGEDETECTION}:5000
@@ -587,7 +587,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-      WEBDRIVER_URL: http://firefox:${PORT_FIREFOX}
+      WEBDRIVER_URL: http://chrome:${PORT_WEBDRIVER}/wd/hub
 
     labels:
       - diun.enable=true
@@ -1150,23 +1150,23 @@ services:
           memory: 32M
     restart: unless-stopped
 
-  firefox:
-    container_name: firefox
-    image: selenium/standalone-firefox:4.8.3-20230404
+  chrome:
+    container_name: chrome
+    image: selenium/standalone-chrome:4.8.3
 
     profiles:
       - lifestyle
 
     ports:
-      - ${PORT_FIREFOX}:4444
+      - ${PORT_WEBDRIVER}:4444
 
     shm_size: 2gb
 
     labels:
       - diun.enable=true
       - homepage.group=Back End
-      - homepage.name=Firefox
-      - homepage.icon=firefox
+      - homepage.name=Chrome
+      - homepage.icon=chrome
       - homepage.description=Headless browser for ChangeDetection
 
     deploy:
