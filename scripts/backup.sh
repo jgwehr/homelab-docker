@@ -119,7 +119,7 @@ mkdir -p $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless/index
 mkdir -p $varBackupDir/$varDate-paperless/documents/originals
-cp -rpi $varStaticDir/paperless/documents/originals $varBackupDir/$varDate-paperless/documents/originals
+cp -rpi $varStaticDir/paperless/documents/originals $varBackupDir/$varDate-paperless/documents
 echo Creating Paperless Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
