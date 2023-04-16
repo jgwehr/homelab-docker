@@ -55,10 +55,6 @@ cp -rpi $varConfigDir/sonarr/Backups/scheduled/$varTempSonarrBackup $varBackupDi
 mkdir -p $varBackupDir/$varDate/qbittorrent
 cp -rpi $varConfigDir/qbt/qBittorrent/qBittorrent.conf $varBackupDir/$varDate/qbittorrent
 
-mkdir -p $varBackupDir/$varDate/paperless
-cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate/paperless
-cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate/paperless/index
-
 mkdir -p $varBackupDir/$varDate/pihole && cp -rpi $varConfigDir/pihole $varBackupDir/$varDate
 # the below databases are very large and can be rebuilt
 rm $varBackupDir/$varDate/pihole/pihole/gravity.db
@@ -117,10 +113,14 @@ echo Creating Pinry Media Zip...
 cd $varBackupDir
 zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
 
-echo Backing Up Paperless Documents
+
+echo Backing Up Paperless
+mkdir -p $varBackupDir/$varDate-paperless/paperless
+cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate-paperless/paperless
+cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless/index
 mkdir -p $varBackupDir/$varDate-paperless/documents/originals
 cp -rpi $varStaticDir/paperless/documents/originals $varBackupDir/$varDate-paperless/documents/originals
-echo Creating Paperless Documents Zip...
+echo Creating Paperless Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 
@@ -131,3 +131,4 @@ docker compose up -d
 docker compose --profile lifestyle up -d
 docker compose --profile recipes up -d
 docker compose --profile paperless up -d
+docker compose --profile gloomhaven up -d
