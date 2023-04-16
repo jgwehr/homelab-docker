@@ -118,7 +118,7 @@ zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
 
 echo Backing Up Paperless Documents
 mkdir -p $varBackupDir/$varDate-paperless
-cp -rpi $varStaticDir/paperless/originals $varBackupDir/$varDate-paperless/documents/originals
+cp -rpi $varStaticDir/paperless/documents/originals $varBackupDir/$varDate-paperless/documents/originals
 echo Creating Paperless Documents Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
