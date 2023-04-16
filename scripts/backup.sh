@@ -7,15 +7,16 @@ varStaticDir=/mnt/storage/staticfiles
 mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
-# Stop Docker for safety
-docker compose down
 
-# Database backups
+
+# Database backups (must be done while containers are still running...)
 echo Backing up Databases...
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
 sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.sql
 
 
+# Stop Docker for safety
+docker compose down
 
 # Docker config backups
 echo Backing up Docker Configs...
