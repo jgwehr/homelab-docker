@@ -8,7 +8,6 @@ mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
 
-
 # Database backups (must be done while containers are still running...)
 echo Backing up Databases...
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
@@ -16,6 +15,7 @@ sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.
 
 
 # Stop Docker for safety
+cd $varOptDir
 docker compose down
 
 # Docker config backups
@@ -128,3 +128,6 @@ zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 # start docker again. Note, specific profiles may need restarted manually
 cd $varOptDir
 docker compose up -d
+docker compose --profile lifestyle up -d
+docker compose --profile recipes up -d
+docker compose --profile paperless up -d
