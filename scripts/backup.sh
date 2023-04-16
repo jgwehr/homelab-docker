@@ -2,6 +2,7 @@ varDate=$(date +%Y-%m-%d)
 varBackupDir=/home/user/backup/$varDate
 varConfigDir=/srv/docker
 varOptDir=/opt/docker/homelab
+varStaticDir=/mnt/storage/staticfiles
 
 mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
@@ -9,6 +10,7 @@ cd $varBackupDir/$varDate
 # Database backups
 echo Backing up Databases...
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
+sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.sql
 
 
 
@@ -48,6 +50,10 @@ cp -rpi $varConfigDir/sonarr/Backups/scheduled/$varTempSonarrBackup $varBackupDi
 
 mkdir -p $varBackupDir/$varDate/qbittorrent
 cp -rpi $varConfigDir/qbt/qBittorrent/qBittorrent.conf $varBackupDir/$varDate/qbittorrent
+
+mkdir -p $varBackupDir/$varDate/paperless
+cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate/paperless
+cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate/paperless/index
 
 mkdir -p $varBackupDir/$varDate/pihole && cp -rpi $varConfigDir/pihole $varBackupDir/$varDate
 # the below databases are very large and can be rebuilt
@@ -106,3 +112,10 @@ cp -rpi $varConfigDir/pinry/static/media $varBackupDir/$varDate-pinry
 echo Creating Pinry Media Zip...
 cd $varBackupDir
 zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
+
+echo Backing Up Paperless Documents
+mkdir -p $varBackupDir/$varDate-paperless
+cp -rpi $varStaticDir/paperless/originals $varBackupDir/$varDate-paperless/documents/originals
+echo Creating Paperless Documents Zip...
+cd $varBackupDir
+zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
