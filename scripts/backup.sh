@@ -7,6 +7,9 @@ varStaticDir=/mnt/storage/staticfiles
 mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
+# Stop Docker for safety
+docker compose down
+
 # Database backups
 echo Backing up Databases...
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
@@ -119,3 +122,8 @@ cp -rpi $varStaticDir/paperless/originals $varBackupDir/$varDate-paperless/docum
 echo Creating Paperless Documents Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
+
+
+# start docker again. Note, specific profiles may need restarted manually
+cd $varOptDir
+docker compose up -d
