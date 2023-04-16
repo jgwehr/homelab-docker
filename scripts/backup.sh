@@ -1,5 +1,5 @@
-varDate=$(date +%Y%m%d)
-varBackupDir=/home/user/backup
+varDate=$(date +%Y-%m-%d)
+varBackupDir=/home/user/backup/$varDate
 varConfigDir=/srv/docker
 varOptDir=/opt/docker/homelab
 
@@ -96,7 +96,10 @@ du -h --max-depth=1 $varDate | sort -hr
 zip -r -9 $varDate $varDate > /dev/null 2>&1
 
 
+####################
 # Large File Storage Backups
+####################
+
 echo Backing Up Pinry Media
 mkdir -p $varBackupDir/$varDate-pinry
 cp -rpi $varConfigDir/pinry/static/media $varBackupDir/$varDate-pinry
