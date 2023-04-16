@@ -53,7 +53,9 @@ Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static
 | `media-request` | jellyseerr, sonarr, radarr, prowlarr, wireguard,  qbittorrent, podgrab | Full stack for end user media requests and file transfer. Non-local access to Jellyseerr requires  `external` |
 | `recipes` | tandoor_recipes, postres | Home recipes. Non-local access to tandoor requires  `external` |
 | `gloomhaven` | gloomhaven-secretary, ghs-server | Board games! Non-local access to client and server requires  `external` |
-| `lifestyle` | Pinry | Tools for the family |
+| `lifestyle` | pinry, changedetection.io, selenium/chrome | Tools for the family |
+| `paperless` | paperless-ngx, postgress, redis | Tools for the family |
+| `calendar` | rallly, postgres | Tools for the family |
 | `ripping` | automatic-ripping machine | local-only, not required all the time |
 
 
