@@ -25,6 +25,13 @@ sudo chmod -R a=,a+rX,u+w,g+w /mnt/storage/{db,downloads,media,staticfiles}
 cp $varOptDir/configtemplates/snapraid/snapraid.conf /etc/snapraid.conf
 mkdir -p /var/snapraid
 
+# Move logging for CRONTAB to its own file; helpful for SnapRaid automation
+touch /var/log/cron.log
+# You must manually modify logging config. Uncomment the cron directive
+#   nano /etc/rsyslog.d/50-default.conf
+#   sudo systemctl restart rsyslog
+#   sudo systemctl status rsyslog
+
 
 # Pihole
 cp -rpi $varOptDir/configtemplates/pihole/resolv.conf $varConfigDir/pihole/resolv.conf
