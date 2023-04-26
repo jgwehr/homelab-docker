@@ -775,6 +775,7 @@ services:
       PAPERLESS_TIME_ZONE: ${TZ}
       PAPERLESS_OCR_LANGUAGE: 'eng'
       PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRETKEY}
+      PAPERLESS_DATE_ORDER: MDY
 
       PAPERLESS_REDIS: redis://paperless_broker:6379
       PAPERLESS_DBHOST: paperless_db
@@ -810,8 +811,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 512M
+          cpus: '2'
+          memory: 2048M
     restart: unless-stopped
 
 
