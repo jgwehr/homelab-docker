@@ -23,6 +23,18 @@ labels:
 ---
 source: docker
 container_name:
+ - paperless_db
+labels:
+  type: postgres 
+---
+source: docker
+container_name:
+ - rallly_db
+labels:
+  type: postgres 
+---
+source: docker
+container_name:
  - tandoor_db
 labels:
   type: postgres 

@@ -20,4 +20,5 @@ Add any other context or screenshots about the feature request here.
 - [ ] Homepage configuration
 - [ ] Update README.md
 - [ ] Install instructions added to Wiki
+- [ ] (Optional) Added to Crowdsec acquis
 - [ ] Added to backup.sh
