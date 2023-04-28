@@ -96,7 +96,14 @@ ghs.{$DOMAIN} {
   import headers
   import main
 
-  reverse_proxy gloomhaven-server:80
+  reverse_proxy gloomhaven:80
+}
+
+ghs-server.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy gloomhaven-server:8080
 
   @websockets {
     header Connection *Upgrade*
