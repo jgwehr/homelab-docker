@@ -15,6 +15,7 @@ sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.
 
 
 # Stop Docker for safety
+echo Shutting Containers Down...
 cd $varOptDir
 docker compose down
 
@@ -120,8 +121,8 @@ cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDa
 cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless/index
 echo Backing Up Paperless, Documents...
 sudo docker exec paperless document_exporter /usr/src/paperless/export --zip #location is within paperless container
-varTempPaperlessBackup=$(ls -Art $varBackupDir/paperless | tail -n 1) # grab the most recent zip from the volume-mapped directory. Must align with your .env BACKUPDIR
-cp -rpi $varBackupDir/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents
+varTempPaperlessBackup=$(ls -Art /home/user/backup/paperless | tail -n 1) # grab the most recent zip from the volume-mapped directory. Must align with your .env BACKUPDIR
+cp -rpi /home/user/backup/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents
 echo Creating Paperless Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
@@ -134,10 +135,12 @@ zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 
 rm -rf $varBackupDir/$varDate
 rm -rf $varBackupDir/$varDate-pinry
+rm -rf $varBackupDir/$varDate-paperless
 rm $varBackupDir/paperless/*.* #cleanup
 
 
 # start docker again. Note, specific profiles may need restarted manually
+echo Starting Docker Containers...
 cd $varOptDir
 docker compose up -d
 docker compose --profile calendar up -d
