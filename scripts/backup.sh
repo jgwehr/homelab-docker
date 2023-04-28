@@ -114,15 +114,18 @@ cd $varBackupDir
 zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
 
 
-echo Backing Up Paperless
+echo Backing Up Paperless, Classification Model...
 mkdir -p $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless/index
-mkdir -p $varBackupDir/$varDate-paperless/documents/originals
-cp -rpi $varStaticDir/paperless/documents/originals $varBackupDir/$varDate-paperless/documents
+echo Backing Up Paperless, Documents...
+sudo docker exec paperless document_exporter /usr/src/paperless/export --zip #location is within paperless container
+varTempPaperlessBackup=$(ls -Art $varBackupDir/paperless | tail -n 1) # grab the most recent zip from the volume-mapped directory. Must align with your .env BACKUPDIR
+cp -rpi $varBackupDir/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents
 echo Creating Paperless Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
+rm $varBackupDir/paperless/*.* #cleanup
 
 
 # start docker again. Note, specific profiles may need restarted manually
