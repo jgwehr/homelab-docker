@@ -125,6 +125,15 @@ cp -rpi $varBackupDir/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-p
 echo Creating Paperless Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
+
+
+
+####################
+# Cleanup
+####################
+
+rm -rf $varBackupDir/$varDate
+rm -rf $varBackupDir/$varDate-pinry
 rm $varBackupDir/paperless/*.* #cleanup
 
 
