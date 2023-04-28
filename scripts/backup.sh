@@ -25,7 +25,7 @@ mkdir -p $varBackupDir/$varDate/changedetection
 varTempChangeDetectionBackup=$(ls -Art $varConfigDir/changedetection/*.zip | tail -n 1)
 cp -rpi $varTempChangeDetectionBackup $varBackupDir/$varDate/changedetection
 
-mkdir -p $varBackupDir/$varDate/ghs && cp -rpi $varConfigDir/ghs $varBackupDir/$varDate
+mkdir -p $varBackupDir/$varDate/ghs && cp -rpi $varConfigDir/ghs/ghs.sqlite $varBackupDir/$varDate/ghs
 
 mkdir -p $varBackupDir/$varDate/homepage && cp -rpi $varConfigDir/homepage/*.yaml $varBackupDir/$varDate/homepage
 
@@ -128,6 +128,7 @@ zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 # start docker again. Note, specific profiles may need restarted manually
 cd $varOptDir
 docker compose up -d
+docker compose --profile calendar up -d
 docker compose --profile lifestyle up -d
 docker compose --profile recipes up -d
 docker compose --profile paperless up -d

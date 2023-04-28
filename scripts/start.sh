@@ -33,6 +33,9 @@ touch /var/log/cron.log
 #   sudo systemctl status rsyslog
 
 
+# ghs
+cp -rpi $varOptDir/configtemplates/ghs/application.properties $varConfigDir/ghs/application.properties
+
 # Pihole
 cp -rpi $varOptDir/configtemplates/pihole/resolv.conf $varConfigDir/pihole/resolv.conf
 
