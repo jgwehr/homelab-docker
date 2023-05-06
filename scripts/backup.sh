@@ -136,7 +136,7 @@ zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 rm -rf $varBackupDir/$varDate
 rm -rf $varBackupDir/$varDate-pinry
 rm -rf $varBackupDir/$varDate-paperless
-rm $varBackupDir/paperless/*.* #cleanup
+rm /home/user/backup/paperless/*.* #cleanup
 
 
 # start docker again. Note, specific profiles may need restarted manually

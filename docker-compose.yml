@@ -281,7 +281,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=qBittorrent
+      - homepage.name=Torrents
       - homepage.icon=qbittorrent
       - homepage.href=http://${SERVER_URL}:${PORT_TORRENT_UI}
       - homepage.description=Torrent Management
@@ -329,7 +329,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=Prowlarr
+      - homepage.name=Indexers
       - homepage.icon=prowlarr
       - homepage.href=http://${SERVER_URL}:${PORT_PROWLARR_UI}
       - homepage.description=Indexer manager/proxy
@@ -367,7 +367,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=Radarr
+      - homepage.name=Movies
       - homepage.icon=radarr
       - homepage.href=http://${SERVER_URL}:${PORT_RADARR_UI}
       - homepage.description=Movie collection manager
@@ -407,7 +407,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=Sonarr
+      - homepage.name=Shows
       - homepage.icon=sonarr
       - homepage.href=http://${SERVER_URL}:${PORT_SONARR_UI}
       - homepage.description=TV Show collection manager
@@ -593,7 +593,7 @@ services:
       - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Change Detection
-      - homepage.icon=/icons/changedetection.png
+      - homepage.icon=changedetection-io
       - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
       - homepage.description=Website monitoring and change detection
       - homepage.widget.type=changedetectionio
@@ -631,7 +631,7 @@ services:
       - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Pinry
-      - homepage.icon=/icons/pinry.png
+      - homepage.icon=pinry
       - homepage.href=http://${EXTERNAL_PINRY}.${DOMAIN}
       - homepage.description=Save, tag, and share images, videos and webpages
 
@@ -800,7 +800,7 @@ services:
       - ${CONFIGDIR}/paperless:/usr/src/paperless/data
       - ${STATICDIR}/paperless:/usr/src/paperless/media
       - ${BACKUPDIR}/paperless:/usr/src/paperless/export # used for backup/exporting documents via paperless document_exporter
-      # - ${PAPERLESS_CONSUMEDIR}:/usr/src/paperless/consume
+      - ${PAPERLESS_CONSUMEDIR}:/usr/src/paperless/consume
 
     healthcheck:
       test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
@@ -812,7 +812,7 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 2048M
+          memory: 4096M
     restart: unless-stopped
 
 
@@ -935,7 +935,7 @@ services:
       - diun.enable=true
       - homepage.group=Network
       - homepage.name=Pihole
-      - homepage.icon=pihole
+      - homepage.icon=pi-hole
       - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}/admin
       - homepage.description=Network-wide Adblocking and DNS
       - homepage.widget.type=pihole
