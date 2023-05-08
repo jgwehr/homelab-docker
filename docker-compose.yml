@@ -777,6 +777,9 @@ services:
       PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRETKEY}
       PAPERLESS_DATE_ORDER: MDY
 
+      PAPERLESS_WEBSERVER_WORKERS: 2
+      PAPERLESS_CONSUMER_POLLING: 600 # only needed if not NFS: https://docs.paperless-ngx.com/troubleshooting/#consumer-fails-to-pickup-any-new-files
+
       PAPERLESS_REDIS: redis://paperless_broker:6379
       PAPERLESS_DBHOST: paperless_db
       PAPERLESS_DBNAME: ${PAPERLESS_DB_NAME}
@@ -1007,7 +1010,7 @@ services:
       - diun.enable=true
       - homepage.group=Network
       - homepage.name=Unbound
-      - homepage.icon=pihole-unbound
+      - homepage.icon=pi-hole-unbound
       - homepage.description=A validating, recursive, caching DNS resolver
 
     volumes:
