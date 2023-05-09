@@ -1,16 +1,23 @@
-varDate=$(date +%Y%m%d)
-varBackupDir=/home/user/backup
+varDate=$(date +%Y-%m-%d)
+varBackupDir=/home/user/backup/$varDate
 varConfigDir=/srv/docker
 varOptDir=/opt/docker/homelab
+varStaticDir=/mnt/storage/staticfiles
 
 mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
-# Database backups
+
+# Database backups (must be done while containers are still running...)
 echo Backing up Databases...
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
+sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.sql
 
 
+# Stop Docker for safety
+echo Shutting Containers Down...
+cd $varOptDir
+docker compose down
 
 # Docker config backups
 echo Backing up Docker Configs...
@@ -19,7 +26,7 @@ mkdir -p $varBackupDir/$varDate/changedetection
 varTempChangeDetectionBackup=$(ls -Art $varConfigDir/changedetection/*.zip | tail -n 1)
 cp -rpi $varTempChangeDetectionBackup $varBackupDir/$varDate/changedetection
 
-mkdir -p $varBackupDir/$varDate/ghs && cp -rpi $varConfigDir/ghs $varBackupDir/$varDate
+mkdir -p $varBackupDir/$varDate/ghs && cp -rpi $varConfigDir/ghs/ghs.sqlite $varBackupDir/$varDate/ghs
 
 mkdir -p $varBackupDir/$varDate/homepage && cp -rpi $varConfigDir/homepage/*.yaml $varBackupDir/$varDate/homepage
 
@@ -96,10 +103,48 @@ du -h --max-depth=1 $varDate | sort -hr
 zip -r -9 $varDate $varDate > /dev/null 2>&1
 
 
+####################
 # Large File Storage Backups
+####################
+
 echo Backing Up Pinry Media
 mkdir -p $varBackupDir/$varDate-pinry
 cp -rpi $varConfigDir/pinry/static/media $varBackupDir/$varDate-pinry
 echo Creating Pinry Media Zip...
 cd $varBackupDir
 zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
+
+
+echo Backing Up Paperless, Classification Model...
+mkdir -p $varBackupDir/$varDate-paperless/paperless
+cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate-paperless/paperless
+cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless/index
+echo Backing Up Paperless, Documents...
+sudo docker exec paperless document_exporter /usr/src/paperless/export --zip #location is within paperless container
+varTempPaperlessBackup=$(ls -Art /home/user/backup/paperless | tail -n 1) # grab the most recent zip from the volume-mapped directory. Must align with your .env BACKUPDIR
+cp -rpi /home/user/backup/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents
+echo Creating Paperless Zip...
+cd $varBackupDir
+zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
+
+
+
+####################
+# Cleanup
+####################
+
+rm -rf $varBackupDir/$varDate
+rm -rf $varBackupDir/$varDate-pinry
+rm -rf $varBackupDir/$varDate-paperless
+rm /home/user/backup/paperless/*.* #cleanup
+
+
+# start docker again. Note, specific profiles may need restarted manually
+echo Starting Docker Containers...
+cd $varOptDir
+docker compose up -d
+docker compose --profile calendar up -d
+docker compose --profile lifestyle up -d
+docker compose --profile recipes up -d
+docker compose --profile paperless up -d
+docker compose --profile gloomhaven up -d

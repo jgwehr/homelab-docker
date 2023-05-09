@@ -104,7 +104,7 @@ services:
       - homepage.group=Lifestyle
       - homepage.name=Tandoor
       - homepage.icon=tandoorrecipes
-      - homepage.href=http://${SERVER_URL}:${PORT_TANDOOR}
+      - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}
       - homepage.description=Recipes and Meal Planning
 
     volumes:
@@ -281,7 +281,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=qBittorrent
+      - homepage.name=Torrents
       - homepage.icon=qbittorrent
       - homepage.href=http://${SERVER_URL}:${PORT_TORRENT_UI}
       - homepage.description=Torrent Management
@@ -329,7 +329,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=Prowlarr
+      - homepage.name=Indexers
       - homepage.icon=prowlarr
       - homepage.href=http://${SERVER_URL}:${PORT_PROWLARR_UI}
       - homepage.description=Indexer manager/proxy
@@ -367,7 +367,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=Radarr
+      - homepage.name=Movies
       - homepage.icon=radarr
       - homepage.href=http://${SERVER_URL}:${PORT_RADARR_UI}
       - homepage.description=Movie collection manager
@@ -407,7 +407,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=Sonarr
+      - homepage.name=Shows
       - homepage.icon=sonarr
       - homepage.href=http://${SERVER_URL}:${PORT_SONARR_UI}
       - homepage.description=TV Show collection manager
@@ -525,7 +525,7 @@ services:
       - homepage.group=Games
       - homepage.name=Gloomhaven Secretariat
       - homepage.icon=/icons/ghs.png
-      - homepage.href=http://${SERVER_URL}:${PORT_GHS_CLIENT}
+      - homepage.href=http://${EXTERNAL_GHS}.${DOMAIN}
       - homepage.description=Gloomhaven Ability and Initiative tracker
       
 
@@ -554,7 +554,7 @@ services:
       - homepage.name=Gloomhaven Secretariat Server
       - homepage.icon=/icons/ghs.png
       - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
-      - homepage.description=Backend for GLoomhaven Secretariat
+      - homepage.description=Backend for Gloomhaven Secretariat
 
     volumes:
       - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
@@ -576,6 +576,9 @@ services:
 
     profiles:
       - lifestyle
+
+    depends_on:
+      - chrome
     
     ports:
       - ${PORT_CHANGEDETECTION}:5000
@@ -584,12 +587,13 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      WEBDRIVER_URL: http://chrome:${PORT_WEBDRIVER}/wd/hub
 
     labels:
       - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Change Detection
-      - homepage.icon=/icons/changedetection.png
+      - homepage.icon=changedetection-io
       - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
       - homepage.description=Website monitoring and change detection
       - homepage.widget.type=changedetectionio
@@ -627,8 +631,8 @@ services:
       - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Pinry
-      - homepage.icon=/icons/pinry.png
-      - homepage.href=http://${SERVER_URL}:${PORT_PINRY}
+      - homepage.icon=pinry
+      - homepage.href=http://${EXTERNAL_PINRY}.${DOMAIN}
       - homepage.description=Save, tag, and share images, videos and webpages
 
     volumes:
@@ -640,6 +644,10 @@ services:
           cpus: '0.5'
           memory: 256M
     restart: unless-stopped
+
+####################
+# Rallly
+####################
 
   rallly:
     container_name: rallly
@@ -665,7 +673,7 @@ services:
       AUTH_REQUIRED: true
       DISABLE_LANDING_PAGE: true
       SUPPORT_EMAIL: ${RALLLY_SUPPORTEMAIL}
-      NEXT_PUBLIC_BASE_URL: https://meet.${DOMAIN} # defined in the Caddyfile
+      NEXT_PUBLIC_BASE_URL: https://${EXTERNAL_RALLLY}.${DOMAIN} # defined in the Caddyfile
 
       SMTP_HOST: ${RALLLY_SMTP_HOST}
       SMTP_PORT:  ${RALLLY_SMTP_PORT}
@@ -688,6 +696,202 @@ services:
       resources:
         limits:
           cpus: '0.7'
+          memory: 256M
+    restart: unless-stopped
+
+  rallly_db:
+    container_name: rallly_db
+    image: postgres:alpine
+
+    profiles:
+      - calendar
+
+    networks:
+      - rallly-net
+
+    ports:
+      - ${PORT_RALLLY_DB}:5432
+
+    environment:
+      POSTGRES_DB: ${RALLLY_DB_NAME}
+      POSTGRES_USER: ${RALLLY_DB_USER}
+      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Rallly | Postgres DB
+      - homepage.icon=postgres
+      - homepage.description=Database for Rallly
+
+    volumes:
+      - ${DBDIR}/rallly:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${RALLLY_DB_NAME}
+        - '-U'
+        - ${RALLLY_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+####################
+# Paperless
+####################
+
+  paperless:
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+
+    profiles:
+      - paperless
+
+    depends_on:
+      paperless_db:
+        condition: service_healthy
+      paperless_broker:
+        condition: service_healthy
+
+    networks:
+      - paperless-net
+    
+    ports:
+      - ${PORT_PAPERLESS}:8000
+
+    environment:
+      USERMAP_UID: ${PUID}
+      USERMAP_GID: ${PGID}
+      PAPERLESS_TIME_ZONE: ${TZ}
+      PAPERLESS_OCR_LANGUAGE: 'eng'
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRETKEY}
+      PAPERLESS_DATE_ORDER: MDY
+
+      PAPERLESS_WEBSERVER_WORKERS: 2
+      PAPERLESS_CONSUMER_POLLING: 600 # only needed if not NFS: https://docs.paperless-ngx.com/troubleshooting/#consumer-fails-to-pickup-any-new-files
+
+      PAPERLESS_REDIS: redis://paperless_broker:6379
+      PAPERLESS_DBHOST: paperless_db
+      PAPERLESS_DBNAME: ${PAPERLESS_DB_NAME}
+      PAPERLESS_DBUSER: ${PAPERLESS_DB_USER}
+      PAPERLESS_DBPASS: ${PAPERLESS_DB_PASSWORD}
+
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Office
+      - homepage.name=Paperless
+      - homepage.icon=paperless
+      - homepage.href=http://${SERVER_URL}:${PORT_PAPERLESS}
+      - homepage.description=Scan, index and archive all your physical documents
+      - homepage.widget.type=paperlessngx
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_PAPERLESS}
+      - homepage.widget.username=${HOMEPAGE_PAPERLESS_USERNAME}
+      - homepage.widget.password=${HOMEPAGE_PAPERLESS_PASSWORD}
+
+    volumes:
+      - ${CONFIGDIR}/paperless:/usr/src/paperless/data
+      - ${STATICDIR}/paperless:/usr/src/paperless/media
+      - ${BACKUPDIR}/paperless:/usr/src/paperless/export # used for backup/exporting documents via paperless document_exporter
+      - ${PAPERLESS_CONSUMEDIR}:/usr/src/paperless/consume
+
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+    restart: unless-stopped
+
+
+  paperless_broker:
+    container_name: paperless_broker
+    image: redis:7
+
+    profiles:
+      - paperless
+
+    networks:
+      - paperless-net
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Paperless | Redis
+      - homepage.icon=redis
+      - homepage.description=Broker for Paperless
+
+    volumes:
+      - ${DBDIR}/paperless-redis:/data
+
+    healthcheck:
+      interval: 60s
+      retries: 5
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      timeout: 45s
+
+    deploy:
+        resources:
+          limits:
+            cpus: '1'
+            memory: 256M
+    restart: unless-stopped
+
+  paperless_db:
+    container_name: paperless_db
+    image: postgres:alpine
+
+    profiles:
+      - paperless
+
+    networks:
+      - paperless-net
+
+    environment:
+      POSTGRES_DB: ${PAPERLESS_DB_NAME}
+      POSTGRES_USER: ${PAPERLESS_DB_USER}
+      POSTGRES_PASSWORD: ${PAPERLESS_DB_PASSWORD}
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Paperless | Postgres DB
+      - homepage.icon=postgres
+      - homepage.description=Database for Paperless
+
+    volumes:
+      - ${DBDIR}/paperless-postgres:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${PAPERLESS_DB_NAME}
+        - '-U'
+        - ${PAPERLESS_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
           memory: 256M
     restart: unless-stopped
 
@@ -734,7 +938,7 @@ services:
       - diun.enable=true
       - homepage.group=Network
       - homepage.name=Pihole
-      - homepage.icon=pihole
+      - homepage.icon=pi-hole
       - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}/admin
       - homepage.description=Network-wide Adblocking and DNS
       - homepage.widget.type=pihole
@@ -806,7 +1010,7 @@ services:
       - diun.enable=true
       - homepage.group=Network
       - homepage.name=Unbound
-      - homepage.icon=pihole-unbound
+      - homepage.icon=pi-hole-unbound
       - homepage.description=A validating, recursive, caching DNS resolver
 
     volumes:
@@ -950,53 +1154,32 @@ services:
           memory: 32M
     restart: unless-stopped
 
-  rallly_db:
-    container_name: rallly_db
-    image: postgres:alpine
+  chrome:
+    container_name: chrome
+    image: selenium/standalone-chrome:4.8.3
 
     profiles:
-      - calendar
-
-    networks:
-      - rallly-net
+      - lifestyle
 
     ports:
-      - ${PORT_RALLLY_DB}:5432
+      - ${PORT_WEBDRIVER}:4444
 
-    environment:
-      POSTGRES_USER: ${RALLLY_DB_USER}
-      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
-      POSTGRES_DB: ${RALLLY_DB_NAME}
+    shm_size: 2gb
 
     labels:
+      - diun.enable=true
       - homepage.group=Back End
-      - homepage.name=Rallly | Postgres DB
-      - homepage.icon=postgres
-      - homepage.description=Database for Rallly
+      - homepage.name=Chrome
+      - homepage.icon=chrome
+      - homepage.description=Headless browser for ChangeDetection
 
-    volumes:
-      - ${DBDIR}/rallly:/var/lib/postgresql/data
-
-    healthcheck:
-      interval: 60s
-      retries: 10
-      test:
-        - CMD
-        - pg_isready
-        - '-q'
-        - '-d'
-        - ${RALLLY_DB_NAME}
-        - '-U'
-        - ${RALLLY_DB_USER}
-      timeout: 45s
-      
     deploy:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 1G
     restart: unless-stopped
-
+  
   protonvpn:
     container_name: protonvpn
     image: ghcr.io/linuxserver/wireguard:latest
@@ -1010,8 +1193,8 @@ services:
       TZ: ${TZ}
     
     networks:
-      - peer2peer
       - vpn
+      - peer2peer
 
     ports:
       - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
@@ -1153,6 +1336,7 @@ services:
     devices:
       - /dev/sda
       - /dev/sdb
+      - /dev/sdc
     
     volumes:
       - /run/udev:/run/udev:ro
@@ -1288,6 +1472,8 @@ networks:
     name: tandoor-net
   rallly-net:
     name: rallly-net
+  paperless-net:
+    name: paperless-net
 
   peer2peer:
     name: peer2peer
