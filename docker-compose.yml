@@ -686,7 +686,7 @@ services:
       - homepage.group=Lifestyle
       - homepage.name=Rallly
       - homepage.icon=/icons/rallly.png
-      - homepage.href=http://${SERVER_URL}:${PORT_RALLLY}
+      - homepage.href=http://${EXTERNAL_RALLLY}.${DOMAIN}
       - homepage.description=Schedule hangouts with friends
 
     volumes:
