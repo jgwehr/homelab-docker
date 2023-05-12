@@ -266,10 +266,10 @@ services:
       - media-request
 
     depends_on:
-      protonvpn:
+      gluetun:
         condition: service_healthy
 
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+    network_mode: service:gluetun # ONLY provide network config in the gluetun container
 
     environment:
         PUID: ${PUID}
@@ -314,12 +314,12 @@ services:
       - media-request
 
     depends_on:
-      protonvpn:
+      gluetun:
         condition: service_healthy
       qbittorrent:
         condition: service_started
 
-    network_mode: service:protonvpn # ONLY provide network config in the protonvpn container
+    network_mode: service:gluetun # ONLY provide network config in the gluetun container
 
     environment:
       PUID: ${PUID}
@@ -344,7 +344,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 500M
+          memory: 600M
     restart: unless-stopped
   
   radarr:
@@ -1180,9 +1180,10 @@ services:
           memory: 1G
     restart: unless-stopped
   
-  protonvpn:
-    container_name: protonvpn
-    image: ghcr.io/linuxserver/wireguard:latest
+  gluetun:
+    image: ghcr.io/qdm12/gluetun
+    container_name: gluetun
+    # line above must be uncommented to allow external containers to connect. See https://github.com/qdm12/gluetun/wiki/Connect-a-container-to-gluetun#external-container-to-gluetun
     profiles:
       - downloads
       - media-request
@@ -1191,42 +1192,43 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-    
-    networks:
-      - vpn
-      - peer2peer
+
+      VPN_SERVICE_PROVIDER: ${VPN_SERVICE_PROVIDER}
+      OPENVPN_USER: ${VPN_USER}
+      OPENVPN_PASSWORD: ${VPN_PASSWORD}
+
+      SERVER_COUNTRIES: ${VPN_COUNTRIES}
+      HEALTH_TARGET_ADDRESS: ${VPN_HEALTHCHECK}
 
     ports:
-      - ${PORT_WIREGUARD_OUTBOUND}:51820/udp
-      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI} #default 8080
+      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI}
       - ${PORT_PROWLARR_UI}:9696
 
     labels:
-      - diun.enable=true
       - homepage.group=Back End
-      - homepage.name=ProtonVPN
-      - homepage.icon=wireguard
+      - homepage.name=Gluetun
+      - homepage.icon=gluetun
       - homepage.description=VPN for Downloads
 
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
     volumes:
-      - ${CONFIGDIR}/wireguard:/config
-      - /lib/modules:/lib/modules:ro
+      - ${CONFIGDIR}/gluetun:/gluetun
 
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-
-    healthcheck:
-      test: ["CMD", "wg", "show"]
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 64M
+    
     restart: unless-stopped
+
+    
+  #   networks:
+  #     - vpn
+  #     - peer2peer
+
+  #   healthcheck:
+  #     test: ["CMD", "wg", "show"]
+
 
   socky_proxy:
     container_name: socky_proxy
@@ -1475,11 +1477,6 @@ networks:
   paperless-net:
     name: paperless-net
 
-  peer2peer:
-    name: peer2peer
-  vpn:
-    name: vpn
-    internal: true
   dns-net:
     name: dns-net
     driver: bridge
