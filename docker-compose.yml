@@ -1194,6 +1194,7 @@ services:
       SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
 
     ports:
+      - ${PORT_GLUETUN_UI}:8000
       - ${PORT_TORRENT_UI}:8080
       - ${PORT_PROWLARR_UI}:9696
 
@@ -1213,14 +1214,6 @@ services:
       - NET_ADMIN
     
     restart: unless-stopped
-
-    
-  #   networks:
-  #     - vpn
-  #     - peer2peer
-
-  #   healthcheck:
-  #     test: ["CMD", "wg", "show"]
 
 
   socky_proxy:
