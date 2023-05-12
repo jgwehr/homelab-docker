@@ -122,7 +122,7 @@ cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless
 echo Backing Up Paperless, Documents...
 sudo docker exec paperless document_exporter /usr/src/paperless/export --zip #location is within paperless container
 varTempPaperlessBackup=$(ls -Art /home/user/backup/paperless | tail -n 1) # grab the most recent zip from the volume-mapped directory. Must align with your .env BACKUPDIR
-cp -rpi /home/user/backup/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents
+cp -rpi /home/user/backup/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents.zip
 echo Creating Paperless Zip...
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
