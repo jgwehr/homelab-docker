@@ -276,7 +276,7 @@ services:
         PGID: ${PGID}
         TZ: ${TZ}
         UMASK_SET: 022
-        WEBUI_PORT: ${PORT_TORRENT_UI}
+        WEBUI_PORT: 8080
 
     labels:
       - diun.enable=true
@@ -1181,8 +1181,8 @@ services:
     restart: unless-stopped
   
   gluetun:
-    image: ghcr.io/qdm12/gluetun
     container_name: gluetun
+    image: ghcr.io/qdm12/gluetun
     # line above must be uncommented to allow external containers to connect. See https://github.com/qdm12/gluetun/wiki/Connect-a-container-to-gluetun#external-container-to-gluetun
     profiles:
       - downloads
@@ -1200,7 +1200,7 @@ services:
       SERVER_COUNTRIES: ${VPN_COUNTRIES}
 
     ports:
-      - ${PORT_TORRENT_UI}:${PORT_TORRENT_UI}
+      - ${PORT_TORRENT_UI}:8080
       - ${PORT_PROWLARR_UI}:9696
 
     labels:
