@@ -1194,7 +1194,7 @@ services:
       SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
 
     ports:
-      - ${PORT_GLUETUN_UI}:8000
+      - ${PORT_GLUETUN_CONTROL}:8000
       - ${PORT_TORRENT_UI}:8080
       - ${PORT_PROWLARR_UI}:9696
 
@@ -1203,6 +1203,8 @@ services:
       - homepage.name=Gluetun
       - homepage.icon=gluetun
       - homepage.description=VPN for Downloads
+      - homepage.widget.type=gluetun
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
 
     devices:
       - /dev/net/tun:/dev/net/tun
