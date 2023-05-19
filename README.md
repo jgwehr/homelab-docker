@@ -19,7 +19,7 @@ Includes:
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pinry.png" width="32" alt="Pinry" /> Pinry |
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/scrutiny.png" width="32" alt="Scrutiny" /> Scrutiny | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr | <img src="https://github.com/lukevella/rallly/blob/main/apps/web/public/favicon-32x32.png?raw=true" width="32" alt="Rallly"> Rallly |
 | <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent | <img src="https://github.com/dgtlmoon/changedetection.io/blob/d5fd22f693d398b9f23a84469b2459b59b02b453/changedetectionio/static/favicons/android-chrome-192x192.png" width="32" alt="ChangeDetection.io"> ChangeDetection.io |
-| Endlessh | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/wireguard.png" width="32" alt="Wireguard" /> Wireguard | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Wireguard" /> Paperless-ngx |
+| Endlessh | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/gluetun.png" width="32" alt="Gluetun" /> Gluetun | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Wireguard" /> Paperless-ngx |
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma | Podgrab |  |
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pi-hole.png" width="32" alt="Pihole" /> Pihole |  |  |
 | <img src="https://github.com/walkxcode/dashboard-icons/blob/main/png/pi-hole-unbound.png" width="32" alt="Unbound" /> Unbound |  |  |
@@ -54,8 +54,8 @@ Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static
 | `recipes` | tandoor_recipes, postres | Home recipes. Non-local access to tandoor requires  `external` |
 | `gloomhaven` | gloomhaven-secretary, ghs-server | Board games! Non-local access to client and server requires  `external` |
 | `lifestyle` | pinry, changedetection.io, selenium/chrome | Tools for the family |
-| `paperless` | paperless-ngx, postgress, redis | Tools for the family |
-| `calendar` | rallly, postgres | Tools for the family |
+| `paperless` | paperless-ngx, postgress, redis | Important Document |
+| `calendar` | rallly, postgres | Help scheduling events with people |
 | `ripping` | automatic-ripping machine | local-only, not required all the time |
 
 
