@@ -348,10 +348,12 @@ services:
       - media-request
     
     depends_on:
-      - prowlarr
+      prowlarr:
+        condition: service_started
+      gluetun:
+        condition: service_healthy
 
-    ports:
-      - ${PORT_RADARR_UI}:7878
+    network_mode: service:gluetun # ONLY provide network config in the gluetun container
 
     environment:
       PUID: ${PUID}
@@ -388,10 +390,12 @@ services:
       - media-request
 
     depends_on:
-      - prowlarr
+      prowlarr:
+        condition: service_started
+      gluetun:
+        condition: service_healthy
 
-    ports:
-      - ${PORT_SONARR_UI}:8989
+    network_mode: service:gluetun # ONLY provide network config in the gluetun container
 
     environment:
       PUID: ${PUID}
@@ -1197,6 +1201,8 @@ services:
       - ${PORT_GLUETUN_CONTROL}:8000
       - ${PORT_TORRENT_UI}:8080
       - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_SONARR_UI}:8989
+      - ${PORT_RADARR_UI}:7878
 
     labels:
       - homepage.group=Back End
