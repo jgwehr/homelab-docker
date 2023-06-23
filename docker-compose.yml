@@ -1022,10 +1022,6 @@ services:
 
     external_links:
       - crowdsec:crowdsec
-      - jellyfin:jellyfin
-      - jellyseerr:jellyseerr
-      - tandoor:tandoor
-      - uptime_kuma:uptime_kuma
 
     networks:
       - web
