@@ -57,7 +57,6 @@ services:
       - homepage.name=Uptime Kuma
       - homepage.icon=uptime-kuma
       - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
-      - homepage.description=Service Uptime Monitoring
       - homepage.widget.type=uptimekuma
       - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
       - homepage.widget.slug=statuspageslug
@@ -134,7 +133,6 @@ services:
       - homepage.group=Back End
       - homepage.name=Tandoor | Postgres DB
       - homepage.icon=postgres
-      - homepage.description=Database for Tandoor recipes
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
@@ -194,7 +192,6 @@ services:
       - homepage.name=Jellyfin
       - homepage.icon=jellyfin
       - homepage.href=http://${SERVER_URL}:${PORT_HTPC_HTTP}
-      - homepage.description=Media Streaming Server
       - homepage.widget.type=jellyfin
       - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_HTTP}
       - homepage.widget.key=${HOMEPAGE_JELLYFIN_API}
@@ -240,10 +237,9 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Media
-      - homepage.name=Jellyseerr
+      - homepage.name=Request Movies and TV Shows
       - homepage.icon=jellyseerr
       - homepage.href=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
-      - homepage.description=Request Movies and TV Shows
       - homepage.widget.type=jellyseerr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
       - homepage.widget.key=${HOMEPAGE_JELLYSEERR_API}
@@ -284,7 +280,6 @@ services:
       - homepage.name=Torrents
       - homepage.icon=qbittorrent
       - homepage.href=http://${SERVER_URL}:${PORT_TORRENT_UI}
-      - homepage.description=Torrent Management
       - homepage.widget.type=qbittorrent
       - homepage.widget.url=http://${SERVER_URL}:${PORT_TORRENT_UI}
       - homepage.widget.username=${HOMEPAGE_QBITTORENT_USERNAME}
@@ -326,7 +321,6 @@ services:
       - homepage.name=Indexers
       - homepage.icon=prowlarr
       - homepage.href=http://${SERVER_URL}:${PORT_PROWLARR_UI}
-      - homepage.description=Indexer manager/proxy
       - homepage.widget.type=prowlarr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PROWLARR_UI}
       - homepage.widget.key=${HOMEPAGE_PROWLARR_API}
@@ -366,7 +360,6 @@ services:
       - homepage.name=Movies
       - homepage.icon=radarr
       - homepage.href=http://${SERVER_URL}:${PORT_RADARR_UI}
-      - homepage.description=Movie collection manager
       - homepage.widget.type=radarr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_RADARR_UI}
       - homepage.widget.key=${HOMEPAGE_RADARR_API}
@@ -405,10 +398,9 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Downloads
-      - homepage.name=Shows
+      - homepage.name=TV Shows
       - homepage.icon=sonarr
       - homepage.href=http://${SERVER_URL}:${PORT_SONARR_UI}
-      - homepage.description=TV Show collection manager
       - homepage.widget.type=sonarr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_SONARR_UI}
       - homepage.widget.key=${HOMEPAGE_SONARR_API}
@@ -524,7 +516,6 @@ services:
       - homepage.name=Gloomhaven Secretariat
       - homepage.icon=/icons/ghs.png
       - homepage.href=http://${EXTERNAL_GHS}.${DOMAIN}
-      - homepage.description=Gloomhaven Ability and Initiative tracker
       
 
     deploy:
@@ -552,7 +543,6 @@ services:
       - homepage.name=Gloomhaven Secretariat Server
       - homepage.icon=/icons/ghs.png
       - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
-      - homepage.description=Backend for Gloomhaven Secretariat
 
     volumes:
       - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
@@ -593,7 +583,6 @@ services:
       - homepage.name=Change Detection
       - homepage.icon=changedetection-io
       - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
-      - homepage.description=Website monitoring and change detection
       - homepage.widget.type=changedetectionio
       - homepage.widget.url=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
       - homepage.widget.key=${HOMEPAGE_CHANGEDETECTION_API}
@@ -719,7 +708,6 @@ services:
       - homepage.group=Back End
       - homepage.name=Rallly | Postgres DB
       - homepage.icon=postgres
-      - homepage.description=Database for Rallly
 
     volumes:
       - ${DBDIR}/rallly:/var/lib/postgresql/data
@@ -831,7 +819,6 @@ services:
       - homepage.group=Back End
       - homepage.name=Paperless | Redis
       - homepage.icon=redis
-      - homepage.description=Broker for Paperless
 
     volumes:
       - ${DBDIR}/paperless-redis:/data
@@ -868,7 +855,6 @@ services:
       - homepage.group=Back End
       - homepage.name=Paperless | Postgres DB
       - homepage.icon=postgres
-      - homepage.description=Database for Paperless
 
     volumes:
       - ${DBDIR}/paperless-postgres:/var/lib/postgresql/data
@@ -938,7 +924,6 @@ services:
       - homepage.name=Pihole
       - homepage.icon=pi-hole
       - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}/admin
-      - homepage.description=Network-wide Adblocking and DNS
       - homepage.widget.type=pihole
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
       - homepage.widget.key=${HOMEPAGE_PIHOLE_API}
@@ -981,7 +966,6 @@ services:
       - homepage.name=Speedtest Tracker
       - homepage.icon=speedtest-tracker
       - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
-      - homepage.description=Build a history of your internet's performance
       - homepage.widget.type=speedtest
       - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
 
@@ -1009,7 +993,6 @@ services:
       - homepage.group=Network
       - homepage.name=Unbound
       - homepage.icon=pi-hole-unbound
-      - homepage.description=A validating, recursive, caching DNS resolver
 
     volumes:
       - ${CONFIGDIR}/unbound:/opt/unbound/etc/unbound
@@ -1169,7 +1152,6 @@ services:
       - homepage.group=Back End
       - homepage.name=Chrome
       - homepage.icon=chrome
-      - homepage.description=Headless browser for ChangeDetection
 
     deploy:
       resources:
@@ -1206,9 +1188,8 @@ services:
 
     labels:
       - homepage.group=Back End
-      - homepage.name=Gluetun
+      - homepage.name=VPN for Downloads
       - homepage.icon=gluetun
-      - homepage.description=VPN for Downloads
       - homepage.widget.type=gluetun
       - homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
 
