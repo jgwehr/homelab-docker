@@ -1,18 +1,23 @@
-A personal project as I start to learn how to run a Homelab. 
+A personal project to provide security, privacy, and data-ownership for my home.
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/jgwehr/homelab-docker) ![GitHub Repo Stars](https://img.shields.io/github/stars/jgwehr/homelab-docker)
 
 Includes: 
-- Learning Docker, Docker Compose
-- Self-Hosting for Privacy, such as: BitWarden, PiHole, Unbound, Wireguard
-- Self-Hosting for Entertainment, such as: Plex, Gloomhaven Campaign & Tracker, RetroPi
-- Self-Hosting for Small Business, such as: Akaunting, Tabby
-- Self-Hosting for Friends, such as: SheetAble, Minecraft
+- Docker and various infrastructure concepts (data backups, parity)
+- Self-Hosting for Privacy, such as: Adblocking, Passwords, Family Photos, Finances, Documents
+- Self-Hosting for Entertainment, such as: Movies, TV Shows, Music, Board and Video Games
+- Self-Hosting for Home, such as: Automation, Grocery Shopping
+- Self-Hosting for Friends, such as: Event Scheduling, Idea Curation, Expense Management
+- Practical Security: limit exposure surfaces, promote self-healing and proactive measures
+- Practical Data Backup: easily export the most important files. Ideally, directly to the cloud and detached storage. Deterministic data is not prioritized.
+
+![Homepage](https://raw.githubusercontent.com/jgwehr/homelab-docker/master/_resources/img/homepage.png)
+
 
 # Technology
 
 | Infrastructure | Media | Other |
-| :-: | :-: |  :-:  |
+| :- | :- |  :-  |
 | <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/homepage.png" width="32" alt="Homepage" /> Homepage |
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyseerr.png" width="32" alt="Jellyseerr" /> Jellyseerr | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/tandoorrecipes.png" width="32" alt="Tandoor Recipes" /> Tandoor Recipes |
 | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar | <img src="https://github.com/Lurkars/gloomhavensecretariat/blob/main/src/assets/icons/icon-masked-72x72.png" width="32" alt="Gloomhaven Secretariat" />Gloomhaven Secretariat |
@@ -59,8 +64,15 @@ Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static
 | `ripping` | automatic-ripping machine | local-only, not required all the time |
 
 
+# Beginning
+
+WIP
+
+1. Become familiar with the Project Structure below. This is your "map" of where to expect different things to be. In turn, this will help you configure your setup correctly
+1. **SAMBA**: After copying smb.conf, customize it as needed: interfaces, share names, users, passwords, etc.
+
 # Project Structure
-Work in Progress. Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)*, [Where to Put Docker Compose](https://nickjanetakis.com/blog/docker-tip-76-where-to-put-docker-compose-projects-on-a-server) *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
+Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/docker-tip-87-run-multiple-docker-compose-files-with-the-f-flag)*, [Where to Put Docker Compose](https://nickjanetakis.com/blog/docker-tip-76-where-to-put-docker-compose-projects-on-a-server), *[TRaSH Guides](https://trash-guides.info/Hardlinks/How-to-setup-for/Docker/)*
 
 ## File System
 
@@ -80,9 +92,13 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
 │  ├── docker (for container's configurations)
 │  ├── cache
 │  └── logs
-└── /data
+└── /mnt/storage
    ├── db
    ├── staticfiles
+   │  ├── icons
+   │  ├── paperless
+   │  ├── tandoor_media
+   │  └── wallpaper
    ├── downloads
    │  ├── audiobooks
    │  ├── movies
@@ -98,7 +114,7 @@ Work in Progress. Recommendations via *[multiple docker files](https://nickjanet
       └── tv
 ```
 
-### These may be created with the following cmds
+### Directories may be created with the following cmds
 `cd scripts`
 `chmod +x start.sh`  
 `./start.sh`
@@ -126,11 +142,11 @@ Example files:
 How you configure the apps and their current states. This is separated from the Docker Compose (ie. "setup") as these become specific to how *you* use the services - not how they're installed/maintained.
 
 ### Media Staging (such as magnets)
-`/data/downloads`
+`/mnt/storage/downloads`
 
 ### Media Storage (such as Podcasts, Movies, TV Shows, Audiobooks):
-`/data/media/movies`
-`/data/media/podcasts`
+`/mnt/storage/media/movies`
+`/mnt/storage/media/podcasts`
 
 This creates a clear distinction between the files *many* services could use or want and the files those services *just need to access*. Separation presumably allows for alternate backup or hosting mechanisms, as well. It's an attempt to achieve Least Privilege.
 
@@ -146,17 +162,7 @@ Let's recognize four kinds of Media Server roles containers/apps:
 
 
 ## Port Reservations
-Ports are controlled through variables to provide a central "fact check".
-
-WIP
-
-| Service               | Purpose   | Environment Variable      |
-| :--                   | :--       | :--                       |
-| Auto Ripping Machine  | Web       | PORT_RIPPING                |
-| Dozzle                | Web       | PORT_DOZZLE      |
-| Gloomhaven, Client    | Web       | PORT_GHS_CLIENT      |
-| Gloomhaven, Server    | Server    | PORT_GHS_SERVER      |
-| Tandoor               | Web        | PORT_TANDOOR                   |
+Ports are controlled through variables (ie. `.env`) to provide a central "fact check".
 
 # Optionals
 ### Caddy and DuckDns.org
