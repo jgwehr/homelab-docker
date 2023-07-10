@@ -103,6 +103,7 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
    │  ├── audiobooks
    │  ├── movies
    │  ├── music
+   │  ├── paperless (shared r/w)
    │  ├── podcasts
    │  └── tv
    └── media
@@ -115,13 +116,14 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
 ```
 
 ### Directories may be created with the following cmds
+Please review this script before running it. It is a work in progress and may not run as expected.
 `cd scripts`
 `chmod +x start.sh`  
 `./start.sh`
 
 ### Recursively own the /data directory
-sudo chown -R $USER:$USER /data
-sudo chmod -R a=,a+rX,u+w,g+w /data
+`sudo chown -R $USER:$USER /data`
+`sudo chmod -R a=,a+rX,u+w,g+w /data`
 
 
 ### Docker Compose (and needed files)

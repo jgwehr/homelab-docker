@@ -19,6 +19,7 @@ echo Shutting Containers Down...
 cd $varOptDir
 docker compose down
 
+
 # Docker config backups
 echo Backing up Docker Configs...
 
@@ -94,6 +95,10 @@ cp -rpi /etc/snapraid.conf $varBackupDir/$varDate
 
 echo Backing up SnapRaid Runner...
 cp -rpi /opt/snapraid-runner/snapraid-runner.conf $varBackupDir/$varDate
+
+# Samba
+echo Backing up Samba...
+cp -rpi /etc/samba/smb.conf $varBackupDir/$varDate
 
 
 # Zip file
