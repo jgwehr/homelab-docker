@@ -1,43 +1,56 @@
+#####
+# Configure the below variables
+#####
+
 varBackupDir=/home/user/backup
 varConfigDir=/srv/docker
 varOptDir=/opt/docker/homelab
+varMediaStorage=/mnt/storage
 
 
 
 
 
-# File System
+#####
+# Anything below this doesn't need changing, unless you want to customize your homelab
+#####
+
+# File System: Configuration and Core Options
 cd /srv
-mkdir -p {docker/config,cache,logs}
-cd /opt/docker
-git clone https://github.com/jgwehr/homelab-docker.git homelab
+mkdir -p {docker,cache,logs}
+cd $varOptDir
+git clone https://github.com/jgwehr/homelab-docker.git
 
 
-cd /mnt/storage #or otherwise /data
+# File System: Media storage (aka your files)
+cd $varMediaStorage # This uses MergerFS. For a simpler version, use /data
 mkdir -p db
 mkdir -p downloads/{audiobooks,music,podcasts,movies,tv}
 mkdir -p media/{audiobooks,music,pictures,podcasts,movies,tv}
 mkdir -p staticfiles
-sudo chown -R $USER:$USER /mnt/storage/{db,downloads,media,staticfiles}
-sudo chmod -R a=,a+rX,u+w,g+w /mnt/storage/{db,downloads,media,staticfiles}
+sudo chown -R $USER:$USER $varMediaStorage/{db,downloads,media,staticfiles}
+sudo chmod -R a=,a+rX,u+w,g+w $varMediaStorage/{db,downloads,media,staticfiles}
+
+
+
 
 # SnapRaid
 cp $varOptDir/configtemplates/snapraid/snapraid.conf /etc/snapraid.conf
 mkdir -p /var/snapraid
 
-# Move logging for CRONTAB to its own file; helpful for SnapRaid automation
-touch /var/log/cron.log
-# You must manually modify logging config. Uncomment the cron directive
-#   nano /etc/rsyslog.d/50-default.conf
-#   sudo systemctl restart rsyslog
-#   sudo systemctl status rsyslog
-
-
 # ghs
 cp -rpi $varOptDir/configtemplates/ghs/application.properties $varConfigDir/ghs/application.properties
 
+# homepage
+cp -rpi $varOptDir/configtemplates/homepage $varConfigDir/homepage
+
 # Pihole
 cp -rpi $varOptDir/configtemplates/pihole/resolv.conf $varConfigDir/pihole/resolv.conf
+
+# Samba
+sudo apt install samba
+cp -rpi $varOptDir/configtemplates/samba/smb.conf /etc/samba/smb.conf
+sudo ufw allow samba
 
 # Unbound
 cp -rpi $varOptDir/configtemplates/unbound/* $varConfigDir/unbound
