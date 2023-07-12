@@ -59,7 +59,7 @@ services:
       - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
       - homepage.widget.type=uptimekuma
       - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
-      - homepage.widget.slug=statuspageslug
+      - homepage.widget.slug=default
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data
@@ -902,8 +902,8 @@ services:
     ports:
       - ${PORT_PIHOLE_WEB:-80}:80
       - ${PORT_PIHOLE_WEBSSL:-443}:443
-      - ${SERVER_URL}:${PORT_PIHOLE_TCP:-53}:53/tcp
-      - ${SERVER_URL}:${PORT_PIHOLE_UDP:-53}:53/udp
+      - ${PORT_PIHOLE_TCP:-53}:53/tcp
+      - ${PORT_PIHOLE_UDP:-53}:53/udp
     #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
 
     environment:
@@ -1186,6 +1186,7 @@ services:
       - homepage.group=Back End
       - homepage.name=VPN for Downloads
       - homepage.icon=gluetun
+      - homepage.weight=100
       - homepage.widget.type=gluetun
       - homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
 
