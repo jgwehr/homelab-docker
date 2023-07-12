@@ -14,7 +14,7 @@
 #       5.2 `ln -sbf` attempts to create a (s)ymbolic link. If a file with the same name already exists, it (b) backups that file to file-name.ext~. The new file is (f)orced to be created, meaning it doesn't fail if a file already exists
 #       5.3 ALERT!!!! `ln -sbf ~/test-cmd/.env {}/.env \;` BE CAREFUL AND MODIFY THIS. This creates a new symbolic link of shape ".env" using whatever file exists at "../.env". In simple terms, it takes our primary .env file and copies it into each directory. Except, as a symbolic link, it doesn't need to be "copied again".
 
-varMainDir=/opt/docker/homelab-docker
+varMainDir=/opt/docker/homelab
 
 find $varMainDir/services -mindepth 1 -maxdepth 1 -type d -exec ln -sbf $varMainDir/.env {}/.env \;
 
