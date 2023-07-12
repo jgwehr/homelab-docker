@@ -494,65 +494,6 @@ services:
           memory: 2048M #for a single rip, ARM is not RAM limited.
     restart: 'no'
 
-####################
-# Gloomhaven
-####################
-
-  gloomhaven:
-    container_name: gloomhaven
-    image: ghcr.io/lurkars/ghs
-    profiles:
-      - gloomhaven
-
-    networks:
-      - caddy-net
-
-    ports:
-      - ${PORT_GHS_CLIENT}:80
-
-    labels:
-      - diun.enable=true
-      - homepage.group=Games
-      - homepage.name=Gloomhaven Secretariat
-      - homepage.icon=/icons/ghs.png
-      - homepage.href=http://${EXTERNAL_GHS}.${DOMAIN}
-      
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: unless-stopped
-
-  gloomhaven-server:
-    container_name: gloomhaven-server
-    image: ghcr.io/lurkars/ghs-server
-    profiles:
-      - gloomhaven
-
-    networks:
-      - caddy-net
-      
-    ports:
-      - ${PORT_GHS_SERVER}:8080
-
-    labels:
-      - diun.enable=true
-      - homepage.group=Back End
-      - homepage.name=Gloomhaven Secretariat Server
-      - homepage.icon=/icons/ghs.png
-      - homepage.href=http://${SERVER_URL}:${PORT_GHS_SERVER}
-
-    volumes:
-      - ${CONFIGDIR}/ghs:/root/.ghs # optional, to back up Party Sheets etc.
-
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
-    restart: unless-stopped
 
 ####################
 # Lifestyle
