@@ -10,8 +10,6 @@ services:
   gloomhaven:
     container_name: gloomhaven
     image: ghcr.io/lurkars/ghs
-    profiles:
-      - gloomhaven
 
     networks:
       - caddy-net
@@ -37,8 +35,6 @@ services:
   gloomhaven-server:
     container_name: gloomhaven-server
     image: ghcr.io/lurkars/ghs-server
-    profiles:
-      - gloomhaven
 
     networks:
       - caddy-net
