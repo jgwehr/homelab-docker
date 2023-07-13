@@ -1,11 +1,11 @@
 version: "3.9"
 name: "gloomhaven"
 
+services:
+
 ####################
 # Gloomhaven
 ####################
-
-services:
 
   gloomhaven:
     container_name: gloomhaven

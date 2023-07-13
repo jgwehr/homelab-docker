@@ -4,7 +4,9 @@
 - https://github.com/Lurkars/ghs-server
 
 ## Dependencies
-These services can run locally. However, additional setup enables public internet access. Various Networks and dependencies can be removed if you only want local access.
+
+- These services can run locally. Various Networks and dependencies can be removed if you only want local access.
+- Public access via Reverse Proxy requires the `public` Service and Network
 
 
 ## Environment and Configuration
@@ -18,7 +20,7 @@ These services can run locally. However, additional setup enables public interne
 - `PORT_GHS_SERVER`
 
 ### URLs
-- `EXTERNAL_GHS` - how the client is exposed via Reverse Proxy to the public
+- `EXTERNAL_GHS` - how the client is exposed via Reverse Proxy to the public. You must also update the Caddyfile to match.
 - `SERVER_URL` - universal. your internal url
 - `DOMAIN` - universal. your public facing domain name
 
@@ -28,3 +30,5 @@ These services can run locally. However, additional setup enables public interne
 ### Local Only
 - Remove/Comment the Caddy-net Network
 - Remove/Comment references to `EXTERNAL_GHS`, `DOMAIN`
+
+## Backups
