@@ -24,7 +24,6 @@ services:
       - homepage.icon=/icons/ghs.png
       - homepage.href=http://${EXTERNAL_GHS}.${DOMAIN}
       
-
     deploy:
       resources:
         limits:

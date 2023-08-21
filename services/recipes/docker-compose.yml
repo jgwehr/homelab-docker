@@ -1,0 +1,91 @@
+version: "3.9"
+name: "recipes"
+
+services:
+
+####################
+# Tandoor Recipes
+####################
+
+  tandoor:
+    container_name: tandoor
+    image: vabene1111/recipes:latest
+
+    depends_on:
+      tandoor_db:
+        condition: service_healthy
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+      - tandoor-net
+
+    ports:
+      - ${PORT_TANDOOR}:8080
+
+    env_file:
+      - ./staticconfig/tandoor.env
+
+    environment:
+      TIMEZONE: ${TZ}
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Recipes and Meal Planning
+      - homepage.icon=tandoorrecipes
+      - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}
+
+    volumes:
+      - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    restart: unless-stopped
+
+  tandoor_db:
+    container_name: tandoor_db
+    image: postgres:alpine
+
+    networks:
+      - tandoor-net
+
+    env_file:
+      - ./staticconfig/tandoor.env
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Tandoor | Postgres DB
+      - homepage.icon=postgres
+
+    volumes:
+      - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${TANDOOR_DB_NAME}
+        - '-U'
+        - ${TANDOOR_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true
+  tandoor-net:
+    name: tandoor-net
