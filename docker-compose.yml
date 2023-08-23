@@ -659,7 +659,7 @@ services:
       - ${PORT_PIHOLE_WEB:-80}:80
       - ${PORT_PIHOLE_WEBSSL:-443}:443
       - ${PORT_PIHOLE_TCP:-53}:53/tcp
-      - ${PORT_PIHOLE_UDP:-53}:53/udp
+      - ${SERVER_URL}:${PORT_PIHOLE_UDP:-53}:53/udp # see https://discourse.pi-hole.net/t/solve-dns-resolution-in-other-containers-when-using-docker-pihole/31413
     #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
 
     environment:
@@ -1198,10 +1198,6 @@ networks:
     
   htpc-net:
     name: htpc-net
-  tandoor-net:
-    name: tandoor-net
-  rallly-net:
-    name: rallly-net
   paperless-net:
     name: paperless-net
 
