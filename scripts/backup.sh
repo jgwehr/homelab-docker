@@ -21,6 +21,7 @@ docker compose down
 cd $varOptDir/services/events && docker compose down # Rallly
 cd $varOptDir/services/gloomhaven && docker compose down # GHS
 cd $varOptDir/services/recipes && docker compose down # Tandoor
+cd $varOptDir/services/downloads && docker compose down # *arr
 
 
 # Docker config backups
@@ -157,3 +158,4 @@ docker compose --profile paperless up -d
 cd $varOptDir/services/events && docker compose up -d # Rallly
 cd $varOptDir/services/gloomhaven && docker compose up -d # GHS
 cd $varOptDir/services/recipes && docker compose up -d # Tandoor
+cd $varOptDir/services/downloads && docker compose up -d # *arr

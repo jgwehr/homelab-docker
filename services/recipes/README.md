@@ -6,7 +6,8 @@
 ## Dependencies
 
 - These services can run locally. Various Networks and dependencies can be removed if you only want local access.
-- Public access via Reverse Proxy requires the `public` Service and Network
+- I've been able to get the images for recipes to work, but only through Reverse Proxy (or local, but not both)
+- Public access via Reverse Proxy requires the `public` Service and Networks
 
 
 ## Environment and Configuration
@@ -36,3 +37,5 @@
 - Remove/Comment references to `EXTERNAL_GHS`, `DOMAIN`
 
 ## Backups
+1. Backup Tandoor DB according to their instructions. Currently, this suggests: `sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql`
+1. Backup Tandoor images etc via the static media directory: {STATICDIR}
