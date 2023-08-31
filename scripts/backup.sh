@@ -18,6 +18,9 @@ sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.
 echo Shutting Containers Down...
 cd $varOptDir
 docker compose down
+cd $varOptDir/services/events && docker compose down # Rallly
+cd $varOptDir/services/gloomhaven && docker compose down # GHS
+cd $varOptDir/services/recipes && docker compose down # Tandoor
 
 
 # Docker config backups
@@ -148,8 +151,9 @@ rm /home/user/backup/paperless/*.* #cleanup
 echo Starting Docker Containers...
 cd $varOptDir
 docker compose up -d
-docker compose --profile calendar up -d
 docker compose --profile lifestyle up -d
-docker compose --profile recipes up -d
 docker compose --profile paperless up -d
-docker compose --profile gloomhaven up -d
+
+cd $varOptDir/services/events && docker compose up -d # Rallly
+cd $varOptDir/services/gloomhaven && docker compose up -d # GHS
+cd $varOptDir/services/recipes && docker compose up -d # Tandoor
