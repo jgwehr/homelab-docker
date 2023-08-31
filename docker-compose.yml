@@ -31,7 +31,8 @@ services:
 
       - ${SYS_DISK1}:/dev/sda1:ro #harddrive space monitoring
       - ${SYS_DISK2}:/dev/sdb1:ro #harddrive space monitoring
-      - ${SYS_DISK3}:/dev/sdc1:ro #harddrive space monitoring
+      - ${SYS_DISK3}:/dev/sdd1:ro #harddrive space monitoring
+      - ${SYS_DISK4}:/dev/sdc1:ro #harddrive space monitoring
     
     deploy:
       resources:
@@ -978,7 +979,7 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
-      CONTAINERS: 1 # crowdsec, diun, homepage
+      CONTAINERS: 1 # crowdsec, diun, homepage. dozzle
       IMAGES: 1 # diun
       INFO: 1 # crowdsec
 
@@ -1026,6 +1027,8 @@ services:
 
     environment:
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+      DOZZLE_HOSTNAME: ${HOST_NAME}
+      DOZZLE_REMOTE_HOST: #optional. if you have other docker hosts, include them here. see https://dozzle.dev/guide/remote-hosts
     
     labels:
       - diun.enable=true
@@ -1067,6 +1070,7 @@ services:
       - /dev/sda
       - /dev/sdb
       - /dev/sdc
+      - /dev/sdd
     
     volumes:
       - /run/udev:/run/udev:ro
