@@ -11,9 +11,6 @@ services:
     container_name: paperless
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
 
-    profiles:
-      - paperless
-
     depends_on:
       paperless_db:
         condition: service_healthy
@@ -80,9 +77,6 @@ services:
     container_name: paperless_broker
     image: redis:7
 
-    profiles:
-      - paperless
-
     networks:
       - paperless-net
 
@@ -110,9 +104,6 @@ services:
   paperless_db:
     container_name: paperless_db
     image: postgres:alpine
-
-    profiles:
-      - paperless
 
     networks:
       - paperless-net
