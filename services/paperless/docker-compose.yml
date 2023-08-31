@@ -1,0 +1,155 @@
+version: "3.9"
+name: "paperless"
+
+services:
+
+####################
+# Paperless
+####################
+
+  paperless:
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+
+    profiles:
+      - paperless
+
+    depends_on:
+      paperless_db:
+        condition: service_healthy
+      paperless_broker:
+        condition: service_healthy
+
+    networks:
+      - paperless-net
+    
+    ports:
+      - ${PORT_PAPERLESS}:8000
+
+    environment:
+      USERMAP_UID: ${PUID}
+      USERMAP_GID: ${PGID}
+      PAPERLESS_TIME_ZONE: ${TZ}
+      PAPERLESS_OCR_LANGUAGE: 'eng'
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRETKEY}
+      PAPERLESS_DATE_ORDER: MDY
+
+      PAPERLESS_WEBSERVER_WORKERS: 2
+      PAPERLESS_CONSUMER_POLLING: 600 # only needed if not NFS: https://docs.paperless-ngx.com/troubleshooting/#consumer-fails-to-pickup-any-new-files
+
+      PAPERLESS_REDIS: redis://paperless_broker:6379
+      PAPERLESS_DBHOST: paperless_db
+      PAPERLESS_DBNAME: ${PAPERLESS_DB_NAME}
+      PAPERLESS_DBUSER: ${PAPERLESS_DB_USER}
+      PAPERLESS_DBPASS: ${PAPERLESS_DB_PASSWORD}
+
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Office
+      - homepage.name=Paperless
+      - homepage.icon=paperless
+      - homepage.href=http://${SERVER_URL}:${PORT_PAPERLESS}
+      - homepage.description=Scan, index and archive all your physical documents
+      - homepage.widget.type=paperlessngx
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_PAPERLESS}
+      - homepage.widget.username=${HOMEPAGE_PAPERLESS_USERNAME}
+      - homepage.widget.password=${HOMEPAGE_PAPERLESS_PASSWORD}
+
+    volumes:
+      - ${CONFIGDIR}/paperless:/usr/src/paperless/data
+      - ${STATICDIR}/paperless:/usr/src/paperless/media
+      - ${BACKUPDIR}/paperless:/usr/src/paperless/export # used for backup/exporting documents via paperless document_exporter
+      - ${PAPERLESS_CONSUMEDIR}:/usr/src/paperless/consume
+
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
+      interval: 360s
+      timeout: 10s
+      retries: 5
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+    restart: unless-stopped
+
+
+  paperless_broker:
+    container_name: paperless_broker
+    image: redis:7
+
+    profiles:
+      - paperless
+
+    networks:
+      - paperless-net
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Paperless | Redis
+      - homepage.icon=redis
+
+    volumes:
+      - ${DBDIR}/paperless-redis:/data
+
+    healthcheck:
+      interval: 60s
+      retries: 5
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      timeout: 45s
+
+    deploy:
+        resources:
+          limits:
+            cpus: '1'
+            memory: 256M
+    restart: unless-stopped
+
+  paperless_db:
+    container_name: paperless_db
+    image: postgres:alpine
+
+    profiles:
+      - paperless
+
+    networks:
+      - paperless-net
+
+    environment:
+      POSTGRES_DB: ${PAPERLESS_DB_NAME}
+      POSTGRES_USER: ${PAPERLESS_DB_USER}
+      POSTGRES_PASSWORD: ${PAPERLESS_DB_PASSWORD}
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Paperless | Postgres DB
+      - homepage.icon=postgres
+
+    volumes:
+      - ${DBDIR}/paperless-postgres:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 360s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${PAPERLESS_DB_NAME}
+        - '-U'
+        - ${PAPERLESS_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+networks:
+  paperless-net:
+    name: paperless-net
