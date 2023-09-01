@@ -95,6 +95,10 @@ cp -rpi $varConfigDir/wireguard/wg0.conf $varBackupDir/$varDate/wireguard
 echo Backing up .env...
 cp -rpi $varOptDir/.env $varBackupDir/$varDate
 
+# fstab / Diskmounts
+echo Backing up fstab...
+cp -rpi /etc/fstab $varBackupDir/$varDate
+
 # SnapRaid
 echo Backing up SnapRaid Conf...
 cp -rpi /etc/snapraid.conf $varBackupDir/$varDate
