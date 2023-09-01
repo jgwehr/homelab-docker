@@ -11,11 +11,8 @@ services:
     container_name: dozzle
     image: amir20/dozzle:latest
 
-    depends_on:
-      - socky_proxy
-
-    #networks:
-    #  - socky_proxy-net
+    networks:
+      - socky_proxy-net
 
     ports:
       - ${PORT_DOZZLE}:8080
@@ -53,8 +50,8 @@ services:
     depends_on:
       - socky_proxy
 
-    #networks:
-    #  - socky_proxy-net
+    networks:
+      - socky_proxy-net
       
     command: serve
 
