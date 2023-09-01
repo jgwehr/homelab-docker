@@ -24,6 +24,8 @@ cd $varOptDir/services/recipes && docker compose down # Tandoor
 cd $varOptDir/services/downloads && docker compose down # *arr
 cd $varOptDir/services/paperless && docker compose down # paperless
 cd $varOptDir/services/monitor && docker compose down # uptime kuma, dozzle, diun, speedtracker
+cd $varOptDir/services/dashboard && docker compose down # homepage
+cd $varOptDir/services/change-detect && docker compose down # change-detection.io and chrome
 
 
 # Docker config backups
@@ -166,3 +168,5 @@ cd $varOptDir/services/recipes && docker compose up -d # Tandoor
 cd $varOptDir/services/downloads && docker compose up -d # *arr
 cd $varOptDir/services/paperless && docker compose up -d # paperless
 cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, diun, speedtracker
+cd $varOptDir/services/dashboard && docker compose up -d # homepage
+cd $varOptDir/services/change-detect && docker compose up -d # change-detection.io and chrome
