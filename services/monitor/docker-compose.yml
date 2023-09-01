@@ -40,9 +40,6 @@ services:
     container_name: diun
     image: ghcr.io/crazy-max/diun:4.25
 
-    depends_on:
-      - socky_proxy
-
     networks:
       - socky_proxy-net
       
