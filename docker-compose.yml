@@ -104,8 +104,6 @@ services:
       - media-request
 
     depends_on:
-      - sonarr
-      - radarr
       - jellyfin # for authentication
 
     networks:
@@ -331,38 +329,6 @@ services:
           memory: 256M
     healthcheck:
       test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
-    restart: unless-stopped
-
-  speedtest-tracker:
-    container_name: speedtest-tracker
-    image: ghcr.io/alexjustesen/speedtest-tracker:latest
-    profiles:
-      - network
-
-    ports:
-      - ${PORT_SPEEDTEST}:80
-
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    
-    labels:
-      - diun.enable=true
-      - homepage.group=Network
-      - homepage.name=Speedtest Tracker
-      - homepage.icon=speedtest-tracker
-      - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
-      - homepage.widget.type=speedtest
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
-
-    volumes:
-      - ${CONFIGDIR}/speedtest-tracker:/config
-
-    deploy:
-      resources:
-        limits:
-          memory: 128M
     restart: unless-stopped
 
   unbound:
@@ -724,3 +690,4 @@ networks:
 
   socky_proxy-net:
     name: socky_proxy-net
+    external: true
