@@ -12,7 +12,8 @@
 ## Environment and Configuration
 
 ### Files
-`services\gloomhaven\configtemplates\ghs\application.properties` should be copied to your configuration volume (`${CONFIGDIR}`/ghs). The GHS Server mounts this file for additional configuration.
+1. `services\gloomhaven\configtemplates\ghs\application.properties` should be copied to your configuration volume (`${CONFIGDIR}`/ghs). The GHS Server mounts this file for additional configuration.
+1. Consider modifying the Caddyfile for your prefered external sub-domain. Must match `EXTERNAL_GHS`
 
 ### Ports
 

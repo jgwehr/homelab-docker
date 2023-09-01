@@ -13,10 +13,8 @@
 ## Environment and Configuration
 
 ### Files
-`services\recipes\staticconfig\tandoor.env.template` should be copied to `tandoor.env` in the same directory. Follow the Tandoor Recipes install guide for best results.
-
-1.  Generate a random secret key for `SECRET_KEY`
-1.  Generate a random secret key for `POSTGRES_PASSWORD`
+1. `services\recipes\staticconfig\tandoor.env.template` should be copied to `tandoor.env` in the same directory. Follow the Tandoor Recipes install guide for best results.
+1. Consider modifying the Caddyfile for your prefered external sub-domain. Must match `EXTERNAL_TANDOOR`
 
 ### Ports
 
@@ -27,14 +25,18 @@
 - `EXTERNAL_TANDOOR` - how the client is exposed via Reverse Proxy to the public. You must also update the Caddyfile to match.
 - `DOMAIN` - universal. your public facing domain name
 
+### Tandoor's Postgres Database and Functionality
+Within `services\recipes\staticconfig\tandoor.env`:
+1.  `SECRET_KEY` - Generate a password with something like `openssl rand -base64 32`
+1.  `POSTGRES_PASSWORD` - shared between the database and the app. Generate a password with something like `openssl rand -base64 32`
+
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `DBDIR` - universal. where the containers store their databases
 - `STATICDIR` - universal. Tandoor will store uploaded images here
 
 ### Local Only
-- Remove/Comment the Caddy-net Network
-- Remove/Comment references to `EXTERNAL_GHS`, `DOMAIN`
+- TBD
 
 ## Backups
 1. Backup Tandoor DB according to their instructions. Currently, this suggests: `sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql`

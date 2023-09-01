@@ -11,7 +11,7 @@
 ## Environment and Configuration
 
 ### Files
-n/a
+1. Consider modifying the Caddyfile for your prefered external sub-domain. Must match `EXTERNAL_RALLLY`
 
 ### Ports
 

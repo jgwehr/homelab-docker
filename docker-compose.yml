@@ -41,37 +41,6 @@ services:
           memory: 128M
     restart: unless-stopped
 
-  uptime-kuma:
-    container_name: uptime_kuma
-    image: louislam/uptime-kuma
-    profiles:
-      - admin
-    
-    networks:
-      - caddy-net # provides access for the reverse proxy
-    
-    ports:
-      - ${PORT_UPKUMA}:3001
-    
-    labels:
-      - diun.enable=true
-      - homepage.group=System
-      - homepage.name=Uptime Kuma
-      - homepage.icon=uptime-kuma
-      - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
-      - homepage.widget.type=uptimekuma
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
-      - homepage.widget.slug=default
-
-    volumes:
-      - ${CONFIGDIR}/uptime-kuma:/app/data
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: always
 
 ####################
 # Media
@@ -508,46 +477,7 @@ services:
           memory: 32M
     restart: unless-stopped
 
-  diun:
-    container_name: diun
-    image: ghcr.io/crazy-max/diun:4.22
-    profiles:
-      - monitor
-
-    depends_on:
-      - socky_proxy
-
-    networks:
-      - socky_proxy-net
-      
-    command: serve
-
-    environment:
-      TZ: ${TZ}
-      LOG_JSON: "true"
-      DIUN_NOTIF_DISCORD_WEBHOOKURL: ${DIUN_NOTIF_DISCORD_WEBHOOKURL}
-      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
-
-    labels:
-      - diun.enable=true
-      - homepage.group=System
-      - homepage.name=Diun
-      - homepage.icon=/icons/diun.png
-      - homepage.description=Docker Image update Notifications
-    
-    volumes:
-      - ${STATICCONFIGDIR}/diun/diun.yml:/diun.yml:ro
-      - ${CONFIGDIR}/diun:/data
-
-    healthcheck:
-      test: ["CMD", "diun", "--version"]
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 32M
-    restart: unless-stopped
+  
 
   chrome:
     container_name: chrome
@@ -626,42 +556,7 @@ services:
 # System Information
 ####################
 
-  dozzle:
-    container_name: dozzle
-    image: amir20/dozzle:latest
-    profiles:
-      - monitor
-
-    depends_on:
-      - socky_proxy
-
-    networks:
-      - socky_proxy-net
-
-    ports:
-      - ${PORT_DOZZLE}:8080
-
-    environment:
-      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
-      DOZZLE_HOSTNAME: ${HOST_NAME}
-      DOZZLE_REMOTE_HOST: #optional. if you have other docker hosts, include them here. see https://dozzle.dev/guide/remote-hosts
-    
-    labels:
-      - diun.enable=true
-      - homepage.group=System
-      - homepage.name=Dozzle
-      - homepage.icon=dozzle
-      - homepage.href=http://${SERVER_URL}:${PORT_DOZZLE}
-      - homepage.description=Docker Logs
-
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: always
-
+  
   scrutiny:
     container_name: scrutiny
     image: ghcr.io/analogj/scrutiny:master-omnibus

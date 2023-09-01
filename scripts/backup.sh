@@ -22,6 +22,8 @@ cd $varOptDir/services/events && docker compose down # Rallly
 cd $varOptDir/services/gloomhaven && docker compose down # GHS
 cd $varOptDir/services/recipes && docker compose down # Tandoor
 cd $varOptDir/services/downloads && docker compose down # *arr
+cd $varOptDir/services/paperless && docker compose down # paperless
+cd $varOptDir/services/monitor && docker compose down # uptime kuma, dozzle, diun, speedtracker
 
 
 # Docker config backups
@@ -153,9 +155,10 @@ echo Starting Docker Containers...
 cd $varOptDir
 docker compose up -d
 docker compose --profile lifestyle up -d
-docker compose --profile paperless up -d
 
 cd $varOptDir/services/events && docker compose up -d # Rallly
 cd $varOptDir/services/gloomhaven && docker compose up -d # GHS
 cd $varOptDir/services/recipes && docker compose up -d # Tandoor
 cd $varOptDir/services/downloads && docker compose up -d # *arr
+cd $varOptDir/services/paperless && docker compose up -d # paperless
+cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, diun, speedtracker
