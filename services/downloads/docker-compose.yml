@@ -29,6 +29,7 @@ services:
       - ${PORT_PROWLARR_UI}:9696
       - ${PORT_SONARR_UI}:8989
       - ${PORT_RADARR_UI}:7878
+      - ${PORT_LIDARR_UI}:8686
 
     labels:
       - homepage.group=Back End
@@ -130,6 +131,46 @@ services:
 ####################
 # Media Managers
 ####################
+  
+   lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+
+    depends_on:
+      prowlarr:
+        condition: service_started
+      gluetun:
+        condition: service_healthy
+
+    network_mode: service:gluetun # ONLY provide network config in the gluetun container
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Music
+      - homepage.icon=lidarr
+      - homepage.href=http://${SERVER_URL}:${PORT_LIDARR_UI}
+      - homepage.weight=503
+      - homepage.widget.type=lidarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_LIDARR_UI}
+      - homepage.widget.key=${HOMEPAGE_LIDARR_API}
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${CONFIGDIR}/lidarr:/config
+      - ${DATADIR}:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    restart: unless-stopped
   
   radarr:
     container_name: radarr
