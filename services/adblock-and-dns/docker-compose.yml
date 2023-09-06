@@ -2,6 +2,12 @@ version: "3.9"
 name: "adblock-and-dns"
 
 services:
+
+####################
+# Adblocking and DNS Resolution
+####################
+
+
   pihole:
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
     container_name: pihole
