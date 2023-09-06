@@ -1,0 +1,108 @@
+version: "3.9"
+name: "security"
+
+services:
+
+####################
+# Security
+####################
+
+  crowdsec:
+    container_name: crowdsec
+    image: crowdsecurity/crowdsec:v1.5.2
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_CROWDSEC_API}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
+      - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
+
+    environment:
+      TZ: ${TZ}
+      GID: ${PGID}
+      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/jellyseerr crowdsecurity/pgsql crowdsecurity/endlessh schiz0phr3ne/sonarr schiz0phr3ne/radarr schiz0phr3ne/prowlarr"
+      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
+
+    volumes:
+      - ${STATICCONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - crowdsec-config:/etc/crowdsec/
+      - crowdsec-db:/var/lib/crowdsec/data/
+    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
+
+      ## Log Files
+      - /var/log/auth.log:/logs/auth.log:ro
+      - /var/log/syslog.log:/logs/syslog.log:ro
+      
+    labels:
+      - diun.enable=true
+      - homepage.group=Wild West
+      - homepage.name=Crowdsec
+      - homepage.icon=crowdsec
+      - homepage.href=https://app.crowdsec.net/login?next=/instances
+      - homepage.description=Crowd-sourced Intrusion Prevention
+      - homepage.weight=200
+
+
+    healthcheck:
+      test: ["CMD", "cscli", "version"]
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: always
+
+  endlessh:
+    image: ghcr.io/linuxserver/endlessh:latest
+    container_name: endlessh
+
+    ports:
+      - ${PORT_SSHPROTECT:-22}:2222
+    
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      MSDELAY: ${ESSH_MSDELAY:-10000} #optional
+      MAXLINES: ${ESSH_MAXLINES:-32} #optional
+      MAXCLIENTS: ${ESSH_MAXCLIENTS:-4096} #optional
+      LOGFILE: ${DEBUG_LOG:-false} #optional. By default, the app logs to container log. If this is set to true, the log will be output to file under /config/logs/endlessh (/config needs to be mapped).
+      BINDFAMILY: ${ESSH_BINDFAMILY} #optional
+
+    #volumes:
+    #  - ${CONFIGDIR}/endlessh:/config #Required if LOGFILE is set to true.
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Wild West
+      - homepage.name=EndlessH
+      - homepage.icon=endlessh
+      - homepage.description=SSH Tarpit
+      - homepage.weight=900
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 32M  
+    restart: unless-stopped
+
+
+volumes:
+  crowdsec-config:
+    external: true
+  crowdsec-db:
+    external: true
+
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true
+  
+  socky_proxy-net:
+    name: socky_proxy-net
+    external: true
