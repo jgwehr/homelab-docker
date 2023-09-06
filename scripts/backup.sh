@@ -26,6 +26,7 @@ cd $varOptDir/services/paperless && docker compose down # paperless
 cd $varOptDir/services/monitor && docker compose down # uptime kuma, dozzle, diun, speedtracker
 cd $varOptDir/services/dashboard && docker compose down # homepage
 cd $varOptDir/services/change-detect && docker compose down # change-detection.io and chrome
+cd $varOptDir/services/adblock-and-dns && docker compose down # pihole and unbound
 
 
 # Docker config backups
@@ -170,3 +171,4 @@ cd $varOptDir/services/paperless && docker compose up -d # paperless
 cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, diun, speedtracker
 cd $varOptDir/services/dashboard && docker compose up -d # homepage
 cd $varOptDir/services/change-detect && docker compose up -d # change-detection.io and chrome
+cd $varOptDir/services/adblock-and-dns && docker compose up -d # pihole and unbound

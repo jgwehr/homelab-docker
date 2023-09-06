@@ -581,14 +581,6 @@ networks:
   htpc-net:
     name: htpc-net
   
-
-  dns-net:
-    name: dns-net
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-
   socky_proxy-net:
     name: socky_proxy-net
     external: true
