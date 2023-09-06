@@ -226,6 +226,7 @@ services:
       - homepage.name=Podgrab
       - homepage.href=http://${SERVER_URL}:${PORT_PODGRAB}
       - homepage.description=Podcast manager/downloader/archiver tool to download podcast episodes
+      - homepage.weight=800
 
     volumes:
         - /etc/localtime:/etc/localtime:ro

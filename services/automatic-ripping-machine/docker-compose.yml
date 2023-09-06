@@ -1,0 +1,44 @@
+version: "3.9"
+name: "public"
+
+services:
+
+  automatic-ripping-machine:
+    container_name: automatic-ripping-machine
+    image: 1337server/automatic-ripping-machine:latest
+
+    privileged: true
+
+    ports:
+      - ${PORT_RIPPING}:8080
+
+    environment:
+      ARM_UID: ${RIPPING_UID}
+      ARM_GID: ${RIPPING_GID}
+
+    labels:
+      - homepage.group=Downloads
+      - homepage.name=Automatic Ripping Machine
+      - homepage.href=http://${SERVER_URL}:${PORT_RIPPING}
+      - homepage.description=Disk-in Music/Movie Ripping
+
+    devices:
+      - /dev/sr0:/dev/sr0
+      
+    volumes:
+      - ${CONFIGDIR}/ripping:/etc/arm/config
+      - /etc/localtime:/etc/localtime:ro
+
+      - ${RIPPING_HOME}:/home/arm
+      - ${LOGDIR}/ripping:/home/arm/logs
+
+      - ${DOWNLOADDIR}/rips/video:/home/arm/media/completed
+      - ${DOWNLOADDIR}/rips/music:/home/arm/Music
+
+
+    deploy:
+      resources:
+        limits:
+          cpus: '5'
+          memory: 2048M #for a single rip, ARM is not RAM limited.
+    restart: 'no'
