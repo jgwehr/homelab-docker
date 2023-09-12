@@ -3,51 +3,6 @@ name: "homelab"
 
 services:
 
-####################
-# Media
-####################
-
-  
-  
-  jellyseerr:
-    container_name: jellyseerr
-    image: fallenbagel/jellyseerr:latest
-    profiles:
-      - media-request
-
-    depends_on:
-      - jellyfin # for authentication
-
-    networks:
-      - htpc-net
-      - caddy-net # provides access for the reverse proxy
-
-    ports:
-      - ${PORT_HTPC_REQUESTS}:5055
-
-    environment:
-      LOG_LEVEL: ${LOG_LEVEL}
-      TZ: ${TZ}
-
-    labels:
-      - diun.enable=true
-      - homepage.group=Media
-      - homepage.name=Request Movies and TV Shows
-      - homepage.icon=jellyseerr
-      - homepage.href=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
-      - homepage.widget.type=jellyseerr
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_HTPC_REQUESTS}
-      - homepage.widget.key=${HOMEPAGE_JELLYSEERR_API}
-
-    volumes:
-        - ${CONFIGDIR}/jellyseerr:/app/config
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-    restart: unless-stopped
   
 ####################
 # Back End Services
