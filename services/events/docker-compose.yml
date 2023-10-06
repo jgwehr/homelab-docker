@@ -56,7 +56,7 @@ services:
 
   rallly_db:
     container_name: rallly_db
-    image: postgres:alpine
+    image: postgres:15.4-alpine
 
     networks:
       - rallly-net

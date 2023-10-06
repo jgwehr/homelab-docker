@@ -47,7 +47,7 @@ services:
 
   tandoor_db:
     container_name: tandoor_db
-    image: postgres:alpine
+    image: postgres:15.4-alpine
 
     networks:
       - tandoor-net

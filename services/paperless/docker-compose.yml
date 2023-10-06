@@ -103,7 +103,7 @@ services:
 
   paperless_db:
     container_name: paperless_db
-    image: postgres:alpine
+    image: postgres:15.4-alpine
 
     networks:
       - paperless-net
