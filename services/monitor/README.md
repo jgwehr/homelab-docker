@@ -2,6 +2,7 @@
 
 - https://github.com/amir20/dozzle
 - https://github.com/crazy-max/diun
+- https://github.com/AnalogJ/scrutiny
 - https://github.com/alexjustesen/speedtest-tracker
 - https://github.com/louislam/uptime-kuma
 
@@ -21,6 +22,8 @@ n/a
 - `PORT_DOZZLE`
 - `PORT_SPEEDTEST`
 - `PORT_UPKUMA`
+- `PORT_SCRUTINY`
+- `PORT_SCRUTINY_DB`
 
 ### URLs
 - `EXTERNAL_RALLLY` - how the app is exposed via Reverse Proxy to the public. You must also update the Caddyfile to match.
