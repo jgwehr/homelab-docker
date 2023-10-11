@@ -42,10 +42,8 @@ n/a
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `STATICCONFIGDIR`
 - `DBDIR` - universal. where databases store their... databases. 
+- Each harddisk should be shared to Scrutiny via `devices` (eg. /dev/sda)
 
-### Local Only
-- Remove/Comment the Caddy-net Network
-- Remove/Comment references to `EXTERNAL_RALLLY`, `DOMAIN`
 
 ## Backups
 - If needed, standard backup of CONFIGDIR
