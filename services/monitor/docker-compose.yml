@@ -123,6 +123,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      APP_KEY: ${SPEEDTEST_APP_KEY}
     
     labels:
       - diun.enable=true
