@@ -4,6 +4,11 @@ varConfigDir=/srv/docker
 varOptDir=/opt/docker/homelab
 varStaticDir=/mnt/storage/staticfiles
 
+# Formatting
+C_COMPOSE="\033[48;5;26m"
+C_ZIP="\033[48;5;220m"
+
+
 mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
@@ -15,7 +20,7 @@ sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.
 
 
 # Stop Docker for safety
-echo Shutting Containers Down...
+echo -e "${C_COMPOSE}Shutting Containers Down..."
 cd $varOptDir
 docker compose down
 cd $varOptDir/services/adblock-and-dns && docker compose down # pihole and unbound
@@ -119,7 +124,7 @@ cp -rpi /etc/samba/smb.conf $varBackupDir/$varDate
 
 
 # Zip file
-echo Creating Primary Zip...
+echo -e "${C_ZIP}Creating Primary Zip..."
 cd $varBackupDir
 du -h --max-depth=1 $varDate | sort -hr
 zip -r -9 $varDate $varDate > /dev/null 2>&1
@@ -129,23 +134,25 @@ zip -r -9 $varDate $varDate > /dev/null 2>&1
 # Large File Storage Backups
 ####################
 
-echo Backing Up Pinry Media
+echo Backing Up Pinry: Media
 mkdir -p $varBackupDir/$varDate-pinry
 cp -rpi $varConfigDir/pinry/static/media $varBackupDir/$varDate-pinry
-echo Creating Pinry Media Zip...
+echo -e "${C_ZIP}Creating Pinry Media Zip..." #testing this
 cd $varBackupDir
 zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
 
 
-echo Backing Up Paperless, Classification Model...
+echo Backing Up Paperless: Classification Model...
 mkdir -p $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless/index
-echo Backing Up Paperless, Documents...
+echo -e "${C_COMPOSE}Starting Paperless..."
+cd $varOptDir/services/paperless && docker compose up -d # paperless
+echo Backing Up Paperless: Documents...
 sudo docker exec paperless document_exporter /usr/src/paperless/export --zip #location is within paperless container
 varTempPaperlessBackup=$(ls -Art /home/user/backup/paperless | tail -n 1) # grab the most recent zip from the volume-mapped directory. Must align with your .env BACKUPDIR
 cp -rpi /home/user/backup/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents.zip
-echo Creating Paperless Zip...
+echo -e "${C_ZIP}Creating Paperless Zip..."
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 
@@ -158,14 +165,13 @@ echo Cleaning up...
 rm -rf $varBackupDir/$varDate
 rm -rf $varBackupDir/$varDate-pinry
 rm -rf $varBackupDir/$varDate-paperless
-rm /home/user/backup/paperless/*.* #cleanup
+#rm /home/user/backup/paperless/*.* #cleanup
 
 
 # start docker again. Note, specific profiles may need restarted manually
-echo Starting Docker Containers...
+echo -e "${C_COMPOSE}Starting Docker Containers..."
 cd $varOptDir
 docker compose up -d
-docker compose --profile lifestyle up -d
 
 cd $varOptDir/services/adblock-and-dns && docker compose up -d # pihole and unbound
 cd $varOptDir/services/change-detect && docker compose up -d # change-detection.io and chrome
@@ -175,7 +181,7 @@ cd $varOptDir/services/events && docker compose up -d # Rallly
 cd $varOptDir/services/gloomhaven && docker compose up -d # GHS
 cd $varOptDir/services/image-board && docker compose up -d # Pinry
 cd $varOptDir/services/media-request && docker compose up -d # Jellyseerr
+cd $varOptDir/services/media-streaming && docker compose up -d # Jellyfin
 cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, diun, speedtracker
-cd $varOptDir/services/paperless && docker compose up -d # paperless
 cd $varOptDir/services/recipes && docker compose up -d # Tandoor
 cd $varOptDir/services/security && docker compose up -d # Endlessh, Crowdsec
