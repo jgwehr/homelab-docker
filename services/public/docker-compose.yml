@@ -34,6 +34,8 @@ services:
       - homepage.name=Caddy
       - homepage.icon=caddy
       - homepage.description=Reverse Proxy
+      - homepage.widget.type=caddy
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_CADDY_ADMIN} # default admin port is 2019
 
     volumes:
       - ./staticconfig/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
