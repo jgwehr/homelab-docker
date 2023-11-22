@@ -156,9 +156,6 @@ services:
       - homepage.icon=lidarr
       - homepage.href=http://${SERVER_URL}:${PORT_LIDARR_UI}
       - homepage.weight=503
-      - homepage.widget.type=lidarr
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_LIDARR_UI}
-      - homepage.widget.key=${HOMEPAGE_LIDARR_API}
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
