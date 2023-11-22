@@ -26,7 +26,7 @@ services:
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
     volumes:
-      - ${STATICCONFIGDIR}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - ./staticconfig/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - crowdsec-config:/etc/crowdsec/
       - crowdsec-db:/var/lib/crowdsec/data/
     #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work

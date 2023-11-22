@@ -34,7 +34,7 @@ n/a
 - `HOST_NAME` - Universal. Helps orient you within Dozzle
 
 - `DIUN_NOTIF_DISCORD_WEBHOOKURL` - Refer to Diun's instructions. I use Discord
-- `${STATICCONFIGDIR}/diun/diun.yml` - Refer to Diun's instructions. You may need to edit this file for your needs.
+- `./staticconfig/diun/diun.yml` - Refer to Diun's instructions. You may need to edit this file for your needs.
 
 - `SPEEDTEST_APP_KEY` - I don't really understand why this is needed, but it is. Once the container is running, execute this command and paste the result into your .env: `php artisan key:generate --show`
 
@@ -42,7 +42,6 @@ n/a
 
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
-- `STATICCONFIGDIR`
 - `DBDIR` - universal. where databases store their... databases. 
 - Each harddisk should be shared to Scrutiny via `devices` (eg. /dev/sda)
 

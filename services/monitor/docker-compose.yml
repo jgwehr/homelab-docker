@@ -59,7 +59,7 @@ services:
       - homepage.description=Docker Image update Notifications
     
     volumes:
-      - ${STATICCONFIGDIR}/diun/diun.yml:/diun.yml:ro
+      - ./staticconfig/diun/diun.yml:/diun.yml:ro
       - ${CONFIGDIR}/diun:/data
 
     healthcheck:

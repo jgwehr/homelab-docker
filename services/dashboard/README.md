@@ -27,7 +27,6 @@
 
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
-- `STATICCONFIGDIR`
 - `DBDIR` - universal. where databases store their... databases. 
 
 ## Backups
