@@ -81,3 +81,9 @@ services:
           cpus: '1'
           memory: 32M
     restart: unless-stopped
+
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true
