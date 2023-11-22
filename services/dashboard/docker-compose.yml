@@ -21,6 +21,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      LOG_LEVEL: 'debug'
 
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
@@ -34,7 +35,7 @@ services:
     
     healthcheck:
       test: wget --spider http://${SERVER_URL}:${PORT_SOCKY_PROXY}/version || exit 1
-      interval: "60s"
+      interval: "180s"
       timeout: "5s"
       retries: 3
       start_period: "30s"

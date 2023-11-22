@@ -36,6 +36,8 @@ n/a
 - `DIUN_NOTIF_DISCORD_WEBHOOKURL` - Refer to Diun's instructions. I use Discord
 - `${STATICCONFIGDIR}/diun/diun.yml` - Refer to Diun's instructions. You may need to edit this file for your needs.
 
+- `SPEEDTEST_APP_KEY` - I don't really understand why this is needed, but it is. Once the container is running, execute this command and paste the result into your .env: `php artisan key:generate --show`
+
 
 
 ### Data and Backups

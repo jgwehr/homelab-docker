@@ -25,6 +25,7 @@
 
 ### Rallly's Functionality
 - `RALLLY_SECRETKEY` - Generate a password with something like `openssl rand -base64 32`
+- `RALLLY_ALLOWED_EMAILS` - Refer to documentation. Provide a list of valid addresses or domains to prevent randoms from registering.
 
 The details of SMTP are beyond the scope of this project and my ability.  Please research further, yourself.
 - `RALLLY_SUPPORTEMAIL` - This is where Rallly's email will be sent from. 
