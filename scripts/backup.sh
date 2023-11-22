@@ -21,8 +21,7 @@ sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.
 
 # Stop Docker for safety
 echo -e "${C_COMPOSE}Shutting Containers Down..."
-cd $varOptDir
-docker compose down
+
 cd $varOptDir/services/adblock-and-dns && docker compose down # pihole and unbound
 cd $varOptDir/services/change-detect && docker compose down # change-detection.io and chrome
 cd $varOptDir/services/dashboard && docker compose down # homepage
@@ -34,6 +33,7 @@ cd $varOptDir/services/media-request && docker compose down # Jellyseerr
 cd $varOptDir/services/media-streaming && docker compose down # Jellyfin
 cd $varOptDir/services/monitor && docker compose down # uptime kuma, dozzle, diun, speedtracker
 cd $varOptDir/services/paperless && docker compose down # paperless
+cd $varOptDir/services/public && docker compose down # Caddy and Duckdns
 cd $varOptDir/services/recipes && docker compose down # Tandoor
 cd $varOptDir/services/security && docker compose down # Endlessh, Crowdsec
 
@@ -170,8 +170,6 @@ rm -rf $varBackupDir/$varDate-paperless
 
 # start docker again. Note, specific profiles may need restarted manually
 echo -e "${C_COMPOSE}Starting Docker Containers..."
-cd $varOptDir
-docker compose up -d
 
 cd $varOptDir/services/adblock-and-dns && docker compose up -d # pihole and unbound
 cd $varOptDir/services/change-detect && docker compose up -d # change-detection.io and chrome
@@ -183,5 +181,6 @@ cd $varOptDir/services/image-board && docker compose up -d # Pinry
 cd $varOptDir/services/media-request && docker compose up -d # Jellyseerr
 cd $varOptDir/services/media-streaming && docker compose up -d # Jellyfin
 cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, diun, speedtracker
+cd $varOptDir/services/public && docker compose up -d # Caddy and Duckdns
 cd $varOptDir/services/recipes && docker compose up -d # Tandoor
 cd $varOptDir/services/security && docker compose up -d # Endlessh, Crowdsec
