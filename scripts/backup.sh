@@ -12,6 +12,10 @@ C_ZIP="\033[48;5;220m"
 mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
+# Attempt to document image tags, ports, and other container configuration
+echo Backing up Docker outputs (tags, ports, names)...
+docker ps > docker-ps.txt
+docker image ls > docker-image-ls.txt
 
 # Database backups (must be done while containers are still running...)
 echo Backing up Databases...
