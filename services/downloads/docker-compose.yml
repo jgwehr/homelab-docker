@@ -21,6 +21,7 @@ services:
       OPENVPN_USER: ${VPN_USER}
       OPENVPN_PASSWORD: ${VPN_PASSWORD}
 
+      VPN_PORT_FORWARDING: 'on' #see: https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
       SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
 
     ports:
