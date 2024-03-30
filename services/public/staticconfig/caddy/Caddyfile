@@ -1,6 +1,8 @@
 { # Global options block. Entirely optional, https is on by default
   email {$EMAIL} # Optional email key for lets encrypt
   #debug # this is optional; makes Caddy log more details
+
+  admin 0.0.0.0:2019
   
   order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
   crowdsec {

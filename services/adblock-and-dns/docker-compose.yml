@@ -1,0 +1,102 @@
+name: "adblock-and-dns"
+
+services:
+
+####################
+# Adblocking and DNS Resolution
+####################
+
+
+  pihole:
+  # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+    container_name: pihole
+    hostname: pihole
+    image: pihole/pihole:latest
+    
+    depends_on:
+      - unbound
+
+    networks:
+      dns-net:
+        ipv4_address: 172.20.0.2
+
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    ports:
+      - ${PORT_PIHOLE_WEB:-80}:80
+      - ${PORT_PIHOLE_WEBSSL:-443}:443
+      - ${PORT_PIHOLE_TCP:-53}:53/tcp
+      - ${PORT_PIHOLE_UDP:-53}:53/udp
+    #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
+
+    environment:
+      TZ: ${TZ}
+      WEBPASSWORD: ${PIHOLE_PASSWORD}
+      FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
+      PIHOLE_DNS_: 172.20.0.3#5053
+      DHCP_ACTIVE: ${PIHOLE_DHCP_ACTIVE:-false}
+      PIHOLE_DOMAIN: ${PIHOLE_DOMAIN:-lan}
+      DNSMASQ_LISTENING: 'all'
+
+      TEMPERATUREUNIT: ${PIHOLE_TEMPUNIT:-c}
+      WEBTHEME: ${PIHOLE_WEBTHEME:-default-dark}
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Pihole
+      - homepage.icon=pi-hole
+      - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}/admin
+      - homepage.weight=100
+      - homepage.widget.type=pihole
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
+      - homepage.widget.key=${HOMEPAGE_PIHOLE_API}
+
+    volumes:
+      - ${CONFIGDIR}/pihole/pihole:/etc/pihole
+      - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
+      - ${CONFIGDIR}/pihole/resolv.conf:/etc/resolv.conf
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+
+    #cap_add:
+    #  - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
+
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+    restart: unless-stopped
+
+  unbound:
+    container_name: unbound
+    image: mvance/unbound:latest #for raspberry-pi: mvance/unbound-rpi:latest
+
+    networks:
+      dns-net:
+        ipv4_address: 172.20.0.3
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Unbound
+      - homepage.icon=pi-hole-unbound
+
+    volumes:
+      - ${CONFIGDIR}/unbound:/opt/unbound/etc/unbound
+
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+
+networks:
+  dns-net:
+    name: dns-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

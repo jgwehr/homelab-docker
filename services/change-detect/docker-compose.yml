@@ -1,0 +1,65 @@
+name: "change-detect"
+
+services:
+
+####################
+# Change Detection
+####################
+
+  changedetection:
+    container_name: changedetection
+    image: ghcr.io/dgtlmoon/changedetection.io
+
+    depends_on:
+      - chrome
+    
+    ports:
+      - ${PORT_CHANGEDETECTION}:5000
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      WEBDRIVER_URL: http://chrome:${PORT_WEBDRIVER}/wd/hub
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Change Detection
+      - homepage.icon=changedetection-io
+      - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
+      - homepage.widget.type=changedetectionio
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
+      - homepage.widget.key=${HOMEPAGE_CHANGEDETECTION_API}
+
+    volumes:
+      - ${CONFIGDIR}/changedetection:/datastore
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+    restart: unless-stopped
+
+  chrome:
+    container_name: chrome
+    image: selenium/standalone-chrome:4.11
+
+    ports:
+      - ${PORT_WEBDRIVER}:4444
+
+    shm_size: 2gb
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Back End
+      - homepage.name=Chrome
+      - homepage.icon=chrome
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    restart: unless-stopped

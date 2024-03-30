@@ -1,21 +1,14 @@
-version: "3.9"
-name: "homelab"
+name: "infra"
 
 services:
-
   
 ####################
 # Back End Services
 ####################
 
-
   socky_proxy:
     container_name: socky_proxy
     image: ghcr.io/tecnativa/docker-socket-proxy:0.1 # A security-enhanced proxy for the Docker Socket.
-    profiles:
-      - admin
-      - external
-      - monitor
 
     privileged: true
   
@@ -55,7 +48,6 @@ services:
           memory: 32M
 
     restart: always
-
 
 
 ####################

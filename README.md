@@ -1,6 +1,6 @@
 A personal project to provide security, privacy, and data-ownership for my home.
 
-![GitHub last commit](https://img.shields.io/github/last-commit/jgwehr/homelab-docker) ![GitHub Repo Stars](https://img.shields.io/github/stars/jgwehr/homelab-docker)
+![GitHub last commit](https://img.shields.io/github/last-commit/jgwehr/homelab-docker) [![GitHub Activity][commits-shield]][commits] ![GitHub Repo Stars](https://img.shields.io/github/stars/jgwehr/homelab-docker)
 
 Includes: 
 - Docker and various infrastructure concepts (data backups, parity)
@@ -16,55 +16,43 @@ Includes:
 
 # Technology
 
-| Infrastructure | Media | Other |
-| :- | :- |  :-  |
-| <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/homepage.png" width="32" alt="Homepage" /> Homepage |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyseerr.png" width="32" alt="Jellyseerr" /> Jellyseerr | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/tandoorrecipes.png" width="32" alt="Tandoor Recipes" /> Tandoor Recipes |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar | <img src="https://github.com/Lurkars/gloomhavensecretariat/blob/main/src/assets/icons/icon-masked-72x72.png" width="32" alt="Gloomhaven Secretariat" />Gloomhaven Secretariat |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pinry.png" width="32" alt="Pinry" /> Pinry |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/scrutiny.png" width="32" alt="Scrutiny" /> Scrutiny | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr | <img src="https://github.com/lukevella/rallly/blob/main/apps/web/public/favicon-32x32.png?raw=true" width="32" alt="Rallly"> Rallly |
-| <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent | <img src="https://github.com/dgtlmoon/changedetection.io/blob/d5fd22f693d398b9f23a84469b2459b59b02b453/changedetectionio/static/favicons/android-chrome-192x192.png" width="32" alt="ChangeDetection.io"> ChangeDetection.io |
-| Endlessh | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/gluetun.png" width="32" alt="Gluetun" /> Gluetun | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Wireguard" /> Paperless-ngx |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma | Podgrab |  |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pi-hole.png" width="32" alt="Pihole" /> Pihole |  |  |
-| <img src="https://github.com/walkxcode/dashboard-icons/blob/main/png/pi-hole-unbound.png" width="32" alt="Unbound" /> Unbound |  |  |
-| <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/speedtest-tracker.png" width="32" alt="Speedtest Tracker" /> Speedtest Tracker |  |  |
+The following apps / technologies are grouped into `./services/`. 
 
-### Notes
-Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability.
-
-# Setup and Operation
-
-## Starting services
+| Service | Note | Includes |
+| :- | :- | :- |
+| adblock-and-dns |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pi-hole.png" width="32" alt="Pihole" /> Pihole <img src="https://github.com/walkxcode/dashboard-icons/blob/main/png/pi-hole-unbound.png" width="32" alt="Unbound" /> Unbound |
+| change-detect |  | <img src="https://github.com/dgtlmoon/changedetection.io/blob/d5fd22f693d398b9f23a84469b2459b59b02b453/changedetectionio/static/favicons/android-chrome-192x192.png" width="32" alt="ChangeDetection.io"> ChangeDetection.io <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/chrome.png" width="32" alt="Chrome" /> Chrome |
+| dashboard |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/homepage.png" width="32" alt="Homepage" /> Homepage |
+| downloads |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/gluetun.png" width="32" alt="Gluetun" /> Gluetun <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/lidarr.png" width="32" alt="Lidarr" /> Lidarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar + PodGrab |
+| events |  | <img src="https://github.com/lukevella/rallly/blob/main/apps/web/public/favicon-32x32.png?raw=true" width="32" alt="Rallly"> Rallly <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
+| gloomhaven |  | <img src="https://github.com/Lurkars/gloomhavensecretariat/blob/main/src/assets/icons/icon-masked-72x72.png" width="32" alt="Gloomhaven Secretariat" />Gloomhaven Secretariat |
+| infra | Required | docker socket proxy |
+| image-board |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pinry.png" width="32" alt="Pinry" /> Pinry |
+| media-request |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyseerr.png" width="32" alt="Jellyseerr" /> Jellyseerr |
+| media-streaming |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin |
+| monitor |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/scrutiny.png" width="32" alt="Scrutiny" /> Scrutiny <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/speedtest-tracker.png" width="32" alt="Speedtest Tracker" /> Speedtest Tracker <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma |
+| paperless |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Paperless ngx" /> Paperless-ngx <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
+| public | Reverse Proxy and DDNS | <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS |
+| recipes |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/tandoorrecipes.png" width="32" alt="Tandoor Recipes" /> Tandoor Recipes <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
+| security | Run this if you're running `public` | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec + Endlessh |
 
 ### Explanation
-Services are grouped into similar purposes via "Profiles". There are two primary goals:
+Groupings are chosen based on context and dependencies. Most Services "stacks" should work fine without any other services (some exceptions exist) - allowing you to take from this repo what you care about and ignore the rest.
+1. All services **use the same `.env` file** in the root director. This is to simplify maintenance as some variables are used by multiple Services. This is accomplished via symlink.
+1. Services should have one-way dependency. *Stack A* can be dependent on Containers within another *Stack B*, but *Stack B* cannot also be dependent any Containers in *Stack A*
+1. Can have any time of (efficient) dependencies within itself. *Container A* can depend on *Container B*
+1. Services are easy to manage (start, stop, restart,...) independently from one another.
 
-1.  Enable one docker-compose file to be useful in a variety of situations. A server with less resources can easily run a limited version without "fluff". Stacks can easily be started/stopped/restarted, which can help make testing or issue resolution faster
-1.  Mitigate docker timeouts. As more services are added, it's more likely a monolithic docker-compose would fail to run successfully.
-1.  Less primary: I tried to get multiple docker-compose files to work with a shared collection of environment files (eg. `ports.env`). Unfortunately, Docker really doesn't like that. Symlinks or scripts are  an option, but prohibitively complex. Profiles appear to achieve the best combination of (1) "modularity" and (2) easy of env maintenance
+### Starting services
+1. Ensure you've established the symlink to `.env`. See or execute `./scripts/run-each-update.sh`
+1. Navigate to the desired service, eg `cd ./services/infra`
+1. Execute a standard docker compose up, eg `docker compose up -d`
 
-### Start each service
-`docker-compose --profile **stack** up -d`
-Alternatively, customize `COMPOSE_PROFILES=` in the .env file for a more "static" approach
-
-| Profile               | Services   | Note |
-| :--                   | :--:       | :-- |
-| `external` | docker-socket-proxy, crowdsec, endlessh, caddy, duckdns | Makes connecting to a publicly facing set of services possible, securely |
-| `admin` | docker-socket-proxy, uptime-kuma, homepage | Local system management and status. Non-local access to Uptime Kuma requires  `external` |
-| `network` | pihole, unbound, speedtest-tracker | Tools to support your home internet |
-| `monitor` | docker-socket-proxy, dozzle, diun, scrutiny | Monitoring system health |
-| `downloads` | wireguard,  qbittorrent, podgrab | Allow for secure file transfers, without additional overhead from library management |
-| `media-request` | jellyseerr, sonarr, radarr, prowlarr, wireguard,  qbittorrent, podgrab | Full stack for end user media requests and file transfer. Non-local access to Jellyseerr requires  `external` |
-| `recipes` | tandoor_recipes, postres | Home recipes. Non-local access to tandoor requires  `external` |
-| `gloomhaven` | gloomhaven-secretary, ghs-server | Board games! Non-local access to client and server requires  `external` |
-| `lifestyle` | pinry, changedetection.io, selenium/chrome | Tools for the family |
-| `paperless` | paperless-ngx, postgress, redis | Important Document |
-| `calendar` | rallly, postgres | Help scheduling events with people |
-| `ripping` | automatic-ripping machine | local-only, not required all the time |
+### Notes
+Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability. Instead, I use Diun and dockcheck.sh currently. 
 
 
-# Beginning
+# Install / Beginning
 
 WIP
 
@@ -80,14 +68,21 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
 ├── /opt
 │  └── docker
 │     └── homelab-docker (this repo)
-|        ├── dockerfiles (for custom builds)
-│        |  └── builder-*.sh (for building files to upload)
-│        |  └── *.dockerfile (for adhoc builds)
-|        ├── staticconfig (service-specific configuration)
-│        |  └── * (for each service)
-│        |     └── *
-│        ├── .env
-│        └── docker-compose.yml
+│        ├── configtemplates (for help with non-docker tools eg. Samba or SnapRaid)
+│        ├── scripts (for help with managing install, backups, etc)
+│        ├── services
+│        |  ├── service1
+|        |  |    ├── docker-compose.yml
+|        |  |    ├── ~.env (symlink)
+|        |  |    ├── dockerfiles (for custom builds)
+│        |  |    |   └── *.dockerfile (for adhoc builds)
+│        |  |    ├── configtemplates (service-specific configuration to be copied to config dir, then customized)
+│        |  |    └── staticconfig (service-specific configuratio. does not move)
+|        |  |        ├── container1
+|        |  |        |  └── container-specific-file.ext
+|        |  |        └── container*
+│        |  └── service*
+│        └── .env (the master .env file. Each Service symlinks to this)
 ├── /srv
 │  ├── docker (for container's configurations)
 │  ├── cache

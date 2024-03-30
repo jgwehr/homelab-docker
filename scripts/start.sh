@@ -2,7 +2,7 @@
 # Configure the below variables
 #####
 
-varBackupDir=/home/user/backup
+
 varConfigDir=/srv/docker
 varOptDir=/opt/docker/homelab
 varMediaStorage=/mnt/storage

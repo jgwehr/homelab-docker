@@ -1,0 +1,182 @@
+name: "monitor"
+
+services:
+
+####################
+# Monitor
+####################
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+
+    networks:
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_DOZZLE}:8080
+
+    environment:
+      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+      DOZZLE_HOSTNAME: ${HOST_NAME}
+      #DOZZLE_REMOTE_HOST: #optional. if you have other docker hosts, include them here. see https://dozzle.dev/guide/remote-hosts
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Docker Logs
+      - homepage.icon=dozzle
+      - homepage.href=http://${SERVER_URL}:${PORT_DOZZLE}
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: always
+
+  diun:
+    container_name: diun
+    image: ghcr.io/crazy-max/diun:4.25
+
+    networks:
+      - socky_proxy-net
+      
+    command: serve
+
+    environment:
+      TZ: ${TZ}
+      LOG_JSON: "true"
+      DIUN_NOTIF_DISCORD_WEBHOOKURL: ${DIUN_NOTIF_DISCORD_WEBHOOKURL}
+      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
+
+    labels:
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Diun
+      - homepage.icon=/icons/diun.png
+      - homepage.description=Docker Image update Notifications
+    
+    volumes:
+      - ./staticconfig/diun/diun.yml:/diun.yml:ro
+      - ${CONFIGDIR}/diun:/data
+
+    healthcheck:
+      test: ["CMD", "diun", "--version"]
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 32M
+    restart: unless-stopped
+
+  scrutiny:
+    container_name: scrutiny
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+
+    ports:
+      - ${PORT_SCRUTINY}:8080 # webapp
+      - ${PORT_SCRUTINY_DB}:8086 # influxDB admin
+
+    labels:
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Scrutiny
+      - homepage.icon=scrutiny
+      - homepage.href=http://${SERVER_URL}:${PORT_SCRUTINY}
+      - homepage.description=Harddrive Health Monitoring
+      - homepage.widget.type=scrutiny
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SCRUTINY}
+
+    devices:
+      - /dev/sda
+      - /dev/sdb
+      - /dev/sdc
+      - /dev/sdd
+    
+    volumes:
+      - /run/udev:/run/udev:ro
+      - ${CONFIGDIR}/scrutiny:/opt/scrutiny/config
+      - ${DBDIR}/scrutiny:/opt/scrutiny/influxdb
+
+    cap_add:
+      - SYS_RAWIO #necessary to allow smartctl permission to query your device SMART data 
+      - SYS_ADMIN #necessary for NVMe drives
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: unless-stopped
+
+  speedtest-tracker:
+    container_name: speedtest-tracker
+    image: ghcr.io/alexjustesen/speedtest-tracker:latest
+
+    ports:
+      - ${PORT_SPEEDTEST}:80
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      APP_KEY: ${SPEEDTEST_APP_KEY}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Speedtest Tracker
+      - homepage.icon=speedtest-tracker
+      - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
+      - homepage.widget.type=speedtest
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
+
+    volumes:
+      - ${CONFIGDIR}/speedtest-tracker:/config
+
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    restart: unless-stopped
+
+  uptime-kuma:
+    container_name: uptime_kuma
+    image: louislam/uptime-kuma
+    
+    networks:
+      - caddy-net # provides access for the reverse proxy
+    
+    ports:
+      - ${PORT_UPKUMA}:3001
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=System
+      - homepage.name=Uptime Kuma
+      - homepage.icon=uptime-kuma
+      - homepage.href=http://${SERVER_URL}:${PORT_UPKUMA}
+      - homepage.widget.type=uptimekuma
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
+      - homepage.widget.slug=default
+
+    volumes:
+      - ${CONFIGDIR}/uptime-kuma:/app/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+  
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true
+  socky_proxy-net:
+    name: socky_proxy-net
+    external: true

@@ -1,0 +1,53 @@
+name: "dashboard"
+
+services:
+
+####################
+# Dashboard
+####################
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+
+    networks:
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_DASH_HTTP}:3000
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      LOG_LEVEL: 'debug'
+
+    volumes:
+      - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
+      - ${STATICDIR}/icons:/app/public/icons #Optional. for custom icons
+      - ${STATICDIR}/wallpaper:/app/public/images #Optional. for custom backgrounds
+
+      - ${SYS_DISK1}:/dev/sda1:ro #harddrive space monitoring
+      - ${SYS_DISK2}:/dev/sdb1:ro #harddrive space monitoring
+      - ${SYS_DISK3}:/dev/sdc1:ro #harddrive space monitoring
+      - ${SYS_DISK4}:/dev/sdd1:ro #harddrive space monitoring
+    
+    healthcheck:
+      test: wget --spider http://${SERVER_URL}:${PORT_SOCKY_PROXY}/version || exit 1
+      interval: "180s"
+      timeout: "5s"
+      retries: 3
+      start_period: "30s"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+
+networks:
+  socky_proxy-net:
+    name: socky_proxy-net
+    external: true

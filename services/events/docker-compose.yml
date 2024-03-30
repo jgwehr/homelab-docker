@@ -1,0 +1,105 @@
+name: "events"
+
+services:
+
+####################
+# Rallly
+####################
+
+  rallly:
+    container_name: rallly
+    image: lukevella/rallly:latest
+
+    networks:
+      - caddy-net
+      - rallly-net
+
+    depends_on:
+      rallly_db:
+        condition: service_healthy
+
+    ports:
+      - ${PORT_RALLLY}:3000
+
+    environment:
+      DATABASE_URL: postgres://${RALLLY_DB_USER}:${RALLLY_DB_PASSWORD}@rallly_db:5432/${RALLLY_DB_NAME}
+      SECRET_PASSWORD: ${RALLLY_SECRETKEY}
+      AUTH_REQUIRED: true
+      DISABLE_LANDING_PAGE: true
+      SUPPORT_EMAIL: ${RALLLY_SUPPORTEMAIL}
+      ALLOWED_EMAILS: ${RALLLY_ALLOWED_EMAILS}
+      NEXT_PUBLIC_BASE_URL: https://${EXTERNAL_RALLLY}.${DOMAIN} # defined in the Caddyfile
+
+      SMTP_HOST: ${RALLLY_SMTP_HOST}
+      SMTP_PORT:  ${RALLLY_SMTP_PORT}
+      SMTP_SECURE: ${RALLLY_SMTP_SECURE}
+      SMTP_USER: ${RALLLY_SMTP_USER}
+      SMTP_PWD: ${RALLLY_SMTP_PASSWORD}
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Lifestyle
+      - homepage.name=Rallly
+      - homepage.icon=/icons/rallly.png
+      - homepage.href=http://${EXTERNAL_RALLLY}.${DOMAIN}
+      - homepage.description=Schedule hangouts with friends
+
+    volumes:
+      - ${CONFIGDIR}/rallly:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 256M
+    restart: unless-stopped
+
+  rallly_db:
+    container_name: rallly_db
+    image: postgres:15.4-alpine
+
+    networks:
+      - rallly-net
+
+    ports:
+      - ${PORT_RALLLY_DB}:5432
+
+    environment:
+      POSTGRES_DB: ${RALLLY_DB_NAME}
+      POSTGRES_USER: ${RALLLY_DB_USER}
+      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=Rallly | Postgres DB
+      - homepage.icon=postgres
+
+    volumes:
+      - ${DBDIR}/rallly:/var/lib/postgresql/data
+
+    healthcheck:
+      interval: 60s
+      retries: 10
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - ${RALLLY_DB_NAME}
+        - '-U'
+        - ${RALLLY_DB_USER}
+      timeout: 45s
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+    restart: unless-stopped
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true
+  rallly-net:
+    name: rallly-net
