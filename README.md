@@ -1,6 +1,6 @@
 A personal project to provide security, privacy, and data-ownership for my home.
 
-![GitHub last commit](https://img.shields.io/github/last-commit/jgwehr/homelab-docker) [![GitHub Activity][commits-shield]][commits] ![GitHub Repo Stars](https://img.shields.io/github/stars/jgwehr/homelab-docker)
+![GitHub last commit](https://img.shields.io/github/last-commit/jgwehr/homelab-docker) ![GitHub Repo Stars](https://img.shields.io/github/stars/jgwehr/homelab-docker)
 
 Includes: 
 - Docker and various infrastructure concepts (data backups, parity)
