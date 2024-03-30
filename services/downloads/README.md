@@ -6,9 +6,12 @@
 - https://github.com/qdm12/gluetun
 - https://github.com/akhilrex/podgrab
 
+
+See: https://github.com/jgwehr/homelab-docker/wiki/*Arr-Configuration
+
 ## Dependencies
 
-- All *arr and related apps run under the Gluetun container's VPN provision. Gluetun must be active and connected to the VPN for any of these to work.
+- All *arr and related apps run under the Gluetun container's VPN connection. Gluetun must be active and connected to the VPN for any of these to work.
 - In order for Gluetun to work, you must have a compatible VPN provider.
 
 

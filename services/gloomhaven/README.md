@@ -16,7 +16,6 @@
 1. Consider modifying the Caddyfile for your prefered external sub-domain. Must match `EXTERNAL_GHS`
 
 ### Ports
-
 - `PORT_GHS_CLIENT`
 - `PORT_GHS_SERVER`
 
@@ -33,3 +32,5 @@
 - Remove/Comment references to `EXTERNAL_GHS`, `DOMAIN`
 
 ## Backups
+- This can be done per user from the web interface
+- Alternatively, all incremental backups are available via the `CONFIGDIR`

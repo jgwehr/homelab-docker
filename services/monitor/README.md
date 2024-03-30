@@ -14,7 +14,7 @@
 ## Environment and Configuration
 
 ### Files
-n/a
+1. Copy `./configtemplates/scrutiny/scrutiny.yaml` to your config directory for Scrutiny `${CONFIGDIR}/scrutiny/scrutiny.yaml`
 
 ### Ports
 
@@ -26,7 +26,6 @@ n/a
 - `PORT_SCRUTINY_DB`
 
 ### URLs
-- `EXTERNAL_RALLLY` - how the app is exposed via Reverse Proxy to the public. You must also update the Caddyfile to match.
 - `SERVER_URL` - universal. your internal url
 - `DOMAIN` - universal. your public facing domain name
 
@@ -38,6 +37,7 @@ n/a
 
 - `SPEEDTEST_APP_KEY` - I don't really understand why this is needed, but it is. Once the container is running, execute this command and paste the result into your .env: `php artisan key:generate --show`
 
+- `${CONFIGDIR}/scrutiny/scrutiny.yaml` - Refer to Scrutiny's instructions.
 
 
 ### Data and Backups

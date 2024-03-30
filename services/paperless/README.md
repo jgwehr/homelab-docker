@@ -13,7 +13,7 @@
 ## Environment and Configuration
 
 ### Files
-`services\gloomhaven\configtemplates\ghs\application.properties` should be copied to your configuration volume (`${CONFIGDIR}`/ghs). The GHS Server mounts this file for additional configuration.
+
 
 ### Ports
 
@@ -44,3 +44,4 @@
 - Paperless has an verbose way of storing documents, with many duplicates. Read the documentation and decide what is best for you.
 - Documents can be exported to your CONFIG dir using `docker exec paperless document_exporter /usr/src/paperless/export --zip`
 - Backup `classification_model.pickle` if you desire, though it's not needed. This is the machine-learned way it categorizes documents.
+- If you use the backup.sh script, you may need to adjust the backup script to match `PAPERLESS_DB_USER` or `PAPERLESS_DB_NAME`

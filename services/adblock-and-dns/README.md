@@ -42,3 +42,4 @@
 
 ## Backups
 - Use Pi-hole's Teleport feature
+- Alternatively, my backup.sh script will copy the entire config directory. The Gravity and FTL files are deleted to save space since they're emphemeral anyway'.

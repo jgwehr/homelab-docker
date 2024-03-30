@@ -17,10 +17,10 @@
 
 
 ### URLs
-- 
+- `SERVER_URL` - universal. your internal url
 
 ### Functionality
-- `HOMEPAGE_CHANGEDETECTION_API` - provide this to enable the widget on the Homepage dashboard
+- `HOMEPAGE_CHANGEDETECTION_API` - provide this to enable the widget on the Homepage dashboard. Accessible via Settings > API
 
 
 ### Data and Backups
