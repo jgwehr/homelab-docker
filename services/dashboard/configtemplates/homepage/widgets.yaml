@@ -1,15 +1,19 @@
 - resources:
     label: System
     cpu: true
+    cputemp:  true
+    uptime: true
     memory: true
     disk: /
+    units: imperial
 
 - resources:
     label: Storage
     expanded: true
+    refresh: 6000
     disk:
         - /dev/sda1
-
+    
 - search:
     provider: duckduckgo
     target: _blank
