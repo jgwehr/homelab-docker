@@ -72,6 +72,8 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
 │        ├── scripts (for help with managing install, backups, etc)
 │        ├── services
 │        |  ├── service1
+|        |  |    ├── docker-compose.yml
+|        |  |    ├── ~.env (symlink)
 |        |  |    ├── dockerfiles (for custom builds)
 │        |  |    |   └── *.dockerfile (for adhoc builds)
 │        |  |    ├── configtemplates (service-specific configuration to be copied to config dir, then customized)
