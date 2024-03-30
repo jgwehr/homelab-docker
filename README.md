@@ -74,10 +74,11 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
 │        |  ├── service1
 |        |  |    ├── dockerfiles (for custom builds)
 │        |  |    |   └── *.dockerfile (for adhoc builds)
-│        |  |    ├── staticconfig (service-specific configuration)
-|        |  |    |   ├── container1
-|        |  |    |   |  └── container-specific-file.ext
-|        |  |    |   └── container*
+│        |  |    ├── configtemplates (service-specific configuration to be copied to config dir, then customized)
+│        |  |    └── staticconfig (service-specific configuratio. does not move)
+|        |  |        ├── container1
+|        |  |        |  └── container-specific-file.ext
+|        |  |        └── container*
 │        |  └── service*
 │        └── .env (the master .env file. Each Service symlinks to this)
 ├── /srv
