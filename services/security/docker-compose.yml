@@ -8,7 +8,7 @@ services:
 
   crowdsec:
     container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.5.5
+    image: crowdsecurity/crowdsec:v1.6.0
     
     networks:
       - caddy-net # provides access for the reverse proxy
