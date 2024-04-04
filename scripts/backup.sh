@@ -14,7 +14,7 @@ mkdir -p $varBackupDir/$varDate
 cd $varBackupDir/$varDate
 
 # Attempt to document image tags, ports, and other container configuration
-echo Backing up Docker outputs (tags, ports, names)...
+echo "Backing up Docker outputs (tags, ports, names)..."
 docker ps > docker-ps.txt
 docker image ls > docker-image-ls.txt
 
@@ -25,7 +25,7 @@ sudo docker exec -t paperless_db pg_dumpall -U paperless_app > paperless_pgdump.
 
 
 # Stop Docker for safety
-echo -e "${C_COMPOSE}Shutting Containers Down...${C_EOL}"
+echo "${C_COMPOSE}Shutting Containers Down...${C_EOL}"
 
 cd $varOptDir/services/adblock-and-dns && docker compose down # pihole and unbound
 cd $varOptDir/services/change-detect && docker compose down # change-detection.io and chrome
@@ -153,7 +153,7 @@ cp -rpi /etc/samba/smb.conf $varBackupDir/$varDate
 
 
 # Zip file
-echo -e "${C_ZIP}Creating Primary Zip...${C_EOL}"
+echo "${C_ZIP}Creating Primary Zip...${C_EOL}"
 cd $varBackupDir
 du -h --max-depth=1 $varDate | sort -hr
 zip -r -9 $varDate $varDate > /dev/null 2>&1
@@ -166,7 +166,7 @@ zip -r -9 $varDate $varDate > /dev/null 2>&1
 echo Backing Up Pinry: Media
 mkdir -p $varBackupDir/$varDate-pinry
 cp -rpi $varConfigDir/pinry/static/media $varBackupDir/$varDate-pinry
-echo -e "${C_ZIP}Creating Pinry Media Zip...${C_EOL}" #testing this
+echo "${C_ZIP}Creating Pinry Media Zip...${C_EOL}" #testing this
 cd $varBackupDir
 zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
 
@@ -175,13 +175,16 @@ echo Backing Up Paperless: Classification Model...
 mkdir -p $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/index $varBackupDir/$varDate-paperless/paperless/index
-echo -e "${C_COMPOSE}Starting Paperless...${C_EOL}"
+
+echo "${C_COMPOSE}Starting Paperless...${C_EOL}"
 cd $varOptDir/services/paperless && docker compose up -d # paperless
+
 echo Backing Up Paperless: Documents...
 sudo docker exec paperless document_exporter /usr/src/paperless/export --zip #location is within paperless container
 varTempPaperlessBackup=$(ls -Art /home/user/backup/paperless | tail -n 1) # grab the most recent zip from the volume-mapped directory. Must align with your .env BACKUPDIR
 cp -rpi /home/user/backup/paperless/$varTempPaperlessBackup $varBackupDir/$varDate-paperless/documents.zip
-echo -e "${C_ZIP}Creating Paperless Zip...${C_EOL}"
+
+echo "${C_ZIP}Creating Paperless Zip...${C_EOL}"
 cd $varBackupDir
 zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 
@@ -198,7 +201,7 @@ rm -rf $varBackupDir/$varDate-paperless
 
 
 # start docker again. Note, specific profiles may need restarted manually
-echo -e "${C_COMPOSE}Starting Docker Containers...${C_EOL}"
+echo "${C_COMPOSE}Starting Docker Containers...${C_EOL}"
 
 cd $varOptDir/services/adblock-and-dns && docker compose up -d # pihole and unbound
 cd $varOptDir/services/change-detect && docker compose up -d # change-detection.io and chrome
