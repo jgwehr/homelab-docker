@@ -93,7 +93,6 @@ services:
       - /dev/sda
       - /dev/sdb
       - /dev/sdc
-      - /dev/sdd
     
     volumes:
       - /run/udev:/run/udev:ro
