@@ -112,7 +112,7 @@ services:
 
   speedtest-tracker:
     container_name: speedtest-tracker
-    image: ghcr.io/alexjustesen/speedtest-tracker:latest
+    image: lscr.io/linuxserver/speedtest-tracker:latest
 
     ports:
       - ${PORT_SPEEDTEST}:80
@@ -121,6 +121,9 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      DISPLAY_TIMEZONE: ${TZ}
+      SPEEDTEST_SCHEDULE: ${SPEEDTEST_SCHEDULE}
+      SPEEDTEST_SERVERS: ${SPEEDTEST_SERVERS}
       APP_KEY: ${SPEEDTEST_APP_KEY}
     
     labels:
