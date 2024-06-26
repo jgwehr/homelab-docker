@@ -38,10 +38,10 @@ The following apps / technologies are grouped into `./services/`.
 
 ### Explanation
 Groupings are chosen based on context and dependencies. Most Services "stacks" should work fine without any other services (some exceptions exist) - allowing you to take from this repo what you care about and ignore the rest.
-1. All services **use the same `.env` file** in the root director. This is to simplify maintenance as some variables are used by multiple Services. This is accomplished via symlink.
-1. Services should have one-way dependency. *Stack A* can be dependent on Containers within another *Stack B*, but *Stack B* cannot also be dependent any Containers in *Stack A*
-1. Can have any time of (efficient) dependencies within itself. *Container A* can depend on *Container B*
-1. Services are easy to manage (start, stop, restart,...) independently from one another.
+1. All Services **use the same `.env` file** from the root directory (*/opt/docker/homelab-docker/.env*). This simplifies maintenance as some variables are used by multiple Services. This is accomplished via symlink.
+1. One-way dependency: *Stack A* can be dependent on Container(s) within *Stack B*, but *Stack B* cannot **also** be dependent on any Containers in *Stack A*. Similarly, *Container A.1* can depend on *Container A.2* but *Container A.2* cannot **also** be dependent on *Container A.1*.
+1. Multiple dependencies: Containers can have any number of (efficient) dependencies. *Container A.1* can depend on *Container A.2* and *Container B.1*. Care should be taken to avoid circular dependencies (*A on B on C on A*).
+1. Services are easy to manage (start, stop, restart,...) independently from one another. Additionally, some apps (eg. [Dozzle](https://github.com/amir20/dozzle/releases/tag/v6.5.0)) make good use of *separate* docker-compose files to improve their own functionality. 
 
 ### Starting services
 1. Ensure you've established the symlink to `.env`. See or execute `./scripts/run-each-update.sh`
@@ -65,60 +65,63 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
 ## File System
 
 ```
-├── /opt
-│  └── docker
-│     └── homelab-docker (this repo)
-│        ├── configtemplates (for help with non-docker tools eg. Samba or SnapRaid)
-│        ├── scripts (for help with managing install, backups, etc)
-│        ├── services
-│        |  ├── service1
+├── /opt/
+│  └── docker/
+│     └── homelab-docker/ (this repo)
+│        ├── configtemplates/ (for help with non-docker tools eg. Samba or SnapRaid)
+│        ├── scripts/ (for help with managing install, backups, etc)
+│        ├── services/
+│        |  ├── service1/
 |        |  |    ├── docker-compose.yml
 |        |  |    ├── ~.env (symlink)
-|        |  |    ├── dockerfiles (for custom builds)
+|        |  |    ├── dockerfiles/ (for custom builds)
 │        |  |    |   └── *.dockerfile (for adhoc builds)
-│        |  |    ├── configtemplates (service-specific configuration to be copied to config dir, then customized)
-│        |  |    └── staticconfig (service-specific configuratio. does not move)
-|        |  |        ├── container1
+│        |  |    ├── configtemplates/ (service-specific configuration to be copied to config dir, then customized)
+│        |  |    └── staticconfig/ (service-specific configuratio. does not move)
+|        |  |        ├── container1/
 |        |  |        |  └── container-specific-file.ext
-|        |  |        └── container*
-│        |  └── service*
+|        |  |        └── container*/
+│        |  └── service*/
 │        └── .env (the master .env file. Each Service symlinks to this)
-├── /srv
-│  ├── docker (for container's configurations)
-│  ├── cache
-│  └── logs
-└── /mnt/storage
-   ├── db
-   ├── staticfiles
-   │  ├── icons
-   │  ├── paperless
-   │  ├── tandoor_media
-   │  └── wallpaper
-   ├── downloads
-   │  ├── audiobooks
-   │  ├── movies
-   │  ├── music
-   │  ├── paperless (shared r/w)
-   │  ├── podcasts
-   │  └── tv
-   └── media
-      ├── audiobooks
-      ├── music
-      ├── pictures
-      ├── podcasts
-      ├── movies
-      └── tv
+├── /srv/
+│  ├── docker/ (for container's configurations)
+│  ├── cache/
+│  └── logs/
+└── /mnt/storage/
+   ├── db/
+   ├── staticfiles/
+   │  ├── icons/
+   │  ├── paperless/
+   │  ├── tandoor_media/
+   │  └── wallpaper/
+   ├── downloads/
+   │  ├── audiobooks/
+   │  ├── movies/
+   │  ├── music/
+   │  ├── paperless/ (SAMBA shared r/w for ingestion)
+   │  ├── podcasts/
+   │  └── tv/
+   └── media/
+      ├── audiobooks/
+      ├── music/
+      ├── pictures/
+      ├── podcasts/
+      ├── movies/
+      └── tv/
 ```
 
 ### Directories may be created with the following cmds
-Please review this script before running it. It is a work in progress and may not run as expected.
+Please review this script before running it. It is a **work in progress and may not run as expected**.
 `cd scripts`
 `chmod +x start.sh`  
 `./start.sh`
 
-### Recursively own the /data directory
-`sudo chown -R $USER:$USER /data`
-`sudo chmod -R a=,a+rX,u+w,g+w /data`
+### Establish Directory and File permissions
+TBD - this may vary based on your existing file system, user provisions, and/or usage of mergerfs or similar tools.
+Recursively own the /mnt/storage directory
+`chown -R $USER:docker /mnt/storage` (the `docker` group is available after Docker installation steps)
+`chmod -R a=,a+rX,u+w,g+w /mnt/storage`
+* tbd: change permission to underlying disks eg. /mnt/disk1
 
 
 ### Docker Compose (and needed files)
@@ -139,20 +142,24 @@ Example files:
 How you configure the apps and their current states. This is separated from the Docker Compose (ie. "setup") as these become specific to how *you* use the services - not how they're installed/maintained.
 
 ### Media Staging (such as magnets)
-`/mnt/storage/downloads`
+`/mnt/storage/downloads/movies`
 
 ### Media Storage (such as Podcasts, Movies, TV Shows, Audiobooks):
 `/mnt/storage/media/movies`
-`/mnt/storage/media/podcasts`
 
-This creates a clear distinction between the files *many* services could use or want and the files those services *just need to access*. Separation presumably allows for alternate backup or hosting mechanisms, as well. It's an attempt to achieve Least Privilege.
+This structure helps achieve Least Privilege by separating concerns as efficiently as possible. Clear organization can also help with backup prioritization.
 
-Nesting the `media` adjacent to `downloads` is suggested via servarr.com as a way to allow **atomic file moves** as opposed to a more intensive/longer **copy+paste** action. Explained [here](https://wiki.servarr.com/docker-guide).
+Examples:
+* `/mnt/storage/downloads/`: qBittorrent should only have access to this directory.
+* `/mnt/storage/`: Radarr has broader access, which allows it to organize files in downloads into media
+* `/mnt/storage/media/movies`: Jellyfin has very specific access to playback-ready movies, but not other media such as Podcasts
+
+Nesting the `media` adjacent to `downloads` is suggested via servarr.com as a way to allow **atomic file moves** as opposed to a more intensive/longer **copy+paste** action. Explained [here](https://wiki.servarr.com/docker-guide). Importantly, I configure these services to **hardlink** finished downloads - this preserves seeding ability while having no effect on storage consumption.
 
 ### Container Roles and Access to Files
 Let's recognize four kinds of Media Server roles containers/apps:
 
-1. A **Curator** whose role is to enable the discovery and selection of Media by an End User. It then delivers a Work Order to the **Acquirer**. It also monitors the Media and ensures it is accurately described and and of desired quality.*Ex. Sonarr, Radarr, Lidarr, Readarr, Ombi*
+1. A **Curator** whose role is to enable the discovery and selection of Media by an End User. It then delivers a Work Order to the **Acquirer**. It also monitors the Media and ensures it is accurately described and and of desired quality. *Ex. Sonarr, Radarr, Lidarr, Readarr, Ombi*
 1. An **Indexer** whose role is to interpret how a Work Order should be completed. It figures out where the Media should come from while negotiating with each supplier. *Ex. Jackett, Prowlaar*
 1. An **Acquirer** whose role is to accept and execute a Work Order to retrieve a specific Media. It then delivers that Media to the **Provider**. *Ex. qBitTorrent, Transmission*
 1. A **Provider** whose role is to provide Media (movies, podcasts, etc) to end users. It is unconcerned with how the Media came to exist and isn't responsible for its quality or description. *Ex. Emby, Plex, Jellyfin*
