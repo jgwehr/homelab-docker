@@ -4624,6 +4624,17 @@ const drive_settings builtin_knowndrives[] = {
     "-v 200,raw48,Pressure_Limit "
     "-v 240,msec24hour32"
   },
+  { "Seagate Exos X18", // tested with ST14000NM000J-2TX103
+      // ST14000NM000J-2TX103
+    "ST1[0246]000NM00[013]J-.*",
+    "", "",
+    "-v 1,raw24/raw32,Raw_Read_Error_Rate "
+    "-v 7,raw24/raw32,Seek_Error_Rate "
+    "-v 18,raw48,Head_Health "
+    "-v 188,raw16,Command_Timeout "
+    "-v 200,raw48,Pressure_Limit "
+    "-v 240,msec24hour32"
+  },
   // new models: ST8000VN0002, ST6000VN0021, ST4000VN000
   //             ST8000VN0012, ST6000VN0031, ST4000VN003
   // tested with ST8000VN0002-1Z8112/ZA13YGNF
