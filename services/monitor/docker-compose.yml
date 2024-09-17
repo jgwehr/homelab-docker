@@ -96,6 +96,7 @@ services:
     
     volumes:
       - /run/udev:/run/udev:ro
+      - ${CONFIGDIR}/scrutiny/smart_drivedb.h:/etc/smart_drivedb.h:z,ro
       - ${CONFIGDIR}/scrutiny:/opt/scrutiny/config
       - ${DBDIR}/scrutiny:/opt/scrutiny/influxdb
 
