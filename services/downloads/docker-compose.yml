@@ -8,8 +8,7 @@ services:
 
   gluetun:
     container_name: gluetun
-    image: ghcr.io/qdm12/gluetun
-    # line above must be uncommented to allow external containers to connect. See https://github.com/qdm12/gluetun/wiki/Connect-a-container-to-gluetun#external-container-to-gluetun
+    image: ghcr.io/qdm12/gluetun:v3.39.0
     
     environment:
       PUID: ${PUID}
@@ -20,6 +19,8 @@ services:
       OPENVPN_USER: ${VPN_USER}
       OPENVPN_PASSWORD: ${VPN_PASSWORD}
 
+      # ProtonVPN Port Forwarding, see https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
+      PORT_FORWARD_ONLY: 'on'
       VPN_PORT_FORWARDING: 'on' #see: https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
       SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
 
