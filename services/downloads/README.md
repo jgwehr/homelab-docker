@@ -20,17 +20,19 @@ I highly recommend TRaSH Guides for setting up these services https://trash-guid
 
 ### Files
 
-### GLuetun VPN
+### Gluetun VPN
 Follow Gluetun's instructions. In my case, I must provide:
 - `VPN_SERVICE_PROVIDER`
 - `VPN_USER`
 - `VPN_PASSWORD`
 - `VPN_HOSTNAMES`
 
+The custom image "gluetun_port_manager" is a simple shell script meant to request the forwarded port from Gluetun (provided by your VPN) and set it as the `Listening Port` within qBittorrent. This is only needed if your VPN randomizes the forwarding port for P2P traffic. It may not perfectly capture all errors or situations. Your mileage may vary. 
+
 
 ### Ports
 
-- `PORT_GLUETUN_CONTROL` - API Access for things like Homepage 
+- `PORT_GLUETUN_CONTROL` - API Access for things like Homepage (and the Gluetun Port Manager) 
 - `PORT_TORRENT_UI`
 - `PORT_PROWLARR_UI`
 - `PORT_SONARR_UI`

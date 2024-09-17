@@ -53,22 +53,18 @@ while true; do
         echo "Debug | PORT_FORWARDED: $PORT_FORWARDED" > /dev/stderr
         echo "Debug | GLUETUN_URL: $GLUETUN_URL" > /dev/stderr
         echo "Unable to reach Gluetun successfully. Check DNS or Container health." > /dev/stderr
-
-        sleep $RECHECK_TIME
-        continue
     
     # Check if the fetched port matches PATTERN (regex)
     elif ! [[ "$PORT_FORWARDED" =~ $PATTERN ]]; then
         echo "Debug | PORT_FORWARDED: $PORT_FORWARDED" > /dev/stderr
         echo "Failed to retrieve a valid port number." > /dev/stderr
         
-        sleep $RECHECK_TIME
-        continue
-        
     # If the current port is different from the forwarded port, update it
     elif [[ "$PORT_CURRENT" != "$PORT_FORWARDED" ]]; then
         echo "Attempting to update Listening Port"
         update_port "$PORT_FORWARDED"
+    
+    # No issues and nothing to do
     else
         echo "Ports match. No changes required"
     fi
