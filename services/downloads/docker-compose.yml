@@ -114,8 +114,8 @@ services:
       - homepage.weight=900
       - homepage.widget.type=qbittorrent
       - homepage.widget.url=http://${SERVER_URL}:${PORT_TORRENT_UI}
-      - homepage.widget.username=${HOMEPAGE_QBITTORENT_USERNAME}
-      - homepage.widget.password=${HOMEPAGE_QBITTORENT_PASSWORD}
+      - homepage.widget.username=${HOMEPAGE_QBITTORRENT_USERNAME}
+      - homepage.widget.password=${HOMEPAGE_QBITTORRENT_PASSWORD}
 
     volumes:
         - ${CONFIGDIR}/qbt:/config
@@ -297,8 +297,8 @@ services:
     environment:
       QBITTORRENT_SERVER: ${SERVER_URL} # IP Address of qbittorrent
       QBITTORRENT_PORT: ${PORT_TORRENT_UI}
-      QBITTORRENT_USER: ${HOMEPAGE_QBITTORENT_USERNAME} # username
-      QBITTORRENT_PASS: ${HOMEPAGE_QBITTORENT_PASSWORD} # password
+      QBITTORRENT_USER: ${HOMEPAGE_QBITTORRENT_USERNAME} # username
+      QBITTORRENT_PASS: ${HOMEPAGE_QBITTORRENT_PASSWORD} # password
 
       GLUETUN_HOST: ${SERVER_URL} # IP or FQDN of gluetun control server
       GLUETUN_PORT: ${PORT_GLUETUN_CONTROL} # port of gluetun control server
