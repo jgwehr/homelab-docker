@@ -277,3 +277,30 @@ services:
           cpus: '1'
           memory: 512M
     restart: unless-stopped
+
+####################
+# Helpers
+####################
+
+  gluetun-qbittorrent-port-manager:
+    container_name: gluetun_port_manager
+    build:
+      context: ./dockerfiles
+      dockerfile: port_manager.dockerfile #Custom build
+
+    depends_on:
+      gluetun:
+        condition: service_healthy
+      qbittorrent:
+        condition: service_started
+
+    environment:
+      QBITTORRENT_SERVER: ${SERVER_URL} # IP Address of qbittorrent
+      QBITTORRENT_PORT: ${PORT_TORRENT_UI}
+      QBITTORRENT_USER: ${HOMEPAGE_QBITTORENT_USERNAME} # username
+      QBITTORRENT_PASS: ${HOMEPAGE_QBITTORENT_PASSWORD} # password
+
+      GLUETUN_HOST: ${SERVER_URL} # IP or FQDN of gluetun control server
+      GLUETUN_PORT: ${PORT_GLUETUN_CONTROL} # port of gluetun control server
+
+      RECHECK_TIME: 600 # number of seconds between checks to gluetun server for port
