@@ -18,6 +18,8 @@ services:
     ports:
       - ${PORT_CADDY_HTTP}:80
       - ${PORT_CADDY_HTTPS}:443
+      - ${PORT_CADDY_HTTPS}:443/udp
+      - ${PORT_CADDY_ADMIN}:2019
 
     environment:
       LOG_FILE: ${LOGDIR}/caddy/access.log
@@ -38,8 +40,8 @@ services:
 
     volumes:
       - ./staticconfig/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
-      - ${CONFIGDIR}:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
-      - ${CONFIGDIR}:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
+      - ${CONFIGDIR}/caddy/data:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
+      - ${CONFIGDIR}/caddy/config:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
       - ${STATICDIR}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
 
     deploy:
