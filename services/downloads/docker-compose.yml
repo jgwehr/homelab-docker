@@ -21,7 +21,7 @@ services:
 
       # ProtonVPN Port Forwarding, see https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
       PORT_FORWARD_ONLY: 'on'
-      VPN_PORT_FORWARDING: 'on' #see: https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
+      VPN_PORT_FORWARDING: 'on'
       SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
 
     ports:
@@ -305,3 +305,6 @@ services:
       GLUETUN_PORT: ${PORT_GLUETUN_CONTROL} # port of gluetun control server
 
       RECHECK_TIME: 600 # number of seconds between checks to gluetun server for port
+
+    restart: unless-stopped
+    
