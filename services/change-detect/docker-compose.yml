@@ -44,7 +44,7 @@ services:
 
   chrome:
     container_name: chrome
-    image: selenium/standalone-chrome:4.11
+    image: selenium/standalone-chrome:4.28.1
 
     ports:
       - ${PORT_WEBDRIVER}:4444
