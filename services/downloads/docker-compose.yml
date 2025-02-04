@@ -252,7 +252,7 @@ services:
 
   podgrab:
     container_name: podgrab
-    image: ghcr.io/akhilrex/podgrab
+    image: ghcr.io/akhilrex/podgrab:latest
 
     ports:
       - ${PORT_PODGRAB}:8080

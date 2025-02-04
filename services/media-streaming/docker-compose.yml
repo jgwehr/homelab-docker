@@ -8,7 +8,7 @@ services:
 
   jellyfin:
     container_name: jellyfin
-    image: jellyfin/jellyfin
+    image: jellyfin/jellyfin:latest
       
     user: ${PUID}:${PGID}
     group_add:
