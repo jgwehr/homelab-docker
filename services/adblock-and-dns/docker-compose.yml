@@ -11,7 +11,7 @@ services:
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
     container_name: pihole
     hostname: pihole
-    image: pihole/pihole:latest
+    image: pihole/pihole:2024.07.0
     
     depends_on:
       - unbound
@@ -70,7 +70,7 @@ services:
 
   unbound:
     container_name: unbound
-    image: mvance/unbound:latest #for raspberry-pi: mvance/unbound-rpi:latest
+    image: mvance/unbound:1.20.0 #for raspberry-pi: mvance/unbound-rpi:latest
 
     networks:
       dns-net:
