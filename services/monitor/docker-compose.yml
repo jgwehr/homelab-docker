@@ -37,7 +37,7 @@ services:
 
   diun:
     container_name: diun
-    image: ghcr.io/crazy-max/diun:4.25
+    image: ghcr.io/crazy-max/diun:4.28
 
     networks:
       - socky_proxy-net
