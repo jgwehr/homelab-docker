@@ -34,24 +34,23 @@ The custom image "gluetun_port_manager" is a simple shell script meant to reques
 
 - `PORT_GLUETUN_CONTROL` - API Access for things like Homepage (and the Gluetun Port Manager) 
 - `PORT_TORRENT_UI`
+- `PORT_TORRENT_TCP`
+- `PORT_TORRENT_UDP`
+- `PORT_PODGRAB`
 - `PORT_PROWLARR_UI`
 - `PORT_SONARR_UI`
 - `PORT_RADARR_UI`
+- `PORT_YOUTUBE`
 
 ### URLs
 All of these are only available LOCALLY. For any remote "requests" I use Jellyseerr
 - `DOMAIN` - universal. your public facing domain name
 - `SERVER_URL` - universal. your public facing domain name
-- `PORT_GLUETUN_CONTROL` - provides API access
-- `PORT_PROWLARR_UI` - provides web access
-- `PORT_TORRENT_UI` - provides web access
-- `PORT_RADARR_UI` - provides web access
-- `PORT_SONARR_UI` - provides web access
-- `PORT_PODGRAB` - provides web access
 
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `MEDIADIR` - universal. where media files (including downloads) are organized
+- `DOWNLOADDIR` universal. Some apps will create content here and move/link to `MEDIADIR`. This isn't required. It's up to you (and the apps themselves) how sub directories are organized. For example, Podgrab will always go straight to `MEDIADIR` because it will only ever manage Podcasts. Metube's first stop is `DOWNLOADDIR`, though, as it can create different *kinds* of media. The *arr stack uses `DOWNLOADDIR` for different reasons: integration with qBittorrent *and* library management.
 
 
 ## Backups
