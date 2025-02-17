@@ -25,14 +25,14 @@ services:
       - ./staticconfig/tandoor.env
 
     environment:
-      TIMEZONE: ${TZ}
+      TZ: ${TZ}
 
     labels:
       - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Recipes and Meal Planning
-      - homepage.icon=tandoorrecipes
       - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}
+      - homepage.icon=tandoor-recipes
 
     volumes:
       - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
@@ -40,8 +40,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 512M
+          cpus: '2'
+          memory: 1024M
     restart: unless-stopped
 
   tandoor_db:
@@ -58,6 +58,7 @@ services:
       - homepage.group=Back End
       - homepage.name=Tandoor | Postgres DB
       - homepage.icon=postgres
+      - homepage.weight=800
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
@@ -79,7 +80,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 256M
     restart: unless-stopped
 
 networks:

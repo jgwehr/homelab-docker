@@ -37,7 +37,7 @@ services:
 
   diun:
     container_name: diun
-    image: ghcr.io/crazy-max/diun:4.25
+    image: ghcr.io/crazy-max/diun:4.28
 
     networks:
       - socky_proxy-net
@@ -147,7 +147,7 @@ services:
 
   uptime-kuma:
     container_name: uptime_kuma
-    image: louislam/uptime-kuma
+    image: louislam/uptime-kuma:latest
     
     networks:
       - caddy-net # provides access for the reverse proxy

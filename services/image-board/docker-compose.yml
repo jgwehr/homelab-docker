@@ -8,7 +8,7 @@ services:
 
   pinry:
     container_name: pinry
-    image: getpinry/pinry
+    image: getpinry/pinry:latest
 
     networks:
       - caddy-net

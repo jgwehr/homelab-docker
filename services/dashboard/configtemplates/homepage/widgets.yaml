@@ -2,10 +2,13 @@
     label: System
     cpu: true
     cputemp:  true
+    tempmin: 0
+    tempmax: 90
     uptime: true
     memory: true
     disk: /
-    units: imperial
+    units: metric
+    network: true
 
 - resources:
     label: Storage
