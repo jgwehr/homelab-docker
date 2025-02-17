@@ -10,7 +10,7 @@ services:
     container_name: caddy
     build:
       context: ./dockerfiles
-      dockerfile: caddy.dockerfile #Custom build which uses duckdns
+      dockerfile: caddy.dockerfile #Custom build which uses duckdns. Control image version in this file
 
     networks:
       - caddy-net
@@ -44,11 +44,6 @@ services:
       - ${CONFIGDIR}/caddy/config:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
       - ${STATICDIR}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
 
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
     healthcheck:
       test: ["CMD", "caddy", "version"]
     restart: unless-stopped
@@ -61,6 +56,9 @@ services:
   duckdns:
     container_name: duckdns
     image: ghcr.io/linuxserver/duckdns
+
+    networks:
+      - caddy-net
 
     environment:
       PUID: ${PUID}

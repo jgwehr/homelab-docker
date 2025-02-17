@@ -3,13 +3,7 @@
   #debug # this is optional; makes Caddy log more details
 
   admin 0.0.0.0:2019
-  
-  order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
-  crowdsec {
-    api_url http://crowdsec:8080/ # the URL where your CrowdSec LAPI can be reached. Caddy connects directly, so use the default port 8080
-    api_key {$BOUNCER_CADDY_TOKEN} # the secret API key for the bouncer to authenticate against LAPI
-  }  
-    
+      
 }
 
 ############
@@ -17,31 +11,28 @@
 ############
 (headers) {
 	header {
-        -server #anonymizes Caddy
+    -server #anonymizes Caddy
 
-        # disable FLoC tracking
-        Permissions-Policy interest-cohort=()
+    # disable FLoC tracking
+    Permissions-Policy interest-cohort=()
 
-        #enable HSTS
-        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    # enable HSTS
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 
-        Content-Security-Policy "upgrade-insecure-requests"
-        header Location http:// https://
+    # Docs | Content Security Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+    # Docs | Referrer Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 
-        X-Content-Type-Options "nosniff" # disable clients from sniffing the media type
-        X-XSS-Protection "1; mode=block"
-        Referrer-Policy "strict-origin-when-cross-origin; no-referrer-when-downgrade"
+    X-Content-Type-Options "nosniff" # disable clients from sniffing the media type
 
-        # clickjacking protection
-        ?X-Frame-Options DENY
+    # clickjacking protection
+    X-Frame-Options DENY
 
-        header_up X-Real-IP {vars.realip}
+    header_up X-Real-IP {vars.realip}
 	}
 }
 
 (main) {
-  crowdsec
-
+  
   respond /robots.txt 200 {
     body "User-agent: *
     Disallow: /
@@ -68,6 +59,9 @@
   }
 }
 
+############
+# Routing  #
+############
 
 # import *.caddy ## try this while storing individual sites in *.caddy files
 
@@ -86,8 +80,9 @@ localhost {
     dns duckdns {$DUCKDNS_API_TOKEN}
   }
 
+  respond "Look at me"
   # System Status page
-  reverse_proxy uptime-kuma:3001
+  reverse_proxy /status/* uptime-kuma:3001
 }
 
 www.{$DOMAIN} {

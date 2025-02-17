@@ -6,53 +6,53 @@ services:
 # Security
 ####################
 
-  crowdsec:
-    container_name: crowdsec
-    image: crowdsecurity/crowdsec:v1.6.2
+  # crowdsec:
+  #   container_name: crowdsec
+  #   image: crowdsecurity/crowdsec:v1.6.5
     
-    networks:
-      - caddy-net # provides access for the reverse proxy
-      - socky_proxy-net
+  #   networks:
+  #     - caddy-net # provides access for the reverse proxy
+  #     - socky_proxy-net
 
-    ports:
-      - ${PORT_CROWDSEC_API}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
-      - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
+  #   ports:
+  #     - ${PORT_CROWDSEC_API}:8080 # exposes a REST API for bouncers, cscli and communication between crowdsec agent and local api
+  #     - ${PORT_CROWDSEC_METRICS}:6060 #exposes prometheus metrics on /metrics and pprof debugging metrics on /debug
 
-    environment:
-      TZ: ${TZ}
-      GID: ${PGID}
-      COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/jellyseerr crowdsecurity/pgsql crowdsecurity/endlessh schiz0phr3ne/sonarr schiz0phr3ne/radarr schiz0phr3ne/prowlarr"
-      DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
+  #   environment:
+  #     TZ: ${TZ}
+  #     GID: ${PGID}
+  #     COLLECTIONS: "crowdsecurity/linux crowdsecurity/caddy crowdsecurity/linux-lpe timokoessler/uptime-kuma LePresidente/jellyseerr crowdsecurity/pgsql crowdsecurity/endlessh schiz0phr3ne/sonarr schiz0phr3ne/radarr schiz0phr3ne/prowlarr"
+  #     DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy. Needed for the config.yaml direction to scan other docker containers
 
-    volumes:
-      - ./staticconfig/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
-      - crowdsec-config:/etc/crowdsec/
-      - crowdsec-db:/var/lib/crowdsec/data/
-    #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
+  #   volumes:
+  #     - ./staticconfig/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+  #     - crowdsec-config:/etc/crowdsec/
+  #     - crowdsec-db:/var/lib/crowdsec/data/
+  #   #  - ${CONFIGDIR}/crowdsec:/etc/crowdsec/ # This is my preferred way to get things working, but currently doesn't work
 
-      ## Log Files
-      - /var/log/auth.log:/logs/auth.log:ro
-      - /var/log/syslog.log:/logs/syslog.log:ro
+  #     ## Log Files
+  #     - /var/log/auth.log:/logs/auth.log:ro
+  #     - /var/log/syslog.log:/logs/syslog.log:ro
       
-    labels:
-      - diun.enable=true
-      - homepage.group=Wild West
-      - homepage.name=Crowdsec
-      - homepage.icon=crowdsec
-      - homepage.href=https://app.crowdsec.net/login?next=/instances
-      - homepage.description=Crowd-sourced Intrusion Prevention
-      - homepage.weight=200
+  #   labels:
+  #     - diun.enable=true
+  #     - homepage.group=Wild West
+  #     - homepage.name=Crowdsec
+  #     - homepage.icon=crowdsec
+  #     - homepage.href=https://app.crowdsec.net/login?next=/instances
+  #     - homepage.description=Crowd-sourced Intrusion Prevention
+  #     - homepage.weight=200
 
 
-    healthcheck:
-      test: ["CMD", "cscli", "version"]
+  #   healthcheck:
+  #     test: ["CMD", "cscli", "version"]
 
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-    restart: always
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1'
+  #         memory: 128M
+  #   restart: always
 
   endlessh:
     image: ghcr.io/linuxserver/endlessh:latest
