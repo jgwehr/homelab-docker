@@ -83,6 +83,7 @@ services:
       - homepage.group=Back End
       - homepage.name=Paperless | Redis
       - homepage.icon=redis
+      - homepage.weight=850
 
     volumes:
       - ${DBDIR}/paperless-redis:/data
@@ -116,6 +117,7 @@ services:
       - homepage.group=Back End
       - homepage.name=Paperless | Postgres DB
       - homepage.icon=postgres
+      - homepage.weight=800
 
     volumes:
       - ${DBDIR}/paperless-postgres:/var/lib/postgresql/data

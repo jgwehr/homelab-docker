@@ -33,9 +33,6 @@ services:
       - homepage.name=Recipes and Meal Planning
       - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}
       - homepage.icon=tandoor-recipes
-      - homepage.widget.type=tandoor
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_TANDOOR}
-      - homepage.widget.key={HOMEPAGE_TANDOOR_API}
 
     volumes:
       - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
@@ -43,8 +40,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 512M
+          cpus: '2'
+          memory: 1024M
     restart: unless-stopped
 
   tandoor_db:
@@ -61,6 +58,7 @@ services:
       - homepage.group=Back End
       - homepage.name=Tandoor | Postgres DB
       - homepage.icon=postgres
+      - homepage.weight=800
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
@@ -82,7 +80,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 256M
     restart: unless-stopped
 
 networks:
