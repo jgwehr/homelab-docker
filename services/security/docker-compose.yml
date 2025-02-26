@@ -67,8 +67,8 @@ services:
     command:
       - -geoip_supplier=${ESSH_GEOIP} #Supplier to obtain Geohash of IPs. Possible values are "off", "ip-api", "max-mind-db" (default "off")
       - -interval_ms=${ESSH_MSDELAY:-1000} # Message millisecond delay (default 1000)
-      - -max_clients=${ESSH_MAXCLIENTS:-4096} # Maximum number of clients (default 4096)
       - -logtostderr  # log to standard error instead of files
+      - -max_clients=${ESSH_MAXCLIENTS:-4096} # Maximum number of clients (default 4096)
       - -v=1 # log level for V logs
       #- -enable_prometheus
 
@@ -84,22 +84,22 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 32M  
+          memory: 64M  
     restart: unless-stopped
 
 
-volumes:
-  crowdsec-config:
-    external: true
-  crowdsec-db:
-    external: true
+# volumes:
+#   crowdsec-config:
+#     external: true
+#   crowdsec-db:
+#     external: true
 
 
 networks:
-  caddy-net:
-    name: caddy-net
-    external: true
+  # caddy-net:
+  #   name: caddy-net
+  #   external: true
   
-  socky_proxy-net:
-    name: socky_proxy-net
-    external: true
+  # socky_proxy-net:
+  #   name: socky_proxy-net
+  #   external: true
