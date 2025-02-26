@@ -55,30 +55,28 @@ services:
   #   restart: always
 
   endlessh:
-    image: ghcr.io/linuxserver/endlessh:latest
+    image: ghcr.io/shizunge/endlessh-go:latest
     container_name: endlessh
 
     ports:
       - ${PORT_SSHPROTECT:-22}:2222
     
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
       TZ: ${TZ}
-      MSDELAY: ${ESSH_MSDELAY:-10000} #optional
-      MAXLINES: ${ESSH_MAXLINES:-32} #optional
-      MAXCLIENTS: ${ESSH_MAXCLIENTS:-4096} #optional
-      LOGFILE: ${DEBUG_LOG:-false} #optional. By default, the app logs to container log. If this is set to true, the log will be output to file under /config/logs/endlessh (/config needs to be mapped).
-      BINDFAMILY: ${ESSH_BINDFAMILY} #optional
 
-    #volumes:
-    #  - ${CONFIGDIR}/endlessh:/config #Required if LOGFILE is set to true.
+    command:
+      - -geoip_supplier=${ESSH_GEOIP} #Supplier to obtain Geohash of IPs. Possible values are "off", "ip-api", "max-mind-db" (default "off")
+      - -interval_ms=${ESSH_MSDELAY:-1000} # Message millisecond delay (default 1000)
+      - -max_clients=${ESSH_MAXCLIENTS:-4096} # Maximum number of clients (default 4096)
+      - -logtostderr  # log to standard error instead of files
+      - -v=1 # log level for V logs
+      #- -enable_prometheus
 
     labels:
       - diun.enable=true
       - homepage.group=Wild West
       - homepage.name=EndlessH
-      - homepage.icon=endlessh
+      - homepage.icon=endless-light
       - homepage.description=SSH Tarpit
       - homepage.weight=900
 
