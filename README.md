@@ -23,7 +23,7 @@ The following apps / technologies are grouped into `./services/`.
 | adblock-and-dns |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/pi-hole.png" width="32" alt="Pihole" /> Pihole <img src="https://github.com/walkxcode/dashboard-icons/blob/main/png/pi-hole-unbound.png" width="32" alt="Unbound" /> Unbound |
 | change-detect |  | <img src="https://github.com/dgtlmoon/changedetection.io/blob/d5fd22f693d398b9f23a84469b2459b59b02b453/changedetectionio/static/favicons/android-chrome-192x192.png" width="32" alt="ChangeDetection.io"> ChangeDetection.io <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/chrome.png" width="32" alt="Chrome" /> Chrome |
 | dashboard |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/homepage.png" width="32" alt="Homepage" /> Homepage |
-| downloads |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/gluetun.png" width="32" alt="Gluetun" /> Gluetun <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/lidarr.png" width="32" alt="Lidarr" /> Lidarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar + PodGrab |
+| downloads |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/gluetun.png" width="32" alt="Gluetun" /> Gluetun <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/lidarr.png" width="32" alt="Lidarr" /> Lidarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/metube.png" width="32" alt="Metube" /> Metube + PodGrab |
 | events |  | <img src="https://github.com/lukevella/rallly/blob/main/apps/web/public/favicon-32x32.png?raw=true" width="32" alt="Rallly"> Rallly <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
 | gloomhaven |  | <img src="https://github.com/Lurkars/gloomhavensecretariat/blob/main/src/assets/icons/icon-masked-72x72.png" width="32" alt="Gloomhaven Secretariat" />Gloomhaven Secretariat |
 | infra | Required | docker socket proxy |
@@ -34,7 +34,7 @@ The following apps / technologies are grouped into `./services/`.
 | paperless |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Paperless ngx" /> Paperless-ngx <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
 | public | Reverse Proxy and DDNS | <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS |
 | recipes |  | <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/svg/tandoor-recipes.svg" width="32" alt="Tandoor Recipes" /> Tandoor Recipes <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
-| security | Run this if you're running `public` | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec + Endlessh |
+| security | Run this if you're running `public` | ~~<img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec~~ + Endlessh |
 
 ### Explanation
 Groupings are chosen based on context and dependencies. Most Services "stacks" should work fine without any other services (some exceptions exist) - allowing you to take from this repo what you care about and ignore the rest.
@@ -100,7 +100,8 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
    │  ├── music/
    │  ├── paperless/ (SAMBA shared r/w for ingestion)
    │  ├── podcasts/
-   │  └── tv/
+   │  ├── tv/
+   │  └── youtube/
    └── media/
       ├── audiobooks/
       ├── music/

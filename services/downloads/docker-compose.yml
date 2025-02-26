@@ -291,13 +291,14 @@ services:
       UID: ${PUID}
       GID: ${PGID}
       TZ: ${TZ}
-      
+
       # There are quite a lot of interesting config options: https://github.com/alexta69/metube
     
     ports:
       - ${PORT_YOUTUBE}:8081
 
     labels:
+      - diun.enable=true
       - homepage.group=Downloads
       - homepage.name=Youtube Downloader
       - homepage.icon=metube
