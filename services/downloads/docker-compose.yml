@@ -280,6 +280,38 @@ services:
     restart: unless-stopped
 
 ####################
+# YouTube Downloader
+####################
+
+  metube:
+    container_name: metube
+    image: ghcr.io/alexta69/metube:latest
+
+    environment:
+      UID: ${PUID}
+      GID: ${PGID}
+      TZ: ${TZ}
+
+      # There are quite a lot of interesting config options: https://github.com/alexta69/metube
+    
+    ports:
+      - ${PORT_YOUTUBE}:8081
+
+    labels:
+      - diun.enable=true
+      - homepage.group=Downloads
+      - homepage.name=Youtube Downloader
+      - homepage.icon=metube
+      - homepage.weight=1000
+      - homepage.href=http://${SERVER_URL}:${PORT_YOUTUBE}
+
+
+    volumes:
+      - ${DOWNLOADDIR}/youtube:/downloads
+
+    restart: unless-stopped
+
+####################
 # Helpers
 ####################
 
