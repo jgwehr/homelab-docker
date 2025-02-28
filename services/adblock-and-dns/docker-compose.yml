@@ -11,7 +11,7 @@ services:
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
     container_name: pihole
     hostname: pihole
-    image: pihole/pihole:2024.07.0
+    image: pihole/pihole:2025.02.7
     
     depends_on:
       - unbound
@@ -30,15 +30,14 @@ services:
 
     environment:
       TZ: ${TZ}
-      WEBPASSWORD: ${PIHOLE_PASSWORD}
-      FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
-      PIHOLE_DNS_: 172.20.0.3#5053
-      DHCP_ACTIVE: ${PIHOLE_DHCP_ACTIVE:-false}
-      PIHOLE_DOMAIN: ${PIHOLE_DOMAIN:-lan}
-      DNSMASQ_LISTENING: 'all'
 
-      TEMPERATUREUNIT: ${PIHOLE_TEMPUNIT:-c}
-      WEBTHEME: ${PIHOLE_WEBTHEME:-default-dark}
+      FTLCONF_dhcp_active: ${PIHOLE_DHCP_ACTIVE:-false}
+      FTLCONF_dns_listeningMode: 'all'
+      #FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
+      FTLCONF_dns_upstreams: 172.20.0.3#5053 # this is hardcoded in the docker-compose
+      FTLCONF_dns_domain: ${PIHOLE_DOMAIN:-lan}
+      FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD}
+      FTLCONF_webserver_interface_theme: ${PIHOLE_WEBTHEME:-default-dark}
 
     labels:
       - diun.enable=true
@@ -53,7 +52,7 @@ services:
 
     volumes:
       - ${CONFIGDIR}/pihole/pihole:/etc/pihole
-      - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
+    #  - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
       - ${CONFIGDIR}/pihole/resolv.conf:/etc/resolv.conf
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
 
