@@ -50,6 +50,7 @@ services:
       - homepage.href=http://${SERVER_URL}:${PORT_PIHOLE_WEB}/admin
       - homepage.weight=100
       - homepage.widget.type=pihole
+      - homepage.widget.version=6
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
       - homepage.widget.key=${HOMEPAGE_PIHOLE_API}
 
