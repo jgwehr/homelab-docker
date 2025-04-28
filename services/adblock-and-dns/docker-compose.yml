@@ -11,7 +11,7 @@ services:
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
     container_name: pihole
     hostname: pihole
-    image: pihole/pihole:2025.02.7
+    image: ghcr.io/pi-hole/pihole:2025.04.0
     
     depends_on:
       - unbound
@@ -29,12 +29,15 @@ services:
     #  - ${PORT_PIHOLE_DHCP:-67}:67/udp # Only required if you are using Pi-hole as your DHCP server
 
     environment:
+      PIHOLE_UID: ${PUID}
+      PIHOLE_GID: ${PGID}
       TZ: ${TZ}
 
       FTLCONF_dhcp_active: ${PIHOLE_DHCP_ACTIVE:-false}
       FTLCONF_dns_listeningMode: 'all'
       #FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
-      FTLCONF_dns_upstreams: 172.20.0.3#5053 # this is hardcoded in the docker-compose
+      FTLCONF_dns_revServers: 172.20.0.3#5053 # this is hardcoded in the docker-compose
+      # FTLCONF_dns_upstreams: 172.20.0.3#5053 # this is hardcoded in the docker-compose
       FTLCONF_dns_domain: ${PIHOLE_DOMAIN:-lan}
       FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD}
       FTLCONF_webserver_interface_theme: ${PIHOLE_WEBTHEME:-default-dark}
