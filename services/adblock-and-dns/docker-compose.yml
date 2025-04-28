@@ -79,6 +79,7 @@ services:
 
       PRIMARY: http://${SERVER_URL}:${PORT_PIHOLE_WEB}|${PIHOLE_PASSWORD} # http://ph1.example.com|password
       REPLICAS: ${PIHOLE_REPLICAS}
+      FULL_SYNC: true # see project help if you want specific settings only
 
     deploy:
       resources:
