@@ -21,7 +21,7 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
       LOG_LEVEL: 'debug'
-      HOMEPAGE_ALLOWED_HOSTS: ${SERVER_URL}:${PORT_DASH_HTTP},${HOST_NAME}.${HOST_DOMAIN}:81
+      HOMEPAGE_ALLOWED_HOSTS: ${SERVER_URL}:${PORT_DASH_HTTP},${HOST_NAME}.${HOST_DOMAIN}:${PORT_DASH_HTTP}
 
     volumes:
       - ${CONFIGDIR}/homepage:/app/config # Make sure your local config directory exists
