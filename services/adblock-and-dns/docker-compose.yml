@@ -35,8 +35,7 @@ services:
 
       FTLCONF_dhcp_active: ${PIHOLE_DHCP_ACTIVE:-false}
       FTLCONF_dns_listeningMode: 'all'
-      #FTLCONF_LOCAL_IPV4: ${FTLCONF_LOCAL_IPV4}
-      FTLCONF_dns_revServers: 172.20.0.3#5053 # this is hardcoded in the docker-compose
+      FTLCONF_dns_revServers: 172.20.0.3#5053 # this address is hardcoded in the unbound container
       # FTLCONF_dns_upstreams: 172.20.0.3#5053 # this is hardcoded in the docker-compose
       FTLCONF_dns_domain: ${PIHOLE_DOMAIN:-lan}
       FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD}
@@ -69,6 +68,22 @@ services:
           memory: 256M
     healthcheck:
       test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+    restart: unless-stopped
+
+  nebula-sync:
+    container_name: nebula-sync
+    image: ghcr.io/lovelaze/nebula-sync:latest
+
+    environment:
+      TZ: ${TZ}
+
+      PRIMARY: http://${SERVER_URL}:${PORT_PIHOLE_WEB}|${PIHOLE_PASSWORD} # http://ph1.example.com|password
+      REPLICAS: ${PIHOLE_REPLICAS}
+
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     restart: unless-stopped
 
   unbound:
