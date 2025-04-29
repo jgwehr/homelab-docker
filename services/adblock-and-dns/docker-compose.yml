@@ -55,7 +55,6 @@ services:
 
     volumes:
       - ${CONFIGDIR}/pihole/pihole:/etc/pihole
-    #  - ${CONFIGDIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
       - ${CONFIGDIR}/pihole/resolv.conf:/etc/resolv.conf
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
 
@@ -80,12 +79,21 @@ services:
       PRIMARY: http://${SERVER_URL}:${PORT_PIHOLE_WEB}|${PIHOLE_PASSWORD} # http://ph1.example.com|password
       REPLICAS: ${PIHOLE_REPLICAS}
       FULL_SYNC: true # see project help if you want specific settings only
+      CRON: '0 1 */1 * *' # if no value, sync runs once then container shuts down
+      CLIENT_RETRY_DELAY_SECONDS: 120
+    
+    labels:
+      - diun.enable=true
+      - homepage.group=Network
+      - homepage.name=Nebula Sync
+      - homepage.description=Keeps Pi-Holes in sync
+      - homepage.weight=199
 
     deploy:
       resources:
         limits:
           memory: 256M
-    restart: unless-stopped
+    restart: no
 
   unbound:
     container_name: unbound
@@ -100,6 +108,7 @@ services:
       - homepage.group=Network
       - homepage.name=Unbound
       - homepage.icon=pi-hole-unbound
+      - homepage.weight=199
 
     volumes:
       - ${CONFIGDIR}/unbound:/opt/unbound/etc/unbound

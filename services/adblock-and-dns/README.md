@@ -6,7 +6,7 @@
 
 ## Dependencies
 
-- My Pi-hole setup depends on Unbound for DNS resolution. However, this isn't required. You can choose to use any other DNS service instead. Remove or update `PIHOLE_DNS_`. If removed, modify via UI.
+- My Pi-hole setup depends on Unbound for DNS resolution. However, this isn't required. You can choose to use any other DNS service instead. Follow Pi-Hole's instructions. But, generally, this means removing `FTLCONF_dns_revServers` and configuring `FTLCONF_dns_upstreams`
 
 
 ## Environment and Configuration
