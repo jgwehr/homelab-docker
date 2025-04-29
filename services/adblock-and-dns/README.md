@@ -2,10 +2,11 @@
 
 - https://github.com/pi-hole/pi-hole
 - https://github.com/MatthewVance/unbound-docker
+- https://github.com/lovelaze/nebula-sync
 
 ## Dependencies
 
-- My Pi-hole setup depends on Unbound for DNS resolution. However, this isn't required. You can choose to use any other DNS service instead. Remove or update `PIHOLE_DNS_`. If removed, modify via UI.
+- My Pi-hole setup depends on Unbound for DNS resolution. However, this isn't required. You can choose to use any other DNS service instead. Follow Pi-Hole's instructions. But, generally, this means removing `FTLCONF_dns_revServers` and configuring `FTLCONF_dns_upstreams`
 
 
 ## Environment and Configuration
@@ -27,14 +28,14 @@
 - `SERVER_URL` - universal. your internal url
 
 ### Functionality
-- I've had really good luck with Orbital Sync when running 2+ Pi-Holes
 
-- `PIHOLE_PASSWORD` - Generate a password with something like `openssl rand -base64 32`. Used to login to the UI.
-- `FTLCONF_LOCAL_IPV4` - Most likely your local host ip, same as `SERVER_URL` 
+- `PIHOLE_PASSWORD` - Used for both accessing the Pi-Hole web UI but behind the scenes for Nebula Sync.
 - `PIHOLE_DHCP_ACTIVE` - I don't use the DHCP functionality, please refer to Pi-hole documentation if you want to use this.
 - `PIHOLE_DOMAIN` - Not super useful unless you use DHCP
-- `TEMPERATUREUNIT`
 - `PIHOLE_WEBTHEME`
+
+#### Nebula Sync
+This is only needed if you're running two or more Pi-Holes. And, it's only needed on a single host. It's goal is to sync settings across all targeted Pi-Holes.
 
 
 ### Data and Backups
