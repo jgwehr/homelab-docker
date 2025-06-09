@@ -23,7 +23,7 @@ services:
       #   0 - revoke access
       #   1 - grant access
       CONTAINERS: 1 # crowdsec, diun, homepage. dozzle
-      IMAGES: 1 # diun
+      IMAGES: 1 # diun, cup
       INFO: 1 # crowdsec
 
     labels:
