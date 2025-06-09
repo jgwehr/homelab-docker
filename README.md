@@ -89,27 +89,33 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
 │  └── logs/
 └── /mnt/storage/
    ├── db/
-   ├── staticfiles/
-   │  ├── icons/
-   │  ├── paperless/
-   │  ├── tandoor_media/
-   │  └── wallpaper/
+   ├── documents/
+   │  └── paperless/
    ├── downloads/
    │  ├── audiobooks/
    │  ├── movies/
    │  ├── music/
-   │  ├── paperless/ (SAMBA shared r/w for ingestion)
    │  ├── podcasts/
    │  ├── tv/
    │  └── youtube/
-   └── media/
-      ├── audiobooks/
-      ├── music/
-      ├── pictures/
-      ├── podcasts/
-      ├── movies/
-      └── tv/
+   ├── media/
+   |  ├── audiobooks/
+   |  ├── music/
+   |  ├── pictures/
+   |  ├── podcasts/
+   |  ├── movies/
+   |  └── tv/
+   ├── photos/
+   ├── staticfiles/
+   │  ├── icons/
+   │  ├── tandoor_media/
+   │  └── wallpaper/
+   └── upload/
+      ├── paperless/ (SAMBA shared r/w for ingestion)
+      └── photos/ (SAMBA shared r/w for ingestion)
 ```
+
+Read more about the physical disks and filesystems: https://github.com/jgwehr/homelab-docker/wiki/Protected-Storage-(ZFS)
 
 ### Directories may be created with the following cmds
 Please review this script before running it. It is a **work in progress and may not run as expected**.
