@@ -1,0 +1,23 @@
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/nvme0n1p2 during installation
+UUID=29d4764d-a86b-4804-bc2e-6d65fc862466 /               ext4    errors=remount-ro 0       1
+# /boot/efi was on /dev/nvme0n1p1 during installation
+/swapfile                                 none            swap    sw              0       0
+UUID=2EF8-1615 /boot/efi vfat umask=0077 0 1
+
+
+# MergerFS Drives (Hearts)
+/dev/disk/by-id/ata-drive1_id-part1			/mnt/disk1	ext4 defaults 0 0
+/dev/disk/by-id/ata-drive2_id-part1			/mnt/disk2	ext4 defaults 0 0
+
+# SnapRaid Parity
+/dev/disk/by-id/ata-drive3_id-part1		/mnt/parity1	ext4 defaults 0 0
+
+# MergerFS merging
+/mnt/disk*:/mnt/zfspool1 /mnt/storage fuse.mergerfs defaults,nonempty,use_ino,cache.files=partial,moveonenospc=true,category.create=epmfs,dropcacheonclose=true,minfreespace=200G,fsname=mergerfs 0 0
