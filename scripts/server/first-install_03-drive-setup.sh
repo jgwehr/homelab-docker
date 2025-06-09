@@ -39,6 +39,10 @@ mkdir -p media/{audiobooks,movies,music,podcasts,tv}
 mkdir -p staticfiles/{icons,tandoor_media,wallpaper}
 mkdir -p upload/{paperless,photos}
 
+# take onwership over this folders
+sudo chown -R $USER:$USER /mnt/storage
+sudo chmod -R a=,a+rX,u+w,g+w /mnt/storage
+
 
 cd /opt/docker
 git clone https://github.com/jgwehr/homelab-docker.git homelab
