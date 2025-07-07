@@ -99,16 +99,15 @@ mkdir -p $varBackupDir/$varDate/gluetun
 cp -rpi $varConfigDir/gluetun/servers.json $varBackupDir/$varDate/gluetun
 printf "[###########       ] 11/18\r"
 
-mkdir -p $varBackupDir/$varDate/pihole && cp -rpi $varConfigDir/pihole $varBackupDir/$varDate
+mkdir -p $varBackupDir/$varDate/pihole-unbound && cp -rpi $varConfigDir/pihole-unbound $varBackupDir/$varDate
 # the below databases are very large and can be rebuilt
-rm $varBackupDir/$varDate/pihole/pihole/gravity.db
-rm $varBackupDir/$varDate/pihole/pihole/gravity_old.db
-rm $varBackupDir/$varDate/pihole/pihole/pihole-FTL.db
+#ideally, simply run a teleport.
+rm $varBackupDir/$varDate/pihole/etc-pihole/gravity.db
+rm $varBackupDir/$varDate/pihole/etc-pihole/gravity_old.db
+rm $varBackupDir/$varDate/pihole/etc-pihole/pihole-FTL.db
+rm $varBackupDir/$varDate/pihole/etc-pihole/pihole-FTL.db-wal
+rm $varBackupDir/$varDate/pihole/etc-pihole/pihole-FTL.db-shm
 printf "[############      ] 12/18\r"
-
-mkdir -p $varBackupDir/$varDate/pinry
-cp -rpi $varConfigDir/pinry/*.* $varBackupDir/$varDate/pinry
-printf "[#############     ] 13/18\r"
 
 mkdir -p $varBackupDir/$varDate/podgrab
 cp -rpi $varConfigDir/podgrab/podgrab.db $varBackupDir/$varDate/podgrab
@@ -121,9 +120,6 @@ printf "[###############   ] 15/18\r"
 
 mkdir -p $varBackupDir/$varDate/scrutiny && cp -rpi $varConfigDir/scrutiny $varBackupDir/$varDate
 printf "[################  ] 16/18\r"
-
-mkdir -p $varBackupDir/$varDate/unbound && cp -rpi $varConfigDir/unbound $varBackupDir/$varDate
-printf "[################# ] 17/18\r"
 
 mkdir -p $varBackupDir/$varDate/uptime-kuma
 cp -rpi $varConfigDir/uptime-kuma/kuma.db $varBackupDir/$varDate/uptime-kuma

@@ -12,13 +12,6 @@ services:
     container_name: pihole
     hostname: pihole
     image: ghcr.io/pi-hole/pihole:2025.04.0
-    
-    depends_on:
-      - unbound
-
-    networks:
-      dns-net:
-        ipv4_address: 172.20.0.2
 
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     ports:
@@ -35,9 +28,14 @@ services:
 
       FTLCONF_dhcp_active: ${PIHOLE_DHCP_ACTIVE:-false}
       FTLCONF_dns_listeningMode: 'all'
-      FTLCONF_dns_revServers: 172.20.0.3#5053 # this address is hardcoded in the unbound container
-      # FTLCONF_dns_upstreams: 172.20.0.3#5053 # this is hardcoded in the docker-compose
+      FTLCONF_dns_upstreams: '127.0.0.1#5053' # this is hardcoded in ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf.d/10-pi-hole.conf
       FTLCONF_dns_domain: ${PIHOLE_DOMAIN:-lan}
+
+      # Don't use pihole as a NTP Server
+      FTLCONF_ntp_ipv4_active: ${PIHOLE_NTP_IPV4_ACTIVE:-true}
+      FTLCONF_ntp_ipv6_active: ${PIHOLE_NTP_IPV6_ACTIVE:-true}
+      FTLCONF_ntp_sync_active: ${PIHOLE_NTP_IPV6_ACTIVE:-true}
+
       FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD}
       FTLCONF_webserver_interface_theme: ${PIHOLE_WEBTHEME:-default-dark}
 
@@ -54,12 +52,23 @@ services:
       - homepage.widget.key=${HOMEPAGE_PIHOLE_API}
 
     volumes:
-      - ${CONFIGDIR}/pihole/pihole:/etc/pihole
-      - ${CONFIGDIR}/pihole/resolv.conf:/etc/resolv.conf
-    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+      # For persisting Pi-hole's databases and common configuration file
+      - ${CONFIGDIR}/pihole-unbound/pihole/etc-pihole:/etc/pihole
 
-    #cap_add:
-    #  - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
+      # Uncomment the below if you have custom dnsmasq config files that you want to persist. Not needed for most starting fresh with Pi-hole v6. If you're upgrading from v5 you and have used this directory before, you should keep it enabled for the first v6 container start to allow for a complete migration. It can be removed afterwards. Needs environment variable FTLCONF_misc_etc_dnsmasq_d: 'true'
+      #- ${CONFIGDIR}/pihole-unbound/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+
+    cap_add:
+      # See https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+
+      # Required if you are using Pi-hole as your DHCP server, else not needed
+      #- NET_ADMIN
+
+      # Required if you are using Pi-hole as your NTP client to be able to set the host's system time
+      #- SYS_TIME
+
+      # Optional, if Pi-hole should get some more processing time
+      - SYS_NICE
 
     deploy:
       resources:
@@ -99,9 +108,13 @@ services:
     container_name: unbound
     image: mvance/unbound:1.22.0 #for raspberry-pi: mvance/unbound-rpi:latest
 
-    networks:
-      dns-net:
-        ipv4_address: 172.20.0.3
+    network_mode: service:pihole
+
+    post_start:
+      # remove unused config files
+      - command: rm -f /opt/unbound/etc/unbound/a-records.conf
+      - command: rm -f /opt/unbound/etc/unbound/forward-records.conf
+      - command: rm -f /opt/unbound/etc/unbound/srv-records.conf
 
     labels:
       - diun.enable=true
@@ -111,7 +124,12 @@ services:
       - homepage.weight=199
 
     volumes:
-      - ${CONFIGDIR}/unbound:/opt/unbound/etc/unbound
+      # main config
+      - ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf:/opt/unbound/etc/unbound/unbound.conf:ro
+      # custom config (unbound.conf.d/your-config.conf). unbound.conf includes these via wilcard include
+      - ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf.d:/opt/unbound/etc/unbound/unbound.conf.d:ro
+      # log file
+      - ${CONFIGDIR}/pihole-unbound/unbound/etc-unbound/unbound.log:/opt/unbound/etc/unbound/unbound.log
 
     deploy:
       resources:
@@ -120,11 +138,3 @@ services:
     healthcheck:
       disable: true
     restart: unless-stopped
-
-networks:
-  dns-net:
-    name: dns-net
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
