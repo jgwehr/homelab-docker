@@ -11,7 +11,7 @@ services:
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
     container_name: pihole
     hostname: pihole
-    image: ghcr.io/pi-hole/pihole:2025.04.0
+    image: ghcr.io/pi-hole/pihole:2025.06.2
 
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     ports:
