@@ -54,14 +54,21 @@ cp -rpi $varOptDir/services/gloomhaven/configtemplates/ghs/application.propertie
 # homepage
 cp -rpi $varOptDir/services/dashboard/configtemplates/homepage $varConfigDir/homepage
 
-# Pihole
-cp -rpi $varOptDir/services/adblock-and-dns/configtemplates/pihole/resolv.conf $varConfigDir/pihole/resolv.conf
-
 # Scrutiny
 cp -rpi $varOptDir/services/monitor/configtemplates/scrutiny/* $varConfigDir/scrutiny
 
 # Unbound
-cp -rpi $varOptDir/services/adblock-and-dns/configtemplates/unbound/* $varConfigDir/unbound
+sudo mkdir -p $varConfigDir/pihole-unbound/pihole/etc-pihole
+sudo mkdir -p $varConfigDir/pihole-unbound/pihole/etc-dnsmasq.d
+sudo mkdir -p $varConfigDir/pihole-unbound/unbound/etc-unbound
+sudo mkdir -p $varConfigDir/pihole-unbound/unbound/unbound.conf.d
+
+touch $varConfigDir/pihole-unbound/unbound/etc-unbound/unbound.log
+
+chown -R $USER:docker $varConfigDir/pihole-unbound
+chmod -R 755 $varConfigDir/pihole-unbound
+
+cp -rpi $varOptDir/services/adblock-and-dns/configtemplates/unbound/* $varConfigDir/pihole-unbound/unbound
 
 
 
