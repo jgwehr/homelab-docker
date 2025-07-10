@@ -10,10 +10,26 @@
 
 
 ## Environment and Configuration
+*See this excellent guide/repo: https://github.com/kaczmar2/pihole-unbound/blob/main/README.md*
+
+### Execute Commands
+
+```shell
+sudo mkdir -p /srv/docker/pihole-unbound/pihole/etc-pihole
+sudo mkdir -p /srv/docker/pihole-unbound/pihole/etc-dnsmasq.d
+sudo mkdir -p /srv/docker/pihole-unbound/unbound/etc-unbound
+sudo mkdir -p /srv/docker/pihole-unbound/unbound/unbound.conf.d
+
+touch /srv/docker/pihole-unbound/unbound/etc-unbound/unbound.log
+
+chown -R $USER:docker /srv/docker/pihole-unbound
+chmod -R 755 /srv/docker/pihole-unbound
+```
 
 ### Files
-1. Copy `./configtemplates/pihole/resolv.conf` to your config directory for pihole `${CONFIGDIR}/pihole/resolv.conf`
-1. Copy all files in `./configtemplates/unbound` to your config directory for unbound `${CONFIGDIR}/unbound`
+#### Unbound
+1. Copy `./configtemplates/unbound/unbound.conf` to your config directory for unbound `${CONFIGDIR}/pihole-unbound/unbound` (eg. **/srv/docker/pihole-unbound/unbound/unbound.conf**)
+1. Copy `./configtemplates/unbound/unbound.conf.d` to your config directory for unbound `${CONFIGDIR}/pihole-unbound/unbound` (eg. **/srv/docker/pihole-unbound/unbound/unbound.conf.d**)
 
 
 
@@ -29,14 +45,19 @@
 
 ### Functionality
 
-- `PIHOLE_PASSWORD` - Used for both accessing the Pi-Hole web UI but behind the scenes for Nebula Sync.
+- `PIHOLE_PASSWORD` - Used for both accessing the Pi-Hole web UI and behind the scenes for Nebula Sync.
 - `PIHOLE_DHCP_ACTIVE` - I don't use the DHCP functionality, please refer to Pi-hole documentation if you want to use this.
 - `PIHOLE_DOMAIN` - Not super useful unless you use DHCP
 - `PIHOLE_WEBTHEME`
+- `PIHOLE_NTP_IPV4_ACTIVE` and `PIHOLE_NTP_IPV6_ACTIVE` - Set to false to avoid using pihole as a NTP (system time) Server
 
 #### Nebula Sync
 This is only needed if you're running two or more Pi-Holes. And, it's only needed on a single host. It's goal is to sync settings across all targeted Pi-Holes.
 
+### Test Functionality
+1. Test Unbound is operational: within the container, execute `dig pi-hole.net @127.0.0.1 -p 5053`
+1. Then, test for a **failed** response: `dig fail01.dnssec.works @127.0.0.1 -p 5053`
+1. Then, test for a **success** response: `dig dnssec.works @127.0.0.1 -p 5053`
 
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
