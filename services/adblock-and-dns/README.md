@@ -6,7 +6,7 @@
 
 ## Dependencies
 
-- My Pi-hole setup depends on Unbound for DNS resolution. However, this isn't required. You can choose to use any other DNS service instead. Follow Pi-Hole's instructions. But, generally, this means removing `FTLCONF_dns_revServers` and configuring `FTLCONF_dns_upstreams`
+- My Pi-hole setup depends on Unbound for DNS resolution. However, this isn't required. You can choose to use any other DNS service instead. Follow Pi-Hole's instructions. But, generally, this means changing `FTLCONF_dns_upstreams`
 
 
 ## Environment and Configuration
@@ -45,7 +45,7 @@ chmod -R 755 /srv/docker/pihole-unbound
 
 ### Functionality
 
-- `PIHOLE_PASSWORD` - Used for both accessing the Pi-Hole web UI and behind the scenes for Nebula Sync.
+- `PIHOLE_PASSWORD` - Used for both accessing the Pi-Hole web UI and behind the scenes for Nebula Sync / Homepage.
 - `PIHOLE_DHCP_ACTIVE` - I don't use the DHCP functionality, please refer to Pi-hole documentation if you want to use this.
 - `PIHOLE_DOMAIN` - Not super useful unless you use DHCP
 - `PIHOLE_WEBTHEME`
