@@ -71,9 +71,15 @@ printf "[###               ] 3/16\r"
 
 mkdir -p $varBackupDir/$varDate/jellyfin
 cp -rpi $varConfigDir/jellyfin/config $varBackupDir/$varDate/jellyfin
-cp -rpi $varConfigDir/jellyfin/data $varBackupDir/$varDate/jellyfin
+## Recent Jellyfin updates have *exploded* the data/ directory, my Subtitles folder is 1.2G. These aren't important to me, so they're excluded
+cp -rpi $varConfigDir/jellyfin/data/collections $varBackupDir/$varDate/jellyfin
+cp -rpi $varConfigDir/jellyfin/data/device.txt $varBackupDir/$varDate/jellyfin
+cp -rpi $varConfigDir/jellyfin/data/fileorganization.db $varBackupDir/$varDate/jellyfin
+cp -rpi $varConfigDir/jellyfin/data/jellyfin.db $varBackupDir/$varDate/jellyfin
+cp -rpi $varConfigDir/jellyfin/data/library.db $varBackupDir/$varDate/jellyfin
+cp -rpi $varConfigDir/jellyfin/data/playlists $varBackupDir/$varDate/jellyfin
 cp -rpi $varConfigDir/jellyfin/root $varBackupDir/$varDate/jellyfin
-printf "[####              ] 4/16\r"
+printf "[####              ] 4/18\r"
 
 mkdir -p $varBackupDir/$varDate/jellyseerr
 cp -rpi $varConfigDir/jellyseerr/db $varBackupDir/$varDate/jellyseerr
