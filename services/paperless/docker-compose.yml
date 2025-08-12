@@ -54,7 +54,7 @@ services:
 
     volumes:
       - ${CONFIGDIR}/paperless:/usr/src/paperless/data
-      - ${STATICDIR}/paperless:/usr/src/paperless/media
+      - ${DIR_DOCUMENT}/paperless:/usr/src/paperless/media
       - ${BACKUPDIR}/paperless:/usr/src/paperless/export # used for backup/exporting documents via paperless document_exporter
       - ${PAPERLESS_CONSUMEDIR}:/usr/src/paperless/consume
 
@@ -89,7 +89,7 @@ services:
       - ${DBDIR}/paperless-redis:/data
 
     healthcheck:
-      interval: 60s
+      interval: 600s
       retries: 5
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
       timeout: 45s
