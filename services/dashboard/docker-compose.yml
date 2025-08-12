@@ -31,6 +31,7 @@ services:
       - ${SYS_DISK1}:/dev/sda1:ro #harddrive space monitoring
       - ${SYS_DISK2}:/dev/sdb1:ro #harddrive space monitoring
       - ${SYS_DISK3}:/dev/sdc1:ro #harddrive space monitoring
+      - ${SYS_DISK4}:/dev/sdd1:ro #harddrive space monitoring
     
     healthcheck:
       test: wget --spider http://${SERVER_URL}:${PORT_SOCKY_PROXY}/version || exit 1
