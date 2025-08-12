@@ -93,6 +93,8 @@ services:
       - /dev/sda
       - /dev/sdb
       - /dev/sdc
+      - /dev/sdd #ZFS pool1
+      - /dev/sde #ZFS pool1
     
     volumes:
       - /run/udev:/run/udev:ro
