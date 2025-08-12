@@ -27,7 +27,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
 
   gloomhaven-server:
@@ -54,7 +54,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 256M
+          memory: 512M
     restart: unless-stopped
 
 networks:

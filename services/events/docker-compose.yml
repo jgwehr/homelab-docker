@@ -95,7 +95,7 @@ services:
         limits:
           cpus: '1'
           memory: 128M
-    restart: unless-stopped
+    restart: no
 
 networks:
   caddy-net:
