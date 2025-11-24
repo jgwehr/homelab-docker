@@ -18,6 +18,25 @@ echo "Backing up Docker outputs (tags, ports, names)..."
 docker ps > docker-ps.txt
 docker image ls > docker-image-ls.txt
 
+# Environment Files
+echo Backing up .env...
+cp -rpi $varOptDir/.env $varBackupDir/$varDate
+
+# fstab / Diskmounts
+echo Backing up fstab...
+cp -rpi /etc/fstab $varBackupDir/$varDate
+
+# SnapRaid
+echo Backing up SnapRaid Conf...
+cp -rpi /etc/snapraid.conf $varBackupDir/$varDate
+
+echo Backing up SnapRaid Runner...
+cp -rpi /opt/snapraid-runner/snapraid-runner.conf $varBackupDir/$varDate
+
+# Samba
+echo Backing up Samba...
+cp -rpi /etc/samba/smb.conf $varBackupDir/$varDate
+
 # Database backups (must be done while containers are still running...)
 echo Backing up Databases...
 sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql
@@ -137,26 +156,6 @@ cp -rpi $varConfigDir/uptime-kuma/kuma.db $varBackupDir/$varDate/uptime-kuma
 printf "[##################] 16/16\r"
 
 printf "\n"
-
-
-# Environment Files
-echo Backing up .env...
-cp -rpi $varOptDir/.env $varBackupDir/$varDate
-
-# fstab / Diskmounts
-echo Backing up fstab...
-cp -rpi /etc/fstab $varBackupDir/$varDate
-
-# SnapRaid
-echo Backing up SnapRaid Conf...
-cp -rpi /etc/snapraid.conf $varBackupDir/$varDate
-
-echo Backing up SnapRaid Runner...
-cp -rpi /opt/snapraid-runner/snapraid-runner.conf $varBackupDir/$varDate
-
-# Samba
-echo Backing up Samba...
-cp -rpi /etc/samba/smb.conf $varBackupDir/$varDate
 
 
 # Zip file
