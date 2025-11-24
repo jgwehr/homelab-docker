@@ -8,7 +8,7 @@ services:
 
   tandoor:
     container_name: tandoor
-    image: vabene1111/recipes:1.5.27 # pinned until #121
+    image: vabene1111/recipes:2.2.7
 
     depends_on:
       tandoor_db:
@@ -46,7 +46,7 @@ services:
 
   tandoor_db:
     container_name: tandoor_db
-    image: postgres:15.4-alpine
+    image: postgres:16.10-alpine
 
     networks:
       - tandoor-net
