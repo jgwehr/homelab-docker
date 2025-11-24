@@ -11,7 +11,7 @@ services:
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
     container_name: pihole
     hostname: pihole
-    image: ghcr.io/pi-hole/pihole:2025.06.2
+    image: ghcr.io/pi-hole/pihole:2025.08.0
 
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     ports:
@@ -81,6 +81,9 @@ services:
   nebula-sync:
     container_name: nebula-sync
     image: ghcr.io/lovelaze/nebula-sync:latest
+
+    depends_on:
+      - pihole
 
     environment:
       TZ: ${TZ}

@@ -1,0 +1,11 @@
+[[roles]]
+name = "homepage"
+# Define a list of routes with the syntax "Http-Method /path"
+routes = [
+  "GET /v1/publicip/ip",
+  "GET /v1/openvpn/portforwarded"
+]
+
+# Define an authentication method with its parameters
+auth = "apikey"
+apikey = ""

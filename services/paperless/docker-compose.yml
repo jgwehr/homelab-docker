@@ -74,7 +74,7 @@ services:
 
   paperless_broker:
     container_name: paperless_broker
-    image: redis:7
+    image: redis:8.2
 
     networks:
       - paperless-net
