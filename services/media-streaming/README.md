@@ -1,6 +1,7 @@
 ## Included projects
 
 - https://github.com/jellyfin
+- https://github.com/dmunozv04/iSponsorBlockTV
 
 ## Dependencies
 
@@ -9,6 +10,8 @@
 
 
 ## Environment and Configuration
+
+iSponsorBlockTV: https://github.com/dmunozv04/iSponsorBlockTV/wiki/Installation
 
 ### Files
 
