@@ -56,6 +56,17 @@ services:
     restart: unless-stopped
 
 
+  iSponsorBlockTV:
+    container_name: iSponsorBlockTV
+    image: ghcr.io/dmunozv04/isponsorblocktv:latest
+
+    
+    network_mode: host
+    
+    volumes:
+    - ${CONFIGDIR}/isponsorblocktv:/app/data
+
+    restart: unless-stopped
 
 networks:
   caddy-net:
