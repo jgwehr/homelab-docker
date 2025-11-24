@@ -33,11 +33,11 @@ Within `services\recipes\staticconfig\tandoor.env`:
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `DBDIR` - universal. where the containers store their databases
-- `STATICDIR` - universal. Tandoor will store uploaded images here
+- `DIR_STATIC` - universal. Tandoor will store uploaded images here
 
 ### Local Only
 - TBD
 
 ## Backups
 1. Backup Tandoor DB according to their instructions. Currently, this suggests: `sudo docker exec -t tandoor_db pg_dumpall -U tandoor_user > tandoor_pgdump.sql`
-1. Backup Tandoor images etc via the static media directory: {STATICDIR}
+1. Backup Tandoor images etc via the static media directory: {DIR_STATIC}

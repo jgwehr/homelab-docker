@@ -40,7 +40,7 @@
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `LOGDIR` - universal. where the containers store their log data
-- `STATICDIR` - uploaded documents go here
+- `DIR_STATIC` - uploaded documents go here
 
 
 ## Backups

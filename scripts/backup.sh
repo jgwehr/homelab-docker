@@ -2,7 +2,7 @@ varDate=$(date +%Y-%m-%d)
 varBackupDir=/home/user/backup/$varDate
 varConfigDir=/srv/docker
 varOptDir=/opt/docker/homelab
-varStaticDir=/mnt/storage/staticfiles
+varStaticDir=/mnt/ssd/staticfiles
 
 # Formatting
 C_COMPOSE="\e[48;5;26m"

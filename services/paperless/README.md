@@ -36,7 +36,7 @@
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `PAPERLESS_CONSUMEDIR` - this is where you'd configure SAMBA to allow network access to. Files placed in this directory are consumed, and moved, by paperless
 - `BACKUPDIR` - Document export commands go here
-- `STATICDIR` - uploaded documents go here
+- `DIR_STATIC` - uploaded documents go here
 - `DBDIR` - Redis and Postgres store their data here
 
 
