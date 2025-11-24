@@ -8,7 +8,7 @@ services:
 
   gluetun:
     container_name: gluetun
-    image: ghcr.io/qdm12/gluetun:v3.39.0
+    image: ghcr.io/qdm12/gluetun:v3.40.0
     
     environment:
       PUID: ${PUID}
@@ -20,6 +20,7 @@ services:
       OPENVPN_PASSWORD: ${VPN_PASSWORD}
 
       # ProtonVPN Port Forwarding, see https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
+      #VPN_PORT_FORWARDING_UP_COMMAND: 'wget --retry-connrefused --tries=6 -qO- --post-data=json={\"listen_port\":{{PORTS}}} http://${SERVER_URL}:${PORT_TORRENT_UI}/api/v2/app/setPreferences'
       PORT_FORWARD_ONLY: 'on'
       VPN_PORT_FORWARDING: 'on'
       SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
@@ -39,12 +40,15 @@ services:
       - homepage.weight=100
       - homepage.widget.type=gluetun
       - homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
+      - homepage.widget.key=${GLUETUN_APIKEY}
+
 
     devices:
       - /dev/net/tun:/dev/net/tun
 
     volumes:
       - ${CONFIGDIR}/gluetun:/gluetun
+      - ${CONFIGDIR}/gluetun/config.toml:/gluetun/auth/config.toml
 
     cap_add:
       - NET_ADMIN
@@ -308,35 +312,6 @@ services:
 
     volumes:
       - ${DOWNLOADDIR}/youtube:/downloads
-
-    restart: unless-stopped
-
-####################
-# Helpers
-####################
-
-  gluetun-qbittorrent-port-manager:
-    container_name: gluetun_port_manager
-    build:
-      context: ./dockerfiles
-      dockerfile: port_manager.dockerfile #Custom build
-
-    depends_on:
-      gluetun:
-        condition: service_healthy
-      qbittorrent:
-        condition: service_started
-
-    environment:
-      QBITTORRENT_SERVER: ${SERVER_URL} # IP Address of qbittorrent
-      QBITTORRENT_PORT: ${PORT_TORRENT_UI}
-      QBITTORRENT_USER: ${HOMEPAGE_QBITTORRENT_USERNAME} # username
-      QBITTORRENT_PASS: ${HOMEPAGE_QBITTORRENT_PASSWORD} # password
-
-      GLUETUN_HOST: ${SERVER_URL} # IP or FQDN of gluetun control server
-      GLUETUN_PORT: ${PORT_GLUETUN_CONTROL} # port of gluetun control server
-
-      RECHECK_TIME: 600 # number of seconds between checks to gluetun server for port
 
     restart: unless-stopped
     
