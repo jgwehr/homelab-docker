@@ -30,6 +30,9 @@ Follow Gluetun's instructions. In my case, I must provide:
 
 The custom image "gluetun_port_manager" is a simple shell script meant to request the forwarded port from Gluetun (provided by your VPN) and set it as the `Listening Port` within qBittorrent. This is only needed if your VPN randomizes the forwarding port for P2P traffic. It may not perfectly capture all errors or situations. Your mileage may vary. 
 
+- `GLUETUN_APIKEY` This you must generate and save to a file your config directory. see: https://github.com/gethomepage/homepage/discussions/5344. Create a key, pasting it into `${CONFIGDIR}/gluetun/config.toml` with the format given above. That same key goes into .env
+
+
 ### MeTube
 There are quite a lot of interesting config options: https://github.com/alexta69/metube
 I don't use these, but there are options to help with downloading private/restricted videos, better organization, etc.
