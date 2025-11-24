@@ -63,7 +63,6 @@ cd $varOptDir/services/dashboard && docker compose down # homepage
 cd $varOptDir/services/downloads && docker compose down # *arr
 cd $varOptDir/services/events && docker compose down # Rallly
 cd $varOptDir/services/gloomhaven && docker compose down # GHS
-cd $varOptDir/services/image-board && docker compose down # Pinry
 cd $varOptDir/services/media-request && docker compose down # Jellyseerr
 cd $varOptDir/services/media-streaming && docker compose down # Jellyfin
 cd $varOptDir/services/monitor && docker compose down # uptime kuma, dozzle, diun, speedtracker
@@ -169,14 +168,6 @@ zip -r -9 $varDate $varDate > /dev/null 2>&1
 # Large File Storage Backups
 ####################
 
-echo Backing Up Pinry: Media
-mkdir -p $varBackupDir/$varDate-pinry
-cp -rpi $varConfigDir/pinry/static/media $varBackupDir/$varDate-pinry
-echo "${C_ZIP}Creating Pinry Media Zip...${C_EOL}" #testing this
-cd $varBackupDir
-zip -r -9 $varDate-pinry $varDate-pinry > /dev/null 2>&1
-
-
 echo Backing Up Paperless: Classification Model...
 mkdir -p $varBackupDir/$varDate-paperless/paperless
 cp -rpi $varConfigDir/paperless/classification_model.pickle $varBackupDir/$varDate-paperless/paperless
@@ -201,7 +192,6 @@ zip -r -9 $varDate-paperless $varDate-paperless > /dev/null 2>&1
 ####################
 echo Cleaning up...
 rm -rf $varBackupDir/$varDate
-rm -rf $varBackupDir/$varDate-pinry
 rm -rf $varBackupDir/$varDate-paperless
 #rm /home/user/backup/paperless/*.* #cleanup
 
@@ -215,7 +205,6 @@ cd $varOptDir/services/dashboard && docker compose up -d # homepage
 cd $varOptDir/services/downloads && docker compose up -d # *arr
 cd $varOptDir/services/events && docker compose up -d # Rallly
 cd $varOptDir/services/gloomhaven && docker compose up -d # GHS
-cd $varOptDir/services/image-board && docker compose up -d # Pinry
 cd $varOptDir/services/media-request && docker compose up -d # Jellyseerr
 cd $varOptDir/services/media-streaming && docker compose up -d # Jellyfin
 cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, diun, speedtracker
