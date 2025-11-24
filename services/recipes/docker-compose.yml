@@ -35,7 +35,7 @@ services:
       - homepage.icon=tandoor-recipes
 
     volumes:
-      - ${STATICDIR}/tandoor_media:/opt/recipes/mediafiles
+      - ${DIR_STATIC}/tandoor_media:/opt/recipes/mediafiles
 
     deploy:
       resources:
