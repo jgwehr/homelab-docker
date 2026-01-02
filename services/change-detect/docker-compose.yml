@@ -8,7 +8,7 @@ services:
 
   changedetection:
     container_name: changedetection
-    image: ghcr.io/dgtlmoon/changedetection.io
+    image: ghcr.io/dgtlmoon/changedetection.io:latest
 
     depends_on:
       - chrome
@@ -20,13 +20,16 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      LOGGER_LEVEL: WARNING
+      HIDE_REFERER: true
+      FETCH_WORKERS: 5
       WEBDRIVER_URL: http://chrome:${PORT_WEBDRIVER}/wd/hub
 
     labels:
       - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Change Detection
-      - homepage.icon=changedetection-io
+      - homepage.icon=changedetection
       - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
       - homepage.widget.type=changedetectionio
       - homepage.widget.url=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
