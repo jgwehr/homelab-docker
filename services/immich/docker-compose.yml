@@ -1,0 +1,182 @@
+#
+# WARNING: To install Immich, follow our guide: https://immich.app/docs/install/docker-compose
+#
+# Make sure to use the docker-compose.yml of the current release:
+#
+# https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml
+#
+# The compose file on main may not be compatible with the latest release.
+
+name: immich
+
+services:
+  immich-server:
+    container_name: immich_server
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+
+    depends_on:
+      - immich_redis
+      - immich_postgres
+
+    networks:
+      - immich-net
+
+    ports:
+      - ${PORT_IMMICH}:2283
+
+    extends:
+      file: hwaccel.transcoding.yml
+      service: quicksync # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
+
+    environment:
+      TZ: ${TZ}
+
+      DB_HOSTNAME: immich_postgres
+      DB_PASSWORD: ${IMMICH_DB_PASSWORD}
+      DB_USERNAME: ${IMMICH_DB_USERNAME}
+      DB_DATABASE_NAME: ${IMMICH_DB_NAME}
+
+      REDIS_HOSTNAME: immich_redis
+    
+    labels:
+      - homepage.group=Immich
+      - homepage.name=Immich
+      - homepage.icon=immich
+      - homepage.href=http://${SERVER_URL}:${PORT_IMMICH}
+      - homepage.widget.type=immich
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_IMMICH}
+      - homepage.widget.key=${IMMICH_API_KEY}
+      - homepage.widget.version=2
+
+    volumes:
+      # https://docs.immich.app/guides/custom-locations/
+      - ${DIR_PHOTOS}:/data
+      - ${DIR_PHOTOS_THUMBS}:/data/thumbs
+
+      # :/data/profile
+      - /etc/localtime:/etc/localtime:ro
+
+    healthcheck:
+      disable: false
+    restart: unless-stopped
+
+
+  immich-machine-learning:
+    container_name: immich_machine_learning
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+
+    # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/ml-hardware-acceleration
+    #   file: hwaccel.ml.yml
+    #   service: cpu # set to one of [armnn, cuda, rocm, openvino, openvino-wsl, rknn] for accelerated inference - use the `-wsl` version for WSL2 where applicable
+
+    networks:
+      - immich-net
+
+    ports:
+      - ${PORT_IMMICH_ML}:3003
+
+    environment:
+      TZ: ${TZ}
+
+    labels:
+      - homepage.group=Immich
+      - homepage.name=Immich Machine Learning
+      - homepage.icon=immich
+
+    volumes:
+      - model-cache:/cache
+
+    healthcheck:
+      disable: false
+    restart: unless-stopped
+
+
+
+  immich_redis:
+    container_name: immich_redis
+    image: docker.io/valkey/valkey:8@sha256:81db6d39e1bba3b3ff32bd3a1b19a6d69690f94a3954ec131277b9a26b95b3aa
+    
+    networks:
+      - immich-net
+
+    labels:
+      - homepage.group=Immich
+      - homepage.name=Immich | Redis
+      - homepage.icon=redis
+
+    healthcheck:
+      test: redis-cli ping || exit 1
+
+    restart: unless-stopped
+
+
+  immich_postgres:
+    container_name: immich_postgres
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
+
+    networks:
+      - immich-net
+
+    environment:
+      POSTGRES_PASSWORD: ${IMMICH_DB_PASSWORD}
+      POSTGRES_USER: ${IMMICH_DB_USERNAME}
+      POSTGRES_DB: ${IMMICH_DB_NAME}
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+      # Uncomment the DB_STORAGE_TYPE: 'HDD' var if your database isn't stored on SSDs
+      DB_STORAGE_TYPE: 'HDD'
+
+    labels:
+      - homepage.group=Immich
+      - homepage.name=Immich | postgres
+      - homepage.icon=postgres
+      
+    volumes:
+      # Do not edit the next line. If you want to change the database storage location on your system, edit the value of DB_DATA_LOCATION in the .env file
+      - ${DIR_DB}/immich:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  immich_public-proxy:
+    container_name: immich_public-proxy
+    image: ghcr.io/alangrainger/immich-public-proxy:latest
+
+    depends_on:
+      - immich-server
+
+    networks:
+      - immich-net
+      - caddy-net
+
+    ports:
+      - ${PORT_IMMICH_PROXY}:3000
+    
+    environment:
+      IMMICH_URL: http://192.168.1.203:${PORT_IMMICH}
+      PUBLIC_BASE_URL: https://${DOMAIN}
+      
+    labels:
+      - homepage.group=Immich
+      - homepage.name=Immich | Proxy
+      - homepage.icon=immich-public-proxy
+      - homepage.descriptiopn=Provides secure public access to shared albums
+      - homepage.href=http://${SERVER_URL}:${PORT_IMMICH_PROXY}
+
+    healthcheck:
+      test: curl -s http://localhost:3000/share/healthcheck -o /dev/null || exit 1
+      start_period: 10s
+      timeout: 5s
+
+    restart: unless-stopped
+
+
+
+
+volumes:
+  model-cache:
+
+networks:
+  immich-net:
+    name: immich-net
+    external: false
+  caddy-net:
+    name: caddy-net
+    external: true
