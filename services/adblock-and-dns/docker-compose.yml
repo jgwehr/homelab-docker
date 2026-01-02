@@ -9,9 +9,10 @@ services:
 
   pihole:
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+  # My savior for fixing pihole issues: https://github.com/kaczmar2/pihole-unbound/tree/main
     container_name: pihole
     hostname: pihole
-    image: ghcr.io/pi-hole/pihole:2025.08.0
+    image: ghcr.io/pi-hole/pihole:2025.11.1
 
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     ports:
@@ -28,8 +29,9 @@ services:
 
       FTLCONF_dhcp_active: ${PIHOLE_DHCP_ACTIVE:-false}
       FTLCONF_dns_listeningMode: 'all'
-      FTLCONF_dns_upstreams: '127.0.0.1#5053' # this is hardcoded in ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf.d/10-pi-hole.conf
-      FTLCONF_dns_domain: ${PIHOLE_DOMAIN:-lan}
+      FTLCONF_dns_upstreams: '127.0.0.1#${PORT_DNS_RESOLVER}' # Port is also hardcoded in ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf.d/10-pi-hole.conf
+      FTLCONF_dns_domain_name: ${PIHOLE_DOMAIN:-lan}
+      #FTLCONF_webserver_api_pwhash:
 
       # Don't use pihole as a NTP Server
       FTLCONF_ntp_ipv4_active: ${PIHOLE_NTP_IPV4_ACTIVE:-true}
@@ -75,7 +77,7 @@ services:
         limits:
           memory: 256M
     healthcheck:
-      test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+      test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "-p", "${PORT_DNS_RESOLVER}"]
     restart: unless-stopped
 
   nebula-sync:
@@ -83,7 +85,8 @@ services:
     image: ghcr.io/lovelaze/nebula-sync:latest
 
     depends_on:
-      - pihole
+      pihole:
+        condition: service_healthy
 
     environment:
       TZ: ${TZ}
@@ -109,7 +112,7 @@ services:
 
   unbound:
     container_name: unbound
-    image: mvance/unbound:1.22.0 #for raspberry-pi: mvance/unbound-rpi:latest
+    image: alpinelinux/unbound:latest
 
     network_mode: service:pihole
 
@@ -128,11 +131,9 @@ services:
 
     volumes:
       # main config
-      - ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf:/opt/unbound/etc/unbound/unbound.conf:ro
+      - ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf:/etc/unbound/unbound.conf
       # custom config (unbound.conf.d/your-config.conf). unbound.conf includes these via wilcard include
-      - ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf.d:/opt/unbound/etc/unbound/unbound.conf.d:ro
-      # log file
-      - ${CONFIGDIR}/pihole-unbound/unbound/etc-unbound/unbound.log:/opt/unbound/etc/unbound/unbound.log
+      - ${CONFIGDIR}/pihole-unbound/unbound/unbound.conf.d:/etc/unbound/unbound.conf.d
 
     deploy:
       resources:
