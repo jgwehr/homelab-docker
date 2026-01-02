@@ -22,7 +22,6 @@ services:
       #DOZZLE_REMOTE_HOST: #optional. if you have other docker hosts, include them here. see https://dozzle.dev/guide/remote-hosts
     
     labels:
-      - diun.enable=true
       - homepage.group=System
       - homepage.name=Docker Logs
       - homepage.icon=dozzle
@@ -51,7 +50,6 @@ services:
       DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
 
     labels:
-      - diun.enable=true
       - homepage.group=System
       - homepage.name=Diun
       - homepage.icon=/icons/diun.png
@@ -80,7 +78,6 @@ services:
       - ${PORT_SCRUTINY_DB}:8086 # influxDB admin
 
     labels:
-      - diun.enable=true
       - homepage.group=System
       - homepage.name=Scrutiny
       - homepage.icon=scrutiny
@@ -124,13 +121,17 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+
+      APP_KEY: ${SPEEDTEST_APP_KEY}
+      APP_TIMEZONE: ${TZ}
+      DB_CONNECTION: sqlite
       DISPLAY_TIMEZONE: ${TZ}
+      PRUNE_RESULTS_OLDER_THAN: 30
+      PUBLIC_DASHBOARD: true
       SPEEDTEST_SCHEDULE: ${SPEEDTEST_SCHEDULE}
       SPEEDTEST_SERVERS: ${SPEEDTEST_SERVERS}
-      APP_KEY: ${SPEEDTEST_APP_KEY}
     
     labels:
-      - diun.enable=true
       - homepage.group=Network
       - homepage.name=Speedtest Tracker
       - homepage.icon=speedtest-tracker
@@ -158,7 +159,6 @@ services:
       - ${PORT_UPKUMA}:3001
     
     labels:
-      - diun.enable=true
       - homepage.group=System
       - homepage.name=Uptime Kuma
       - homepage.icon=uptime-kuma
