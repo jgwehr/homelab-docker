@@ -8,7 +8,7 @@ services:
 
   gluetun:
     container_name: gluetun
-    image: ghcr.io/qdm12/gluetun:v3.40.0
+    image: ghcr.io/qdm12/gluetun:v3.40.3
     
     environment:
       PUID: ${PUID}
@@ -21,17 +21,22 @@ services:
 
       # ProtonVPN Port Forwarding, see https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
       #VPN_PORT_FORWARDING_UP_COMMAND: 'wget --retry-connrefused --tries=6 -qO- --post-data=json={\"listen_port\":{{PORTS}}} http://${SERVER_URL}:${PORT_TORRENT_UI}/api/v2/app/setPreferences'
-      PORT_FORWARD_ONLY: 'on'
+      PORT_FORWARD_ONLY: 'on' #Filter only port-forwarding enabled (aka p2p) servers by setting it to on. It defaults to off.
       VPN_PORT_FORWARDING: 'on'
       SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
 
+      # Updating qBittorrent
+      # For this to work, the qBittorrent web UI server must be enabled and listening on port 8080 and the Web UI "Bypass authentication for clients on localhost" must be ticked (json key bypass_local_auth)
+      #VPN_PORT_FORWARDING_UP_COMMAND: /bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
+      #VPN_PORT_FORWARDING_DOWN_COMMAND: /bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo"}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
+
     ports:
       - ${PORT_GLUETUN_CONTROL}:8000
-      - ${PORT_TORRENT_UI}:8080
-      - ${PORT_PROWLARR_UI}:9696
-      - ${PORT_SONARR_UI}:8989
-      - ${PORT_RADARR_UI}:7878
       - ${PORT_LIDARR_UI}:8686
+      - ${PORT_PROWLARR_UI}:9696
+      - ${PORT_RADARR_UI}:7878
+      - ${PORT_SONARR_UI}:8989
+      - ${PORT_TORRENT_UI}:8080
 
     labels:
       - homepage.group=Back End
@@ -39,8 +44,10 @@ services:
       - homepage.icon=gluetun
       - homepage.weight=100
       - homepage.widget.type=gluetun
+      - homepage.widget.fields='["region","country","port_forwarded"]'
       - homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
       - homepage.widget.key=${GLUETUN_APIKEY}
+      - homepage.widget.version=2
 
 
     devices:
@@ -107,7 +114,7 @@ services:
         PUID: ${PUID}
         PGID: ${PGID}
         TZ: ${TZ}
-        UMASK_SET: 022
+        UMASK_SET: 022 # https://en.wikipedia.org/wiki/Umask
         WEBUI_PORT: 8080
 
     labels:
@@ -161,6 +168,9 @@ services:
       - homepage.icon=lidarr
       - homepage.href=http://${SERVER_URL}:${PORT_LIDARR_UI}
       - homepage.weight=503
+      - homepage.widget.type=lidarr
+      - homepage.widget.url=http://${SERVER_URL}:${PORT_LIDARR_UI}
+      - homepage.widget.key=${HOMEPAGE_LIDARR_API}
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -267,6 +277,7 @@ services:
     labels:
       - homepage.group=Media
       - homepage.name=Podgrab
+      - homepage.icon=podgrab
       - homepage.href=http://${SERVER_URL}:${PORT_PODGRAB}
       - homepage.description=Podcast manager/downloader/archiver tool to download podcast episodes
       - homepage.weight=800
