@@ -49,7 +49,7 @@ services:
       INFERENCE_ENABLE_AUTO_SUMMARIZATION: false 
 
     labels:
-      - homepage.group=Karakeep
+      - homepage.group=Office
       - homepage.name=Karakeep
       - homepage.href=http://${SERVER_URL}:${PORT_KARAKEEP}
       - homepage.icon=karakeep
@@ -82,14 +82,14 @@ services:
       - --hide-scrollbars
 
     labels:
-      - homepage.group=Karakeep
-      - homepage.name=Chrome
+      - homepage.group=Back End
+      - homepage.name=Chrome | Karakeep
       - homepage.icon=chrome
 
     restart: unless-stopped
 
   karakeep-meilisearch:
-    image: getmeili/meilisearch:v1.27
+    image: getmeili/meilisearch:v1.31.0
     container_name: karakeep-meilisearch
 
     environment:
@@ -97,8 +97,8 @@ services:
       MEILI_NO_ANALYTICS: true
 
     labels:
-      - homepage.group=Karakeep
-      - homepage.name=Meilisearch
+      - homepage.group=Back End
+      - homepage.name=Meilisearch | Karakeep
       - homepage.description=A search engine featuring a blazing fast RESTful search API
       - homepage.icon=meilisearch
     
@@ -108,15 +108,15 @@ services:
     restart: unless-stopped
     
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:latest
     container_name: ollama
 
     ports:
       - ${PORT_OLLAMA}:11434
 
     labels:
-      - homepage.group=Karakeep
-      - homepage.name=Ollama
+      - homepage.group=Back End
+      - homepage.name=Ollama | Karakeep
       - homepage.icon=ollama
  
     volumes:
