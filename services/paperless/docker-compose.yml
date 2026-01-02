@@ -74,7 +74,7 @@ services:
 
   paperless_broker:
     container_name: paperless_broker
-    image: redis:8.2
+    image: redis:alpine
 
     networks:
       - paperless-net
@@ -87,12 +87,6 @@ services:
 
     volumes:
       - ${DBDIR}/paperless-redis:/data
-
-    healthcheck:
-      interval: 600s
-      retries: 5
-      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
-      timeout: 45s
 
     deploy:
         resources:

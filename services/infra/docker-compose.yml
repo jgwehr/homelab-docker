@@ -29,6 +29,7 @@ services:
     labels:
       - diun.enable=true
       - homepage.group=Back End
+      - homepage.icon=tsd-proxy
       - homepage.name=Docker Socket Proxy
 
     volumes:
