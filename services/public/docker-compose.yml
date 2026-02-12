@@ -27,10 +27,9 @@ services:
       EMAIL: ${EMAIL_ADMIN}
       DUCKDNS_API_TOKEN: ${DUCKDNS_TOKEN}
       
-      # BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
+      BOUNCER_CADDY_TOKEN: ${BOUNCER_CADDY_TOKEN}
 
     labels:
-      - diun.enable=true
       - homepage.group=Wild West
       - homepage.name=Caddy
       - homepage.icon=caddy
