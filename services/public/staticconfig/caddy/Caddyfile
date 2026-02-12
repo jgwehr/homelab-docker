@@ -111,6 +111,13 @@ ghs-server.{$DOMAIN} {
   reverse_proxy @websockets gloomhaven-server:8080
 }
 
+immich.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy immich_public-proxy:3000
+}
+
 jelly.{$DOMAIN} {
   import headers
   import main

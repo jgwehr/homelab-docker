@@ -24,16 +24,18 @@ The following apps / technologies are grouped into `./services/`.
 | change-detect |  | <img src="https://github.com/dgtlmoon/changedetection.io/blob/d5fd22f693d398b9f23a84469b2459b59b02b453/changedetectionio/static/favicons/android-chrome-192x192.png" width="32" alt="ChangeDetection.io"> ChangeDetection.io <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/chrome.png" width="32" alt="Chrome" /> Chrome |
 | dashboard |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/homepage.png" width="32" alt="Homepage" /> Homepage |
 | downloads |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/qbittorrent.png" width="32" alt="qBitTorrent" /> qBitTorrent <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/gluetun.png" width="32" alt="Gluetun" /> Gluetun <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/radarr.png" width="32" alt="Radarr" /> Radarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/sonarr.png" width="32" alt="Sonarr" /> Sonarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/lidarr.png" width="32" alt="Lidarr" /> Lidarr <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/prowlarr.png" width="32" alt="Prowlaar" /> Prowlaar <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/metube.png" width="32" alt="Metube" /> Metube + `PodGrab` |
+| immich |  | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/immich.png" width="32" alt="Immich"> Immich <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/immich.png" width="32" alt="Immich Machine Learning"> Immich Machine Learning <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/immich-public-proxy.png" width="32" alt="Immich Public Proxy"> Immich Public Proxy <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redis.png" width="32" alt="Redis"> Redis <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
 | events |  | <img src="https://github.com/lukevella/rallly/blob/main/apps/web/public/favicon-32x32.png?raw=true" width="32" alt="Rallly"> Rallly <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
 | gloomhaven |  | <img src="https://github.com/Lurkars/gloomhavensecretariat/blob/main/src/assets/icons/icon-masked-72x72.png" width="32" alt="Gloomhaven Secretariat" />Gloomhaven Secretariat |
 | infra | Required | `docker socket proxy` |
 | media-request |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyseerr.png" width="32" alt="Jellyseerr" /> Jellyseerr |
 | media-streaming |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin + `iSponsorBlockTV`|
 | monitor |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/scrutiny.png" width="32" alt="Scrutiny" /> Scrutiny <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/speedtest-tracker.png" width="32" alt="Speedtest Tracker" /> Speedtest Tracker <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma |
-| paperless |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Paperless ngx" /> Paperless-ngx <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
+| paperless |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Paperless ngx" /> Paperless-ngx <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redis.png" width="32" alt="Redis"> Redis |
 | public | Reverse Proxy and DDNS | <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS |
 | recipes |  | <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/svg/tandoor-recipes.svg" width="32" alt="Tandoor Recipes" /> Tandoor Recipes <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
 | security | Run this if you're running `public` | ~~<img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/crowdsec.png" width="32" alt="CrowdSec" /> CrowdSec~~ + Endlessh |
+| bookmarks |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/karakeep.png" width="32" alt="Karakeep" /> Karakeep <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/Ollama.png" width="32" alt="Ollama" /> Ollama <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/meilisearch.png" width="32" alt="Meili Search" /> Meili Search <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/chrome.png" width="32" alt="Chrome" /> Chrome |
 
 ### Explanation
 Groupings are chosen based on context and dependencies. Most Services "stacks" should work fine without any other services (some exceptions exist) - allowing you to take from this repo what you care about and ignore the rest.
@@ -87,12 +89,9 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
 │  ├── cache/
 │  └── logs/
 └── /mnt/storage/
+   ├── ai-models/
    ├── db/
-   ├── staticfiles/
-   │  ├── icons/
-   │  ├── paperless/
-   │  ├── tandoor_media/
-   │  └── wallpaper/
+   ├── documents/
    ├── downloads/
    │  ├── audiobooks/
    │  ├── movies/
@@ -101,13 +100,19 @@ Recommendations via *[multiple docker files](https://nickjanetakis.com/blog/dock
    │  ├── podcasts/
    │  ├── tv/
    │  └── youtube/
-   └── media/
-      ├── audiobooks/
-      ├── music/
-      ├── pictures/
-      ├── podcasts/
-      ├── movies/
-      └── tv/
+   ├── media/
+   |  ├── audiobooks/
+   |  ├── music/
+   |  ├── pictures/
+   |  ├── podcasts/
+   |  ├── movies/
+   |  └── tv/
+   ├── photos/
+   └── staticfiles/
+      ├── icons/
+      ├── paperless/
+      ├── tandoor_media/
+      └── wallpaper/
 ```
 
 ### Directories may be created with the following cmds
