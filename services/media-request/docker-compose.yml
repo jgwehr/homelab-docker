@@ -22,7 +22,6 @@ services:
       TZ: ${TZ}
 
     labels:
-      - diun.enable=true
       - homepage.group=Media
       - homepage.name=Request Movies and TV Shows
       - homepage.icon=jellyseerr

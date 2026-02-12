@@ -42,7 +42,6 @@ services:
       FTLCONF_webserver_interface_theme: ${PIHOLE_WEBTHEME:-default-dark}
 
     labels:
-      - diun.enable=true
       - homepage.group=Network
       - homepage.name=Pihole
       - homepage.icon=pi-hole
@@ -98,7 +97,6 @@ services:
       CLIENT_RETRY_DELAY_SECONDS: 120
     
     labels:
-      - diun.enable=true
       - homepage.group=Network
       - homepage.name=Nebula Sync
       - homepage.description=Keeps Pi-Holes in sync
@@ -123,7 +121,6 @@ services:
       - command: rm -f /opt/unbound/etc/unbound/srv-records.conf
 
     labels:
-      - diun.enable=true
       - homepage.group=Network
       - homepage.name=Unbound
       - homepage.icon=pi-hole-unbound

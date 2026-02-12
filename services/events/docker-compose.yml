@@ -37,7 +37,6 @@ services:
       SMTP_PWD: ${RALLLY_SMTP_PASSWORD}
     
     labels:
-      - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Rallly
       - homepage.icon=/icons/rallly.png

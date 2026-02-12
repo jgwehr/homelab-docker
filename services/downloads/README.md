@@ -40,13 +40,14 @@ I don't use these, but there are options to help with downloading private/restri
 ### Ports
 
 - `PORT_GLUETUN_CONTROL` - API Access for things like Homepage (and the Gluetun Port Manager) 
-- `PORT_TORRENT_UI`
-- `PORT_TORRENT_TCP`
-- `PORT_TORRENT_UDP`
 - `PORT_PODGRAB`
 - `PORT_PROWLARR_UI`
-- `PORT_SONARR_UI`
 - `PORT_RADARR_UI`
+- `PORT_SONARR_UI`
+- `PORT_SORTARR`
+- `PORT_TORRENT_TCP`
+- `PORT_TORRENT_UDP`
+- `PORT_TORRENT_UI`
 - `PORT_YOUTUBE`
 
 ### URLs

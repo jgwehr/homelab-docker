@@ -30,7 +30,7 @@ The following apps / technologies are grouped into `./services/`.
 | infra | Required | `docker socket proxy` |
 | media-request |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyseerr.png" width="32" alt="Jellyseerr" /> Jellyseerr |
 | media-streaming |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/jellyfin.png" width="32" alt="Jellyfin" /> Jellyfin + `iSponsorBlockTV`|
-| monitor |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle <img src="https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png" width="32" alt="Diun" /> Diun <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/scrutiny.png" width="32" alt="Scrutiny" /> Scrutiny <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/speedtest-tracker.png" width="32" alt="Speedtest Tracker" /> Speedtest Tracker <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma |
+| monitor |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/dozzle.png" width="32" alt="Dozzle" /> Dozzle <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/scrutiny.png" width="32" alt="Scrutiny" /> Scrutiny <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/speedtest-tracker.png" width="32" alt="Speedtest Tracker" /> Speedtest Tracker <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/uptime-kuma.png" width="32" alt="Uptime Kuma" /> Uptime Kuma |
 | paperless |  | <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/paperless-ng.png" width="32" alt="Paperless ngx" /> Paperless-ngx <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redis.png" width="32" alt="Redis"> Redis |
 | public | Reverse Proxy and DDNS | <img src="https://caddy-forum-uploads.s3.amazonaws.com/original/2X/3/3859a874d26640df74a3b951d8052a3c3e749eed.png" width="32" alt="Caddy" /> Caddy <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/duckdns.png" width="32" alt="DuckDNS" /> DuckDNS |
 | recipes |  | <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/svg/tandoor-recipes.svg" width="32" alt="Tandoor Recipes" /> Tandoor Recipes <img src="https://github.com/walkxcode/Dashboard-Icons/blob/main/png/postgres.png" width="32" alt="PostGres" /> PostGres |
@@ -50,7 +50,7 @@ Groupings are chosen based on context and dependencies. Most Services "stacks" s
 1. Execute a standard docker compose up, eg `docker compose up -d`
 
 ### Notes
-Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability. Instead, I use Diun and dockcheck.sh currently. 
+Watchtower is intentionally avoided based off advice from the Selfhosted.show podcast. The idea is to have full control over the versions of containers (rather than automated updates) to improve reliability. Instead, I use dedicated apps like dockchecksh, diun, or dockpeek.
 
 
 # Install / Beginning

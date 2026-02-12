@@ -28,7 +28,6 @@ services:
       TZ: ${TZ}
 
     labels:
-      - diun.enable=true
       - homepage.group=Lifestyle
       - homepage.name=Recipes and Meal Planning
       - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}

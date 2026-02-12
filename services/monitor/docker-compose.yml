@@ -34,41 +34,6 @@ services:
           memory: 128M
     restart: always
 
-  diun:
-    container_name: diun
-    image: ghcr.io/crazy-max/diun:4.28
-
-    networks:
-      - socky_proxy-net
-      
-    command: serve
-
-    environment:
-      TZ: ${TZ}
-      LOG_JSON: "true"
-      DIUN_NOTIF_DISCORD_WEBHOOKURL: ${DIUN_NOTIF_DISCORD_WEBHOOKURL}
-      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
-
-    labels:
-      - homepage.group=System
-      - homepage.name=Diun
-      - homepage.icon=/icons/diun.png
-      - homepage.description=Docker Image update Notifications
-    
-    volumes:
-      - ./staticconfig/diun/diun.yml:/diun.yml:ro
-      - ${CONFIGDIR}/diun:/data
-
-    healthcheck:
-      test: ["CMD", "diun", "--version"]
-
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 32M
-    restart: unless-stopped
-
   scrutiny:
     container_name: scrutiny
     image: ghcr.io/analogj/scrutiny:master-omnibus
