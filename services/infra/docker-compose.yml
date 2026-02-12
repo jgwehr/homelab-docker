@@ -32,12 +32,12 @@ services:
       BUILD: 0 #
       COMMIT: 0 #
       CONFIGS: 0 #
-      CONTAINERS: 1 # crowdsec, diun, homepage. dozzle
+      CONTAINERS: 1 # crowdsec, homepage. dozzle
       DISABLE_IPV6: 0 #
       DISTRIBUTION: 0 #
       EVENTS: 1 #
       EXEC: 0 #
-      IMAGES: 1 # diun
+      IMAGES: 1 # 
       INFO: 1 # crowdsec
       LOG_LEVEL: info #
       NETWORKS: 0 #

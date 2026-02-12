@@ -65,7 +65,7 @@ cd $varOptDir/services/events && docker compose down # Rallly
 cd $varOptDir/services/gloomhaven && docker compose down # GHS
 cd $varOptDir/services/media-request && docker compose down # Jellyseerr
 cd $varOptDir/services/media-streaming && docker compose down # Jellyfin
-cd $varOptDir/services/monitor && docker compose down # uptime kuma, dozzle, diun, speedtracker
+cd $varOptDir/services/monitor && docker compose down # uptime kuma, dozzle, speedtracker
 cd $varOptDir/services/paperless && docker compose down # paperless
 cd $varOptDir/services/public && docker compose down # Caddy and Duckdns
 cd $varOptDir/services/recipes && docker compose down # Tandoor
@@ -207,7 +207,7 @@ cd $varOptDir/services/events && docker compose up -d # Rallly
 cd $varOptDir/services/gloomhaven && docker compose up -d # GHS
 cd $varOptDir/services/media-request && docker compose up -d # Jellyseerr
 cd $varOptDir/services/media-streaming && docker compose up -d # Jellyfin
-cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, diun, speedtracker
+cd $varOptDir/services/monitor && docker compose up -d # uptime kuma, dozzle, speedtracker
 cd $varOptDir/services/public && docker compose up -d # Caddy and Duckdns
 cd $varOptDir/services/recipes && docker compose up -d # Tandoor
 cd $varOptDir/services/security && docker compose up -d # Endlessh, Crowdsec

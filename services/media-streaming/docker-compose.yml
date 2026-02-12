@@ -29,7 +29,6 @@ services:
       JELLYFIN_PublishedServerUrl: ${SERVER_URL}:${PORT_HTPC_HTTP} #optional. The Server URL to publish in udp Auto Discovery response.
 
     labels:
-      - diun.enable=true
       - homepage.group=Media
       - homepage.name=Jellyfin
       - homepage.icon=jellyfin

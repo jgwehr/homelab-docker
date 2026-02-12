@@ -67,7 +67,6 @@ services:
       TOKEN: ${DUCKDNS_TOKEN}
 
     labels:
-      - diun.enable=true
       - homepage.group=Wild West
       - homepage.name=DuckDNS
       - homepage.icon=duckdns

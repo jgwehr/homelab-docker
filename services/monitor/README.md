@@ -1,7 +1,6 @@
 ## Included projects
 
 - https://github.com/amir20/dozzle
-- https://github.com/crazy-max/diun
 - https://github.com/AnalogJ/scrutiny
 - https://github.com/alexjustesen/speedtest-tracker
 - https://github.com/louislam/uptime-kuma
@@ -31,8 +30,6 @@
 
 ### Functionality
 - `HOST_NAME` - Universal. Helps orient you within Dozzle
-- `DIUN_NOTIF_DISCORD_WEBHOOKURL` - Refer to Diun's instructions. I use Discord
-- `./staticconfig/diun/diun.yml` - Refer to Diun's instructions. You may need to edit this file for your needs.
 
 - `SPEEDTEST_APP_KEY` - I don't really understand why this is needed, but it is. Nor why you have to run a container to be able to set its environment. Once the container is running, execute this command and paste the result into your .env: `php artisan key:generate --show`. Alternatively, visit https://speedtest-tracker.dev/ . More information here: https://github.com/alexjustesen/speedtest-tracker/releases/tag/v0.20.0
 - `SPEEDTEST_SCHEDULE` - Provide a CRON expression. I don't understand why this was moved from the UI to environment variables...
