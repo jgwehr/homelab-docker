@@ -8,7 +8,12 @@ services:
 
   gluetun:
     container_name: gluetun
-    image: ghcr.io/qdm12/gluetun:v3.40.3
+    image: ghcr.io/qdm12/gluetun:v3.41.0
+
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     
     environment:
       PUID: ${PUID}
@@ -16,14 +21,14 @@ services:
       TZ: ${TZ}
 
       VPN_SERVICE_PROVIDER: ${VPN_SERVICE_PROVIDER}
-      OPENVPN_USER: ${VPN_USER}
-      OPENVPN_PASSWORD: ${VPN_PASSWORD}
+      VPN_TYPE: wireguard
+      WIREGUARD_PRIVATE_KEY: ${VPN_WIREGUARD_PRIVATE_KEY}
+      SERVER_COUNTRIES: ${VPN_SERVER_COUNTRIES}
 
       # ProtonVPN Port Forwarding, see https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
-      #VPN_PORT_FORWARDING_UP_COMMAND: 'wget --retry-connrefused --tries=6 -qO- --post-data=json={\"listen_port\":{{PORTS}}} http://${SERVER_URL}:${PORT_TORRENT_UI}/api/v2/app/setPreferences'
+      VPN_PORT_FORWARDING_PROVIDER: ${VPN_SERVICE_PROVIDER}
       PORT_FORWARD_ONLY: 'on' #Filter only port-forwarding enabled (aka p2p) servers by setting it to on. It defaults to off.
       VPN_PORT_FORWARDING: 'on'
-      SERVER_HOSTNAMES: ${VPN_HOSTNAMES}
 
       # Updating qBittorrent
       # For this to work, the qBittorrent web UI server must be enabled and listening on port 8080 and the Web UI "Bypass authentication for clients on localhost" must be ticked (json key bypass_local_auth)
@@ -47,18 +52,11 @@ services:
       - homepage.widget.fields='["region","country","port_forwarded"]'
       - homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
       - homepage.widget.key=${GLUETUN_APIKEY}
-      - homepage.widget.version=2
-
-
-    devices:
-      - /dev/net/tun:/dev/net/tun
+      - homepage.widget.version=2    
 
     volumes:
       - ${CONFIGDIR}/gluetun:/gluetun
       - ${CONFIGDIR}/gluetun/config.toml:/gluetun/auth/config.toml
-
-    cap_add:
-      - NET_ADMIN
     
     restart: unless-stopped
 
@@ -80,7 +78,6 @@ services:
       TZ: ${TZ}
 
     labels:
-      - diun.enable=true
       - homepage.group=Downloads
       - homepage.name=Indexers
       - homepage.icon=prowlarr
@@ -118,7 +115,6 @@ services:
         WEBUI_PORT: 8080
 
     labels:
-      - diun.enable=true
       - homepage.group=Downloads
       - homepage.name=Torrents
       - homepage.icon=qbittorrent
@@ -162,7 +158,6 @@ services:
       TZ: ${TZ}
 
     labels:
-      - diun.enable=true
       - homepage.group=Downloads
       - homepage.name=Music
       - homepage.icon=lidarr
@@ -202,7 +197,6 @@ services:
       TZ: ${TZ}
 
     labels:
-      - diun.enable=true
       - homepage.group=Downloads
       - homepage.name=Movies
       - homepage.icon=radarr
@@ -242,7 +236,6 @@ services:
       TZ: ${TZ}
 
     labels:
-      - diun.enable=true
       - homepage.group=Downloads
       - homepage.name=TV Shows
       - homepage.icon=sonarr
@@ -313,7 +306,6 @@ services:
       - ${PORT_YOUTUBE}:8081
 
     labels:
-      - diun.enable=true
       - homepage.group=Downloads
       - homepage.name=Youtube Downloader
       - homepage.icon=metube
