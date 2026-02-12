@@ -3,6 +3,15 @@
   #debug # this is optional; makes Caddy log more details
 
   admin 0.0.0.0:2019
+
+
+  order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
+  crowdsec {
+    api_url http://crowdsec:8080/ # the URL where your CrowdSec LAPI can be reached. Caddy connects directly, so use the default port 8080
+    api_key {$BOUNCER_CADDY_TOKEN} # the secret API key for the bouncer to authenticate against LAPI
+    ticker_interval 15s # how often to poll the LAPI for updated decisions
+  }  
+      
       
 }
 
@@ -32,6 +41,7 @@
 }
 
 (main) {
+  crowdsec
   
   respond /robots.txt 200 {
     body "User-agent: *

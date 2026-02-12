@@ -1,61 +1,79 @@
 source: docker
+use_container_labels: true
+
+---
+source: docker
 container_name:
  - caddy
 labels:
   type: caddy
+
 ---
-filenames:
-  - /var/log/auth.log
+source: docker
+container_name:
+  - immich_server
 labels:
-  type: syslog
+  type: immich
+
 ---
 source: docker
 container_name:
  - uptime-kuma
 labels:
   type: uptime-kuma
+
+---
+source: docker
+container_name:
+ - jellyfin
+labels:
+  type: jellyfin
+
 ---
 source: docker
 container_name:
  - jellyseer
 labels:
   type: jellyseerr
+
+---
+source: docker
+container_name:
+ - paperless
+labels:
+  type: paperless-ngx
+
 ---
 source: docker
 container_name:
  - paperless_db
-labels:
-  type: postgres 
----
-source: docker
-container_name:
  - rallly_db
-labels:
-  type: postgres 
----
-source: docker
-container_name:
  - tandoor_db
+ - immich_postrgres
 labels:
-  type: postgres 
+  type: postgres
+
 ---
 source: docker
 container_name:
  - endlessh
 labels:
   type: endlessh
+
 ---
 source: docker
 container_name:
  - sonarr
 labels:
   type: sonarr
+
 ---
 source: docker
 container_name:
  - radarr
 labels:
   type: radarr
+
 ---
 source: docker
 container_name:
