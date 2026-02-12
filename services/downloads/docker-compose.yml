@@ -318,3 +318,45 @@ services:
 
     restart: unless-stopped
     
+####################
+# Library Maintenance
+####################
+
+  sortarr:
+    container_name: sortarr
+    image: ghcr.io/jaredharper1/sortarr:latest
+  
+
+    ports:
+      - ${PORT_SORTARR}:8787
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+      # SORTARR_CONFIG_PATH: /data/Sortarr.env
+      CACHE_SECONDS: 300
+
+      RADARR_URL: http://${SERVER_URL}:${PORT_RADARR_UI}
+      RADARR_API_KEY: ${HOMEPAGE_RADARR_API}
+      SONARR_URL: http://${SERVER_URL}:${PORT_SONARR_UI}
+      SONARR_API_KEY: ${HOMEPAGE_SONARR_API}
+      # Optional: Use Reverse Proxy? ie. NGINX, Cloudflare, Caddy, Traefik, Apache? Use this:
+      # eg. SORTARR_PROXY_HOPS=1
+      # Optional: Map container paths to host paths for the UI
+      # eg. RADARR_PATH_MAP=/movies:/mnt/media/movies
+    # volumes:
+      # Optional: Mount .env for persistence if using default paths
+      # eg. /path/to/config/.env:/app/.env
+
+    labels:
+      - homepage.group=Downloads
+      - homepage.name=Sortarr
+      - homepage.icon=sortarr
+      - homepage.href=http://${SERVER_URL}:${PORT_SORTARR}
+
+    volumes:
+      - ${DIR_DB}/sortarr:/data
+
+    restart: unless-stopped
