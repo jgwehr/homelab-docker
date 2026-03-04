@@ -51,6 +51,7 @@ services:
       - homepage.widget.version=6
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PIHOLE_WEB}
       - homepage.widget.key=${PIHOLE_PASSWORD}
+      - dockpeek.tags=pinned
 
     volumes:
       # For persisting Pi-hole's databases and common configuration file
@@ -135,7 +136,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 128M
+          memory: 256M
     healthcheck:
       disable: true
     restart: unless-stopped

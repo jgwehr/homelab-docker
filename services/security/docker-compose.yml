@@ -48,6 +48,7 @@ services:
       - homepage.widget.username=homepageapi
       - homepage.widget.password=${HOMEPAGE_CROWDSEC_API}
       - homepage.widget.limit24h=true
+      - dockpeek.tags=pinned
 
     healthcheck: #https://github.com/crowdsecurity/crowdsec/issues/3603
       test: ["CMD", "cscli", "lapi", "status"]

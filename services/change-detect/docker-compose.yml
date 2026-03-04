@@ -57,6 +57,7 @@ services:
       - homepage.group=Back End
       - homepage.name=Chrome
       - homepage.icon=chrome
+      - dockpeek.tags=pinned
 
     deploy:
       resources:

@@ -53,6 +53,7 @@ services:
       - homepage.name=Docker Logs
       - homepage.icon=dozzle
       - homepage.href=http://${SERVER_URL}:${PORT_DOZZLE}
+      - dockpeek.tags=infra
 
     deploy:
       resources:
@@ -77,6 +78,7 @@ services:
       - homepage.description=Harddrive Health Monitoring
       - homepage.widget.type=scrutiny
       - homepage.widget.url=http://${SERVER_URL}:${PORT_SCRUTINY}
+      - dockpeek.tags=infra
 
     devices:
       - /dev/sda
@@ -116,8 +118,8 @@ services:
 
       APP_KEY: ${SPEEDTEST_APP_KEY}
       APP_TIMEZONE: ${TZ}
-      DB_CONNECTION: sqlite
       DISPLAY_TIMEZONE: ${TZ}
+      DB_CONNECTION: sqlite
       PRUNE_RESULTS_OLDER_THAN: 30
       PUBLIC_DASHBOARD: true
       SPEEDTEST_SCHEDULE: ${SPEEDTEST_SCHEDULE}
@@ -130,6 +132,7 @@ services:
       - homepage.href=http://${SERVER_URL}:${PORT_SPEEDTEST}
       - homepage.widget.type=speedtest
       - homepage.widget.url=http://${SERVER_URL}:${PORT_SPEEDTEST}
+      - dockpeek.tags=infra
 
     volumes:
       - ${CONFIGDIR}/speedtest-tracker:/config
@@ -158,6 +161,7 @@ services:
       - homepage.widget.type=uptimekuma
       - homepage.widget.url=http://${SERVER_URL}:${PORT_UPKUMA}
       - homepage.widget.slug=default
+      - dockpeek.tags=infra
 
     volumes:
       - ${CONFIGDIR}/uptime-kuma:/app/data

@@ -48,11 +48,12 @@ services:
       - homepage.name=VPN for Downloads
       - homepage.icon=gluetun
       - homepage.weight=100
-      - homepage.widget.type=gluetun
-      - homepage.widget.fields='["region","country","port_forwarded"]'
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
-      - homepage.widget.key=${GLUETUN_APIKEY}
-      - homepage.widget.version=2    
+      #- homepage.widget.type=gluetun
+      #- homepage.widget.fields='["region","country","port_forwarded"]'
+      #- homepage.widget.url=http://${SERVER_URL}:${PORT_GLUETUN_CONTROL}
+      #- homepage.widget.key=${GLUETUN_APIKEY}
+      #- homepage.widget.version=2
+      - dockpeek.tags=vpn
 
     volumes:
       - ${CONFIGDIR}/gluetun:/gluetun
@@ -86,6 +87,7 @@ services:
       - homepage.widget.type=prowlarr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PROWLARR_UI}
       - homepage.widget.key=${HOMEPAGE_PROWLARR_API}
+      - dockpeek.tags=vpn
       
     volumes:
       - ${CONFIGDIR}/prowlarr:/config
@@ -124,6 +126,8 @@ services:
       - homepage.widget.url=http://${SERVER_URL}:${PORT_TORRENT_UI}
       - homepage.widget.username=${HOMEPAGE_QBITTORRENT_USERNAME}
       - homepage.widget.password=${HOMEPAGE_QBITTORRENT_PASSWORD}
+      - dockpeek.ports=${PORT_TORRENT_UI}
+      - dockpeek.tags=vpn
 
     volumes:
         - ${CONFIGDIR}/qbt:/config
@@ -166,6 +170,8 @@ services:
       - homepage.widget.type=lidarr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_LIDARR_UI}
       - homepage.widget.key=${HOMEPAGE_LIDARR_API}
+      - dockpeek.ports=${PORT_LIDARR_UI}
+      - dockpeek.tags=vpn
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -205,6 +211,8 @@ services:
       - homepage.widget.type=radarr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_RADARR_UI}
       - homepage.widget.key=${HOMEPAGE_RADARR_API}
+      - dockpeek.ports=${PORT_RADARR_UI}
+      - dockpeek.tags=vpn
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -244,6 +252,8 @@ services:
       - homepage.widget.type=sonarr
       - homepage.widget.url=http://${SERVER_URL}:${PORT_SONARR_UI}
       - homepage.widget.key=${HOMEPAGE_SONARR_API}
+      - dockpeek.ports=${PORT_SONARR_UI}
+      - dockpeek.tags=vpn
 
     volumes:
         - /etc/localtime:/etc/localtime:ro
@@ -322,41 +332,41 @@ services:
 # Library Maintenance
 ####################
 
-  sortarr:
-    container_name: sortarr
-    image: ghcr.io/jaredharper1/sortarr:latest
-  
-
-    ports:
-      - ${PORT_SORTARR}:8787
-
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-
-      # SORTARR_CONFIG_PATH: /data/Sortarr.env
-      CACHE_SECONDS: 300
-
-      RADARR_URL: http://${SERVER_URL}:${PORT_RADARR_UI}
-      RADARR_API_KEY: ${HOMEPAGE_RADARR_API}
-      SONARR_URL: http://${SERVER_URL}:${PORT_SONARR_UI}
-      SONARR_API_KEY: ${HOMEPAGE_SONARR_API}
-      # Optional: Use Reverse Proxy? ie. NGINX, Cloudflare, Caddy, Traefik, Apache? Use this:
-      # eg. SORTARR_PROXY_HOPS=1
-      # Optional: Map container paths to host paths for the UI
-      # eg. RADARR_PATH_MAP=/movies:/mnt/media/movies
-    # volumes:
-      # Optional: Mount .env for persistence if using default paths
-      # eg. /path/to/config/.env:/app/.env
-
-    labels:
-      - homepage.group=Downloads
-      - homepage.name=Sortarr
-      - homepage.icon=sortarr
-      - homepage.href=http://${SERVER_URL}:${PORT_SORTARR}
-
-    volumes:
-      - ${DIR_DB}/sortarr:/data
-
-    restart: unless-stopped
+  #sortarr:
+  #  container_name: sortarr
+  #  image: ghcr.io/jaredharper1/sortarr:latest
+  #
+#
+  #  ports:
+  #    - ${PORT_SORTARR}:8787
+#
+  #  environment:
+  #    PUID: ${PUID}
+  #    PGID: ${PGID}
+  #    TZ: ${TZ}
+#
+  #    # SORTARR_CONFIG_PATH: /data/Sortarr.env
+  #    CACHE_SECONDS: 300
+#
+  #    RADARR_URL: http://${SERVER_URL}:${PORT_RADARR_UI}
+  #    RADARR_API_KEY: ${HOMEPAGE_RADARR_API}
+  #    SONARR_URL: http://${SERVER_URL}:${PORT_SONARR_UI}
+  #    SONARR_API_KEY: ${HOMEPAGE_SONARR_API}
+  #    # Optional: Use Reverse Proxy? ie. NGINX, Cloudflare, Caddy, Traefik, Apache? Use this:
+  #    # eg. SORTARR_PROXY_HOPS=1
+  #    # Optional: Map container paths to host paths for the UI
+  #    # eg. RADARR_PATH_MAP=/movies:/mnt/media/movies
+  #  # volumes:
+  #    # Optional: Mount .env for persistence if using default paths
+  #    # eg. /path/to/config/.env:/app/.env
+#
+  #  labels:
+  #    - homepage.group=Downloads
+  #    - homepage.name=Sortarr
+  #    - homepage.icon=sortarr
+  #    - homepage.href=http://${SERVER_URL}:${PORT_SORTARR}
+#
+  #  volumes:
+  #    - ${DIR_DB}/sortarr:/data
+#
+  #  restart: unless-stopped

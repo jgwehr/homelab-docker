@@ -59,6 +59,7 @@ services:
       - homepage.group=Back End
       - homepage.icon=tsd-proxy
       - homepage.name=Docker Socket Proxy
+      - dockpeek.tags=infra
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -131,6 +132,7 @@ services:
       - homepage.group=Back End
       - homepage.icon=tsd-proxy
       - homepage.name=Docker Socket Proxy (StartStop)
+      - dockpeek.tags=infra
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
