@@ -6,6 +6,33 @@ services:
 # Monitor
 ####################
 
+  dockpeek:
+    image: ghcr.io/dockpeek/dockpeek:latest
+    container_name: dockpeek
+
+    depends_on:
+      - socky_proxy_startstop
+
+    environment:
+      SECRET_KEY: ${DOCKPEEK_TOKEN}
+      USERNAME: ${DOCKPEEK_ADMIN_USER}
+      PASSWORD: ${DOCKPEEK_ADMIN_PASS}
+      DOCKER_HOST: tcp://socky_proxy_startstop:${PORT_SOCKY_PROXY_STARTSTOP} # Connect via socket proxy
+
+      UPDATE_FLOATING_TAGS: minor
+
+    ports:
+      - ${PORT_DOCKPEEK}:8000
+
+    labels:
+      - homepage.group=System
+      - homepage.name=Dockpeek
+      - homepage.icon=dockpeek
+      - homepage.href=http://${SERVER_URL}:${PORT_DOCKPEEK}
+      - dockpeek.tags=infra
+    
+    restart: unless-stopped
+
   dozzle:
     container_name: dozzle
     image: amir20/dozzle:latest

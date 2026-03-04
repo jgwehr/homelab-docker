@@ -1,6 +1,6 @@
 ## Included projects
 
-- https://github.com/Tecnativa/docker-socket-proxy
+- https://docs.linuxserver.io/images/docker-socket-proxy/
 
 ## Dependencies
 
@@ -14,6 +14,7 @@
 
 ### Ports
 - `PORT_SOCKY_PROXY`
+- `PORT_SOCKY_PROXY_STARTSTOP`
 
 ### URLs
 - `SERVER_URL` - universal. your internal url
