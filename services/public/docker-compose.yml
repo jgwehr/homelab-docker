@@ -12,6 +12,10 @@ services:
       context: ./dockerfiles
       dockerfile: caddy.dockerfile #Custom build which uses duckdns. Control image version in this file
 
+    depends_on:
+      crowdsec:
+        condition: service_healthy
+
     networks:
       - caddy-net
 
@@ -36,6 +40,7 @@ services:
       - homepage.description=Reverse Proxy
       - homepage.widget.type=caddy
       - homepage.widget.url=http://${SERVER_URL}:${PORT_CADDY_ADMIN} # default admin port is 2019
+      - dockpeek.tags=pinned,custom-build
 
     volumes:
       - ./staticconfig/caddy/Caddyfile:/etc/caddy/Caddyfile:ro # Required. Needs to be an extension-less file NOT a directory
@@ -62,7 +67,7 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      TZ: ${TZ}
+      TZ: ${TZ}test,zwave,ha
       SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
       TOKEN: ${DUCKDNS_TOKEN}
 

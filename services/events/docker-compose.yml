@@ -69,9 +69,10 @@ services:
       POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD}
 
     labels:
-      - homepage.group=Back End
+      - homepage.group=Database
       - homepage.name=Rallly | Postgres DB
       - homepage.icon=postgres
+      - dockpeek.tags=pinned,database
 
     volumes:
       - ${DBDIR}/rallly:/var/lib/postgresql/data

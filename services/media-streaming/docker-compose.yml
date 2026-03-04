@@ -61,6 +61,12 @@ services:
 
     
     network_mode: host
+
+    labels:
+      - homepage.group=Back End
+      - homepage.name=iSponsorBlockTV
+      - homepage.description=Silently mutes and skips YouTube ads
+      - dockpeek.tags=host
     
     volumes:
     - ${CONFIGDIR}/isponsorblocktv:/app/data

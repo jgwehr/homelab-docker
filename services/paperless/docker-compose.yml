@@ -79,7 +79,7 @@ services:
       - paperless-net
 
     labels:
-      - homepage.group=Back End
+      - homepage.group=Brokers
       - homepage.name=Paperless | Redis
       - homepage.icon=redis
       - homepage.weight=850
@@ -107,7 +107,7 @@ services:
       POSTGRES_PASSWORD: ${PAPERLESS_DB_PASSWORD}
 
     labels:
-      - homepage.group=Back End
+      - homepage.group=Databases
       - homepage.name=Paperless | Postgres DB
       - homepage.icon=postgres
       - homepage.weight=800

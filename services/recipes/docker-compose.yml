@@ -32,6 +32,7 @@ services:
       - homepage.name=Recipes and Meal Planning
       - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}
       - homepage.icon=tandoor-recipes
+      - dockpeek.tags=pinned
 
     volumes:
       - ${DIR_STATIC}/tandoor_media:/opt/recipes/mediafiles
@@ -54,10 +55,11 @@ services:
       - ./staticconfig/tandoor.env
 
     labels:
-      - homepage.group=Back End
+      - homepage.group=Databases
       - homepage.name=Tandoor | Postgres DB
       - homepage.icon=postgres
       - homepage.weight=800
+      - dockpeek.tags=pinned
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data

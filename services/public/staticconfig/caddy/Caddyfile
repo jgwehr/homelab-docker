@@ -9,7 +9,7 @@
   crowdsec {
     api_url http://crowdsec:8080/ # the URL where your CrowdSec LAPI can be reached. Caddy connects directly, so use the default port 8080
     api_key {$BOUNCER_CADDY_TOKEN} # the secret API key for the bouncer to authenticate against LAPI
-    ticker_interval 15s # how often to poll the LAPI for updated decisions
+    ticker_interval 30s # how often to poll the LAPI for updated decisions
   }  
       
       
