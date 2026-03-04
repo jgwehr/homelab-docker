@@ -25,9 +25,9 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
+      ALLOW_RESTARTS: 0 #
       ALLOW_START: 0 #
       ALLOW_STOP: 0 #
-      ALLOW_RESTARTS: 0 #
       AUTH: 0 #
       BUILD: 0 #
       COMMIT: 0 #
@@ -39,7 +39,7 @@ services:
       EXEC: 0 #
       IMAGES: 1 # 
       INFO: 1 # crowdsec
-      LOG_LEVEL: info #
+      LOG_LEVEL: warning #
       NETWORKS: 0 #
       NODES: 0 #
       PING: 1 #
@@ -65,6 +65,78 @@ services:
     
     healthcheck:
       test: wget --spider http://${SERVER_URL}:${PORT_SOCKY_PROXY}/version || exit 1
+      interval: "30s"
+      timeout: "5s"
+      retries: 3
+      start_period: "30s"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 32M
+
+    restart: always
+
+  socky_proxy_startstop:
+    container_name: socky_proxy_startstop
+    image: lscr.io/linuxserver/socket-proxy:latest
+
+    read_only: true
+    tmpfs:
+      - /run
+  
+    networks:
+      - socky_proxy-net
+
+    ports:
+      - ${PORT_SOCKY_PROXY_STARTSTOP}:2375
+
+
+    environment:
+      # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
+      #   0 - revoke access
+      #   1 - grant access
+      ALLOW_RESTARTS: 1 # dockpeek
+      ALLOW_START: 1 # dockpeek
+      ALLOW_STOP: 1 # dockpeek
+      AUTH: 0 #
+      BUILD: 0 #
+      COMMIT: 0 #
+      CONFIGS: 0 #
+      CONTAINERS: 1 # dockpeek
+      DISABLE_IPV6: 0 #
+      DISTRIBUTION: 0 #
+      EVENTS: 1 #
+      EXEC: 0 #
+      IMAGES: 1 # dockpeek
+      INFO: 1 # dockpeek
+      LOG_LEVEL: info #
+      NETWORKS: 1 # dockpeek
+      NODES: 0 #
+      PING: 1 # dockpeek
+      PLUGINS: 0 #
+      POST: 1 # dockpeek
+      SECRETS: 0 #
+      SERVICES: 0 #
+      SESSION: 0 #
+      SWARM: 0 #
+      SYSTEM: 0 #
+      TASKS: 0 #
+      TZ: ${TZ}
+      VERSION: 1 #
+      VOLUMES: 0 #
+
+    labels:
+      - homepage.group=Back End
+      - homepage.icon=tsd-proxy
+      - homepage.name=Docker Socket Proxy (StartStop)
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+    healthcheck:
+      test: wget --spider http://${SERVER_URL}:${PORT_SOCKY_PROXY_STARTSTOP}/version || exit 1
       interval: "30s"
       timeout: "5s"
       retries: 3
