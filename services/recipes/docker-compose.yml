@@ -59,14 +59,15 @@ services:
       - homepage.name=Tandoor | Postgres DB
       - homepage.icon=postgres
       - homepage.weight=800
-      - dockpeek.tags=pinned
+      - dockpeek.tags=pinned,db
 
     volumes:
       - ${DBDIR}/tandoor_db:/var/lib/postgresql/data
 
     healthcheck:
-      interval: 60s
+      interval: 360s
       retries: 10
+      start_period: 30s
       test:
         - CMD
         - pg_isready

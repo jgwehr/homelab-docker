@@ -72,7 +72,7 @@ services:
       - homepage.group=Database
       - homepage.name=Rallly | Postgres DB
       - homepage.icon=postgres
-      - dockpeek.tags=pinned,database
+      - dockpeek.tags=pinned,db
 
     volumes:
       - ${DBDIR}/rallly:/var/lib/postgresql/data
@@ -80,6 +80,7 @@ services:
     healthcheck:
       interval: 60s
       retries: 10
+      start_period: 30s
       test:
         - CMD
         - pg_isready

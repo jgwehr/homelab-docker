@@ -56,6 +56,7 @@ services:
       - homepage.widget.type=karakeep
       - homepage.widget.url=http://${SERVER_URL}:${PORT_KARAKEEP}
       - homepage.widget.key=${KARAKEEP_APIKEY}
+      - dockpeek.tags=ai
 
 
     volumes:

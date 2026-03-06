@@ -17,10 +17,13 @@ services:
       SECRET_KEY: ${DOCKPEEK_TOKEN}
       USERNAME: ${DOCKPEEK_ADMIN_USER}
       PASSWORD: ${DOCKPEEK_ADMIN_PASS}
-      DOCKER_HOST: tcp://socky_proxy_startstop:${PORT_SOCKY_PROXY_STARTSTOP} # Connect via socket proxy
+      DOCKER_HOST: tcp://socky_proxy_startstop:2375 # Connect via socket proxy
 
       UPDATE_FLOATING_TAGS: minor
 
+    networks:
+      - socky_proxy-net
+    
     ports:
       - ${PORT_DOCKPEEK}:8000
 

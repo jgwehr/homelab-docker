@@ -13,8 +13,9 @@ services:
     depends_on:
       paperless_db:
         condition: service_healthy
+        restart: true
       paperless_broker:
-        condition: service_healthy
+        condition: service_started
 
     networks:
       - paperless-net
@@ -58,10 +59,11 @@ services:
       - ${PAPERLESS_CONSUMEDIR}:/usr/src/paperless/consume
 
     healthcheck:
-      test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
       interval: 360s
-      timeout: 10s
       retries: 5
+      start_period: 45s
+      test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
+      timeout: 10s
     
     deploy:
       resources:
@@ -111,6 +113,7 @@ services:
       - homepage.name=Paperless | Postgres DB
       - homepage.icon=postgres
       - homepage.weight=800
+      - dockpeek.tags=pinned,db
 
     volumes:
       - ${DBDIR}/paperless-postgres:/var/lib/postgresql/data
@@ -118,6 +121,7 @@ services:
     healthcheck:
       interval: 360s
       retries: 10
+      start_period: 30s
       test:
         - CMD
         - pg_isready
