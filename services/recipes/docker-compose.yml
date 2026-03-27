@@ -30,7 +30,7 @@ services:
     labels:
       - homepage.group=Lifestyle
       - homepage.name=Recipes and Meal Planning
-      - homepage.href=http://${EXTERNAL_TANDOOR}.${DOMAIN}
+      - homepage.href=https://${EXTERNAL_TANDOOR}.${DOMAIN}
       - homepage.icon=tandoor-recipes
       - dockpeek.tags=pinned
 
