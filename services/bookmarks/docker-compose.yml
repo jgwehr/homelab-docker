@@ -39,8 +39,9 @@ services:
       OLLAMA_BASE_URL: http://ollama:${PORT_OLLAMA}
       OLLAMA_KEEP_ALIVE: 3m # Controls how long the model will stay loaded into memory following the request (example value: "5m").
       INFERENCE_TEXT_MODEL: llama3.1 # change this from default if you're using ollama.
-      INFERENCE_IMAGE_MODEL: llava-llama3 # change this from default if you're using ollama and that model needs to support vision APIs (e.g. llava).
-        # EMBEDDING_TEXT_MODEL #  model to be used for generating embeddings for the text
+      INFERENCE_IMAGE_MODEL: llava-llama3:8b # change this from default if you're using ollama and that model needs to support vision APIs (e.g. llava).
+      EMBEDDING_TEXT_MODEL: nomic-embed-text:latest #  model to be used for generating embeddings for the text
+
       INFERENCE_CONTEXT_LENGTH: 2000 # max number of tokens that we'll pass to the inference model. If your content is larger than this size, it'll be truncated to fit. The larger this value, the more of the content will be used in tag inference, but the more expensive the inference will be (money-wise on openAI and resource-wise on ollama). Check the model you're using for its max supported content size.
         # INFERENCE_MAX_OUTPUT_TOKENS # maximum number of tokens that the inference model is allowed to generate in its response. This controls the length of AI-generated content like tags and summaries. Increase this if you need longer responses, but be aware that higher values will increase costs (for OpenAI) and processing time.
       INFERENCE_LANG: english
@@ -86,12 +87,20 @@ services:
       - homepage.group=Back End
       - homepage.name=Chrome | Karakeep
       - homepage.icon=chrome
+      - dockpeek.tags=pinned
 
     restart: unless-stopped
 
   karakeep-meilisearch:
-    image: getmeili/meilisearch:v1.31.0
+    image: getmeili/meilisearch:v1.37.0
     container_name: karakeep-meilisearch
+
+    ports:
+      - ${PORT_MEILISEARCH}:7700 # only needed for database dumps / upgrades. Not needed for normal operation since karakeep will connect to it via the internal docker network.
+    #back up: curl   -X POST 'http://192.168.1.203:7700/dumps' -H 'Authorization: Bearer ${MEILI_MASTER_KEY}'
+    # https://www.meilisearch.com/docs/guides/docker#generating-dumps-and-updating-meilisearch
+    #backup: docker compose run --rm karakeep-meilisearch meilisearch --import-dump "/meili_data/dumps/20260304-200510026.dump"
+
 
     environment:
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
@@ -102,6 +111,7 @@ services:
       - homepage.name=Meilisearch | Karakeep
       - homepage.description=A search engine featuring a blazing fast RESTful search API
       - homepage.icon=meilisearch
+      - dockpeek.tags=pinned,db
     
     volumes:
       - ${CONFIGDIR}/meilisearch:/meili_data #data includes your indexes and the documents they store
@@ -119,8 +129,15 @@ services:
       - homepage.group=Back End
       - homepage.name=Ollama | Karakeep
       - homepage.icon=ollama
+      - dockpeek.tags=ai
  
     volumes:
       - ${DIR_AI}/ollama:/root/.ollama
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 6GB
 
     restart: unless-stopped
