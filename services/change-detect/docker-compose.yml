@@ -3,65 +3,73 @@ name: "change-detect"
 services:
 
 ####################
-# Change Detection
+# PriceBuddy
 ####################
 
-  changedetection:
-    container_name: changedetection
-    image: ghcr.io/dgtlmoon/changedetection.io:latest
+  pricebuddy:
+    image: ghcr.io/jez500/pricebuddy:latest
+    container_name: pricebuddy
 
     depends_on:
-      - chrome
-    
+      pricebuddy-db:
+        condition: service_started
+
     ports:
-      - ${PORT_CHANGEDETECTION}:5000
+      - ${PORT_PRICEBUDDY}:80
 
     environment:
       PUID: ${PUID}
-      PGID: ${PGID}
+      GUID: ${PGID
       TZ: ${TZ}
-      LOGGER_LEVEL: WARNING
-      HIDE_REFERER: true
-      FETCH_WORKERS: 5
-      WEBDRIVER_URL: http://chrome:${PORT_WEBDRIVER}/wd/hub
+
+      APP_TIMEZONE: ${TZ}
+      APP_ENV: local
+      APP_DEBUG: false
+
+      DB_HOST: pricebuddy_db                  # Name of the database service
+      DB_USERNAME: ${PRICEBUDDY_DB_USERNAME}  # Should match the MYSQL_USER in the database service
+      DB_PASSWORD: ${PRICEBUDDY_DB_PASSWORD}  # Should match the MYSQL_PASSWORD in the database service
+      DB_DATABASE: ${PRICEBUDDY_DB}           # Should match the MYSQL_DATABASE in the database service
+      
+      APP_KEY: ${PRICEBUDDY_APPKEY}
+      APP_USER_EMAIL: ${PRICEBUDDY_ADMIN_EMAIL}       # Only used for seeding the database
+      APP_USER_PASSWORD: ${PRICEBUDDY_ADMIN_PASSWORD} # Only used for seeding the database
+      #SCRAPER_BASE_URL:    # Url to Name of the scrapper service
+      AFFILIATE_ENABLED: 'true'               # See https://pricebuddy.jez.me/support-project.html
 
     labels:
       - homepage.group=Lifestyle
-      - homepage.name=Change Detection
-      - homepage.icon=changedetection
-      - homepage.href=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
-      - homepage.widget.type=changedetectionio
-      - homepage.widget.url=http://${SERVER_URL}:${PORT_CHANGEDETECTION}
-      - homepage.widget.key=${HOMEPAGE_CHANGEDETECTION_API}
+      - homepage.name=Pricebuddy
+      - homepage.icon=price-buddy
+      - homepage.href=http://${SERVER_URL}:${PORT_PRICEBUDDY}
+
 
     volumes:
-      - ${CONFIGDIR}/changedetection:/datastore
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 128M
-    restart: unless-stopped
+      - pricebuddy_storage:/app/storage
 
-  chrome:
-    container_name: chrome
-    image: selenium/standalone-chrome:140.0-20251101
+  pricebuddy_db:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: pricebuddy_db
 
-    ports:
-      - ${PORT_WEBDRIVER}:4444
+    environment:
+      PUID: ${PUID}
+      GUID: ${PGID}
+      TZ: ${TZ}
 
-    shm_size: 2gb
+      #NOTE changing any of the MYSQL_ variables after the container has set up the initial databases has no effect, use the mysqladmin tool or cli to make changes.
+      MYSQL_DATABASE: ${PRICEBUDDY_DB}
+      MYSQL_USER: ${PRICEBUDDY_DB_USERNAME}
+      MYSQL_PASSWORD: ${PRICEBUDDY_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${PRICEBUDDY_DB_ROOT_PASSWORD}
 
     labels:
-      - homepage.group=Back End
-      - homepage.name=Chrome
-      - homepage.icon=chrome
-      - dockpeek.tags=pinned
+      - homepage.group=Databases
+      - homepage.name=Pricebuddy | MariaDB
+      - homepage.icon=mariadb
+      - dockpeek.tags=db
 
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-    restart: unless-stopped
+    volumes:
+      - ${DIR_DB}/pricebuddy_mariadb:/config
+
+volumes:
+  pricebuddy_storage:

@@ -58,7 +58,6 @@ sudo docker exec -t pihole rm -rf $varPiholeTmpDir
 echo "${C_COMPOSE}Shutting Containers Down...${C_EOL}"
 
 cd $varOptDir/services/adblock-and-dns && docker compose down # pihole and unbound
-cd $varOptDir/services/change-detect && docker compose down # change-detection.io and chrome
 cd $varOptDir/services/dashboard && docker compose down # homepage
 cd $varOptDir/services/downloads && docker compose down # *arr
 cd $varOptDir/services/events && docker compose down # Rallly
@@ -75,11 +74,6 @@ cd $varOptDir/services/security && docker compose down # Endlessh, Crowdsec
 # Docker config backups
 echo Backing up Docker Configs...
 printf "[                  ] 0/16\r"
-
-mkdir -p $varBackupDir/$varDate/changedetection
-varTempChangeDetectionBackup=$(ls -Art $varConfigDir/changedetection/*.zip | tail -n 1)
-cp -rpi $varTempChangeDetectionBackup $varBackupDir/$varDate/changedetection
-printf "[#                 ] 1/16\r"
 
 mkdir -p $varBackupDir/$varDate/ghs && cp -rpi $varConfigDir/ghs/ghs.sqlite $varBackupDir/$varDate/ghs
 printf "[##                ] 2/16\r"
@@ -200,7 +194,6 @@ rm -rf $varBackupDir/$varDate-paperless
 echo "${C_COMPOSE}Starting Docker Containers...${C_EOL}"
 
 cd $varOptDir/services/adblock-and-dns && docker compose up -d # pihole and unbound
-cd $varOptDir/services/change-detect && docker compose up -d # change-detection.io and chrome
 cd $varOptDir/services/dashboard && docker compose up -d # homepage
 cd $varOptDir/services/downloads && docker compose up -d # *arr
 cd $varOptDir/services/events && docker compose up -d # Rallly
