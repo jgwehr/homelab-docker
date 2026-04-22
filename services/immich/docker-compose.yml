@@ -15,8 +15,11 @@ services:
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
 
     depends_on:
-      - immich_redis
-      - immich_postgres
+      immich_redis:
+        condition: service_started
+      immich_postgres:
+        condition: service_started
+        restart: true
 
     networks:
       - immich-net
@@ -25,7 +28,7 @@ services:
       - ${PORT_IMMICH}:2283
 
     extends:
-      file: hwaccel.transcoding.yml
+      file: staticconfig/immich-server/hwaccel.transcoding.yml
       service: quicksync # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
 
     environment:
@@ -94,7 +97,7 @@ services:
 
   immich_redis:
     container_name: immich_redis
-    image: docker.io/valkey/valkey:9@sha256:546304417feac0874c3dd576e0952c6bb8f06bb4093ea0c9ca303c73cf458f63
+    image: docker.io/valkey/valkey:9@sha256:3eeb09785cd61ec8e3be35f8804c8892080f3ca21934d628abc24ee4ed1698f6
     
     networks:
       - immich-net
