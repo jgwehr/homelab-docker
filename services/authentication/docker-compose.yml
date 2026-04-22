@@ -1,0 +1,96 @@
+name: "voidauth"
+
+services:
+
+####################
+# VoidAuth
+####################
+
+  voidauth:
+    image: ghcr.io/voidauth/voidauth:1.12
+    container_name: voidauth
+
+    depends_on:
+      voidauth-db:
+        condition: service_healthy
+
+    networks:
+      - caddy-net
+      - void-net
+    #  - socky_proxy-net
+
+    ports:
+      - ${PORT_VOIDAUTH}:3000
+
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+      APP_URL: https://${EXTERNAL_VOIDAUTH}.${DOMAIN} # required, ex. https://auth.example.com
+
+      STORAGE_KEY: ${VOIDAUTH_STORAGE_KEY} # required; Must be at least 32 characters
+      DB_PASSWORD: ${VOIDAUTH_DB_PASSWORD} # required
+      DB_HOST: voidauth_db # required; the container name
+      DB_USER: ${VOIDAUTH_DB_USER:-voidauth} # optional, default: "voidauth"
+      DB_NAME: ${VOIDAUTH_DB_NAME:-voidauth} # optional, default: "voidauth"
+      MFA_REQUIRED: "false" # optional, default: "false". Set to "true" to require MFA for all users. Can be overridden per-user in the dashboard.  
+
+    labels:
+      - homepage.group=Wild West
+      - homepage.name=VoidAuth
+      - homepage.icon=voidauth
+      - homepage.href=https://${EXTERNAL_VOIDAUTH}.${DOMAIN}
+      - homepage.description=Self-hosted OpenID Connect Provider (OP) for your home lab
+      #- homepage.weight=810
+      - dockpeek.tags=pinned,db,oidc
+
+    volumes:
+      - ${CONFIGDIR}/voidauth:/app/config
+      #- /var/run/docker.sock:/var/run/docker.sock:ro - # Only required for declaring OIDC Apps via docker labels (see OIDC-Setup documentation)
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+    restart: unless-stopped
+
+  voidauth_db:
+    image: postgres:18
+    container_name: voidauth_db
+    
+    networks:
+      - void-net
+
+    environment:
+      POSTGRES_DB: ${VOIDAUTH_DB_NAME:-voidauth} # optional, default: "voidauth"
+      POSTGRES_PASSWORD: ${VOIDAUTH_DB_PASSWORD} # required
+      POSTGRES_USER: ${VOIDAUTH_DB_USER:-voidauth} # optional, default: "voidauth"
+
+    labels:
+      - homepage.group=Databases
+      - homepage.name=VoidAuth | Postgres DB
+      - homepage.icon=postgres
+      - homepage.weight=810
+      - dockpeek.tags=pinned,db
+
+    volumes:
+      - ${DIR_DB}/voidauth:/var/lib/postgresql/18/docker
+    
+    healthcheck:
+      test: "pg_isready -U postgres -h localhost"
+      interval: 360s
+      retries: 5
+      start_period: 30s
+      timeout: 45s
+
+    restart: unless-stopped
+
+networks:
+  caddy-net:
+    name: caddy-net
+    external: true
+  void-net:
+    name: void-net

@@ -63,7 +63,7 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      TZ: ${TZ}test,zwave,ha
+      TZ: ${TZ}
       SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
       TOKEN: ${DUCKDNS_TOKEN}
 
