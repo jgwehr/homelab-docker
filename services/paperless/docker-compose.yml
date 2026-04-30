@@ -40,6 +40,9 @@ services:
       PAPERLESS_DBUSER: ${PAPERLESS_DB_USER}
       PAPERLESS_DBPASS: ${PAPERLESS_DB_PASSWORD}
 
+      PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: false
+      PAPERLESS_APPS: "allauth.socialaccount.providers.openid_connect"
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: '{"openid_connect": {"APPS": [{"provider_id": "oidc","name": "${VOIDAUTH_NAME}","client_id": "${PAPERLESS_OIDC_CLIENT_ID}","secret": "${PAPERLESS_OIDC_CLIENT_SECRET}","settings": { "server_url": "https://${EXTERNAL_VOIDAUTH}.${DOMAIN}/oidc/.well-known/openid-configuration"}}]}}'
 
     labels:
       - homepage.group=Office
@@ -51,6 +54,7 @@ services:
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PAPERLESS}
       - homepage.widget.username=${HOMEPAGE_PAPERLESS_USERNAME}
       - homepage.widget.password=${HOMEPAGE_PAPERLESS_PASSWORD}
+      - dockpeek.tags=samba,oidc
 
     volumes:
       - ${CONFIGDIR}/paperless:/usr/src/paperless/data

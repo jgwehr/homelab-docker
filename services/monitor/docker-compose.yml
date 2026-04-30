@@ -148,7 +148,7 @@ services:
 
   uptime-kuma:
     container_name: uptime_kuma
-    image: louislam/uptime-kuma:latest
+    image: ghcr.io/louislam/uptime-kuma:next
     
     networks:
       - caddy-net # provides access for the reverse proxy

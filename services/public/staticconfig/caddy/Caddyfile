@@ -6,6 +6,8 @@
 
 
   order crowdsec first # this ensures that the CrowdSec module is executed before any other HTTP handlers
+  order crowdsec before respond
+
   crowdsec {
     api_url http://crowdsec:8080/ # the URL where your CrowdSec LAPI can be reached. Caddy connects directly, so use the default port 8080
     api_key {$BOUNCER_CADDY_TOKEN} # the secret API key for the bouncer to authenticate against LAPI
@@ -31,11 +33,16 @@
     # Docs | Content Security Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
     # Docs | Referrer Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 
+    # Control how much referrer information is shared
+    #Referrer-Policy "no-referrer-when-downgrade"
+
     X-Content-Type-Options "nosniff" # disable clients from sniffing the media type
 
-    # clickjacking protection
+    # Prevent the site from being embedded in an iframe (Anti-Clickjacking)
     X-Frame-Options DENY
 
+    # Basic protection against XSS
+    #X-XSS-Protection "1; mode=block"
     header_up X-Real-IP {vars.realip}
 	}
 }
@@ -69,6 +76,21 @@
   }
 }
 
+(internal-only) {
+	@external not remote_ip private_ranges
+	abort @external
+}
+
+
+(voidauth) {
+  @external not remote_ip private_ranges
+
+  forward_auth @external voidauth:3000 {
+      uri /api/authz/forward-auth
+      copy_headers Remote-User Remote-Groups Remote-Name Remote-Email x-voidauth-interaction x-voidauth-resume x-voidauth-session
+  }
+}
+
 ############
 # Routing  #
 ############
@@ -99,9 +121,17 @@ www.{$DOMAIN} {
   redir {$DOMAIN}{uri}
 }
 
+books.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy grimmory:6060
+}
+
 ghs.{$DOMAIN} {
   import headers
   import main
+  import voidauth
 
   reverse_proxy gloomhaven:80
 }
@@ -119,6 +149,13 @@ ghs-server.{$DOMAIN} {
     header Access-Control-Allow-Origin gloomhaven-secretary.de
   }
   reverse_proxy @websockets gloomhaven-server:8080
+}
+
+grist.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy grist:8484
 }
 
 immich.{$DOMAIN} {
@@ -142,6 +179,17 @@ meet.{$DOMAIN} {
   reverse_proxy rallly:3000
 }
 
+oath.{$DOMAIN} {
+  import headers
+  import main
+  import voidauth
+
+  root * /www/oathsworn
+	file_server {
+		hide /oathsworn-webapp /docker .git
+	}
+}
+
 recipe.{$DOMAIN} {
   import headers
   import main
@@ -151,7 +199,7 @@ recipe.{$DOMAIN} {
 			file_server
 		}
 
-  reverse_proxy tandoor:8080
+  reverse_proxy tandoor:80
 }
 
 request.{$DOMAIN} {
@@ -166,4 +214,93 @@ status.{$DOMAIN} {
   import main
 
   reverse_proxy uptime-kuma:3001
+}
+
+void.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy voidauth:3000
+}
+
+
+
+## Local Domains
+cragheart.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.203:81 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+ghs.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy gloomhaven:80 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+pihole.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.203:82 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+mindthief.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.201:80 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+ha.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.203:8123 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+jelly.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy jellyfin:8096 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+  
 }

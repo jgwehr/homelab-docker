@@ -12,7 +12,7 @@ services:
   # My savior for fixing pihole issues: https://github.com/kaczmar2/pihole-unbound/tree/main
     container_name: pihole
     hostname: pihole
-    image: ghcr.io/pi-hole/pihole:2025.11.1
+    image: ghcr.io/pi-hole/pihole:2026.02.0
 
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     ports:

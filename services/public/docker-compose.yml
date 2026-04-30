@@ -43,6 +43,7 @@ services:
       - ${CONFIGDIR}/caddy/data:/data # Optional, house for certs. Caddy adds its own /caddy/ directory
       - ${CONFIGDIR}/caddy/config:/config # Optional, JSON Config files. Caddy adds its own /caddy/ directory
       - ${DIR_STATIC}/tandoor_media:/www/tandoor:ro # recipe image files for Tandoor
+      - /opt/docker/oathsworn:/www/oathsworn:ro #oathsworn app
 
     healthcheck:
       test: ["CMD", "caddy", "version"]
@@ -63,7 +64,7 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      TZ: ${TZ}test,zwave,ha
+      TZ: ${TZ}
       SUBDOMAINS: ${DUCKDNS_SUBDOMAINLIST}
       TOKEN: ${DUCKDNS_TOKEN}
 

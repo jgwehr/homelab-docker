@@ -8,31 +8,36 @@ services:
 
   tandoor:
     container_name: tandoor
-    image: vabene1111/recipes:2.2.7
+    image: vabene1111/recipes:2.6.9
 
     depends_on:
       tandoor_db:
         condition: service_healthy
-    
+
     networks:
       - caddy-net # provides access for the reverse proxy
       - tandoor-net
 
     ports:
-      - ${PORT_TANDOOR}:8080
+      - ${PORT_TANDOOR}:80
 
     env_file:
       - ./staticconfig/tandoor.env
 
     environment:
       TZ: ${TZ}
+      SOCIAL_PROVIDERS: allauth.socialaccount.providers.openid_connect
+      SOCIALACCOUNT_PROVIDERS: "{ 'openid_connect': { 'OAUTH_PKCE_ENABLED': True, 'APPS': [ { 'provider_id': 'oidc', 'name': '${VOIDAUTH_NAME}', 'client_id': '${TANDOOR_OIDC_CLIENT_ID}', 'secret': '${TANDOOR_OIDC_CLIENT_SECRET}', 'settings': { 'server_url': 'https://${EXTERNAL_VOIDAUTH}.${DOMAIN}/oidc/.well-known/openid-configuration' } } ] } }"
+      SOCIALACCOUNT_LOGIN_ON_GET: 1
+      SOCIALACCOUNT_EMAIL_AUTHENTICATION: 1
+      SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT: 1
 
     labels:
       - homepage.group=Lifestyle
       - homepage.name=Recipes and Meal Planning
       - homepage.href=https://${EXTERNAL_TANDOOR}.${DOMAIN}
       - homepage.icon=tandoor-recipes
-      - dockpeek.tags=pinned
+      - dockpeek.tags=pinned,oidc
 
     volumes:
       - ${DIR_STATIC}/tandoor_media:/opt/recipes/mediafiles

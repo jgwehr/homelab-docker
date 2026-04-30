@@ -40,6 +40,12 @@ The details of SMTP are beyond the scope of this project and my ability.  Please
 - `RALLLY_DB_USER` - shared between the database and the app
 - `RALLLY_DB_PASSWORD` - shared between the database and the app. Generate a password with something like `openssl rand -base64 32`
 
+### Single Sign-On
+Standard OIDC
+- My stack is dependent on VoidAuth via the /authentication/ service
+- After creating a new OIDC App, copy and paste the Client ID and Secret to `RALLLY_OIDC_CLIENT_ID` and `RALLLY_OIDC_CLIENT_SECRET`
+- The redirect URI for Rallly is `<your_domain>/api/auth/callback/oidc`
+
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `DBDIR` - universal. where databases store their... databases. 
