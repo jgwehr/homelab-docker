@@ -7,7 +7,7 @@ services:
 ####################
 
   voidauth:
-    image: ghcr.io/voidauth/voidauth:1.12
+    image: ghcr.io/voidauth/voidauth:1.11.2
     container_name: voidauth
 
     depends_on:

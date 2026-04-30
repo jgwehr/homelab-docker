@@ -50,7 +50,7 @@ services:
       - homepage.icon=/icons/rallly.png
       - homepage.href=http://${EXTERNAL_RALLLY}.${DOMAIN}
       - homepage.description=Schedule hangouts with friends
-      - dockpeek.tags=pinned
+      - dockpeek.tags=pinned,oidc
 
     volumes:
       - ${CONFIGDIR}/rallly:/data

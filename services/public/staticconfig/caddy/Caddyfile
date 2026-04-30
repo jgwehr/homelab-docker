@@ -33,11 +33,16 @@
     # Docs | Content Security Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
     # Docs | Referrer Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 
+    # Control how much referrer information is shared
+    #Referrer-Policy "no-referrer-when-downgrade"
+
     X-Content-Type-Options "nosniff" # disable clients from sniffing the media type
 
-    # clickjacking protection
+    # Prevent the site from being embedded in an iframe (Anti-Clickjacking)
     X-Frame-Options DENY
 
+    # Basic protection against XSS
+    #X-XSS-Protection "1; mode=block"
     header_up X-Real-IP {vars.realip}
 	}
 }
@@ -82,7 +87,7 @@
 
   forward_auth @external voidauth:3000 {
       uri /api/authz/forward-auth
-      copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
+      copy_headers Remote-User Remote-Groups Remote-Name Remote-Email x-voidauth-interaction x-voidauth-resume x-voidauth-session
   }
 }
 
@@ -116,6 +121,13 @@ www.{$DOMAIN} {
   redir {$DOMAIN}{uri}
 }
 
+books.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy grimmory:6060
+}
+
 ghs.{$DOMAIN} {
   import headers
   import main
@@ -139,6 +151,13 @@ ghs-server.{$DOMAIN} {
   reverse_proxy @websockets gloomhaven-server:8080
 }
 
+grist.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy grist:8484
+}
+
 immich.{$DOMAIN} {
   import headers
   import main
@@ -158,6 +177,17 @@ meet.{$DOMAIN} {
   import main
 
   reverse_proxy rallly:3000
+}
+
+oath.{$DOMAIN} {
+  import headers
+  import main
+  import voidauth
+
+  root * /www/oathsworn
+	file_server {
+		hide /oathsworn-webapp /docker .git
+	}
 }
 
 recipe.{$DOMAIN} {
@@ -191,4 +221,86 @@ void.{$DOMAIN} {
   import main
 
   reverse_proxy voidauth:3000
+}
+
+
+
+## Local Domains
+cragheart.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.203:81 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+ghs.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy gloomhaven:80 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+pihole.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.203:82 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+mindthief.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.201:80 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+ha.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy http://192.168.1.203:8123 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+jelly.local {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy jellyfin:8096 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+  
 }
