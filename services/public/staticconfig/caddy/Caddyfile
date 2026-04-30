@@ -169,7 +169,7 @@ recipe.{$DOMAIN} {
 			file_server
 		}
 
-  reverse_proxy tandoor:8080
+  reverse_proxy tandoor:80
 }
 
 request.{$DOMAIN} {

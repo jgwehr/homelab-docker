@@ -8,7 +8,7 @@ services:
 
   tandoor:
     container_name: tandoor
-    image: vabene1111/recipes:2.2.7
+    image: vabene1111/recipes:2.6.9
 
     depends_on:
       tandoor_db:
@@ -19,7 +19,7 @@ services:
       - tandoor-net
 
     ports:
-      - ${PORT_TANDOOR}:8080
+      - ${PORT_TANDOOR}:80
 
     env_file:
       - ./staticconfig/tandoor.env
@@ -32,7 +32,7 @@ services:
       - homepage.name=Recipes and Meal Planning
       - homepage.href=https://${EXTERNAL_TANDOOR}.${DOMAIN}
       - homepage.icon=tandoor-recipes
-      - dockpeek.tags=pinned
+      - dockpeek.tags=pinned,oidc
 
     volumes:
       - ${DIR_STATIC}/tandoor_media:/opt/recipes/mediafiles
