@@ -33,6 +33,11 @@ services:
 
       NEXT_PUBLIC_BASE_URL: https://${EXTERNAL_RALLLY}.${DOMAIN} # defined in the Caddyfile
 
+      OIDC_NAME: ${VOIDAUTH_NAME}
+      OIDC_DISCOVERY_URL: https://${EXTERNAL_VOIDAUTH}.${DOMAIN}/oidc/.well-known/openid-configuration
+      OIDC_CLIENT_ID: ${RALLLY_OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${RALLLY_OIDC_CLIENT_SECRET}
+
       SMTP_HOST: ${RALLLY_SMTP_HOST}
       SMTP_PORT:  ${RALLLY_SMTP_PORT}
       SMTP_SECURE: ${RALLLY_SMTP_SECURE}
