@@ -32,6 +32,12 @@
 - PostGres database user: `PAPERLESS_DB_USER`
 - PostGres database password: `PAPERLESS_DB_PASSWORD`
 
+### Single Sign-On
+Standard OIDC
+- My stack is dependent on VoidAuth via the /authentication/ service
+- After creating a new OIDC App, copy and paste the Client ID and Secret to `PAPERLESS_OIDC_CLIENT_ID` and `PAPERLESS_OIDC_CLIENT_SECRET`
+- The redirect URI for Paperless is `<your_domain>/api/auth/callback/oidc`
+
 ### Data and Backups
 - `CONFIGDIR` - universal. where the containers store their configuration data (aka Volume)
 - `PAPERLESS_CONSUMEDIR` - this is where you'd configure SAMBA to allow network access to. Files placed in this directory are consumed, and moved, by paperless
