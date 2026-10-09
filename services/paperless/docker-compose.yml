@@ -8,7 +8,7 @@ services:
 
   paperless:
     container_name: paperless
-    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.0.5
 
     depends_on:
       paperless_db:
@@ -18,7 +18,9 @@ services:
         condition: service_started
 
     networks:
+      - caddy-net
       - paperless-net
+      - ai-net
     
     ports:
       - ${PORT_PAPERLESS}:8000
@@ -40,9 +42,25 @@ services:
       PAPERLESS_DBUSER: ${PAPERLESS_DB_USER}
       PAPERLESS_DBPASS: ${PAPERLESS_DB_PASSWORD}
 
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://${EXTERNAL_PAPERLESS}.${DOMAIN} # defined in the Caddyfile
+      PAPERLESS_ALLOWED_HOSTS: ${EXTERNAL_PAPERLESS}.${DOMAIN},192.168.1.203
+      PAPERLESS_CORS_ALLOWED_ORIGINS: https://${EXTERNAL_PAPERLESS}.${DOMAIN}
+
       PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: false
       PAPERLESS_APPS: "allauth.socialaccount.providers.openid_connect"
       PAPERLESS_SOCIALACCOUNT_PROVIDERS: '{"openid_connect": {"APPS": [{"provider_id": "oidc","name": "${VOIDAUTH_NAME}","client_id": "${PAPERLESS_OIDC_CLIENT_ID}","secret": "${PAPERLESS_OIDC_CLIENT_SECRET}","settings": { "server_url": "https://${EXTERNAL_VOIDAUTH}.${DOMAIN}/oidc/.well-known/openid-configuration"}}]}}'
+      PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: false
+      PAPERLESS_SOCIAL_AUTO_SIGNUP: false
+
+      PAPERLESS_AI_ENABLED: true
+      PAPERLESS_AI_MODEL: ollama
+      PAPERLESS_AI_LLM_ENDPOINT: http://ollama:11434
+      PAPERLESS_AI_LLM_MODEL: llama3.1:latest
+      PAPERLESS_AI_LLM_EMBEDDING_MODEL: nomic-embed-text:latest
+      PAPERLESS_AI_LLM_BACKEND: ollama
+      PAPERLESS_AI_LLM_EMBEDDING_BACKEND: ollama
+      
+      PAPERLESS_AI_MODEL_PORT: ${PORT_OLLAMA}
 
     labels:
       - homepage.group=Office
@@ -54,7 +72,7 @@ services:
       - homepage.widget.url=http://${SERVER_URL}:${PORT_PAPERLESS}
       - homepage.widget.username=${HOMEPAGE_PAPERLESS_USERNAME}
       - homepage.widget.password=${HOMEPAGE_PAPERLESS_PASSWORD}
-      - dockpeek.tags=samba,oidc
+      - dockpeek.tags=samba,oidc,ai
 
     volumes:
       - ${CONFIGDIR}/paperless:/usr/src/paperless/data
@@ -144,5 +162,23 @@ services:
     restart: unless-stopped
 
 networks:
+  caddy-net:
+    name: caddy-net
+    external: true
   paperless-net:
     name: paperless-net
+  ai-net:
+    name: ai-net
+    external: true
+
+
+####################
+# Templates
+####################
+
+x-security-defaults: &secure-profile
+  cap_drop:
+    - ALL #If your container needs to bind to a privileged port under 1024 (like port 80), dropping all capabilities might break it.
+  read_only: true # If an attacker gains access to your container, they cannot download a malicious script, modify your source code, or replace system binaries because the disk is strictly write-protected.
+  security_opt:
+    - no-new-privileges=true # processes inside the container can ever gain new privileges via SUID/SGID binaries
