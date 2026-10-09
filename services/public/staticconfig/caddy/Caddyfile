@@ -121,6 +121,13 @@ www.{$DOMAIN} {
   redir {$DOMAIN}{uri}
 }
 
+bookmarks.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy karakeep:3000
+}
+
 books.{$DOMAIN} {
   import headers
   import main
@@ -172,13 +179,6 @@ jelly.{$DOMAIN} {
   reverse_proxy jellyfin:8096
 }
 
-meet.{$DOMAIN} {
-  import headers
-  import main
-
-  reverse_proxy rallly:3000
-}
-
 oath.{$DOMAIN} {
   import headers
   import main
@@ -188,6 +188,21 @@ oath.{$DOMAIN} {
 	file_server {
 		hide /oathsworn-webapp /docker .git
 	}
+}
+
+paper.{$DOMAIN} {
+  import headers
+  import main
+  import voidauth
+
+  reverse_proxy paperless:8000
+}
+
+pics.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy immich-server:2283
 }
 
 recipe.{$DOMAIN} {
@@ -303,4 +318,73 @@ jelly.local {
     header_up X-Real-IP {remote_host}
   }
   
+}
+
+
+#### WORK IN PROGRESS
+dnd.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy grimoire:9481
+}
+
+
+obsidian.{$DOMAIN} {
+  import headers
+  import main
+
+  @root {
+    method GET
+    path /
+  }
+  @session {
+    path /_session /_session/*
+  }
+  @vault_db {
+    path /obsidiannotes /obsidiannotes/*
+    path /couchdb/*
+  }
+
+  @cors_preflight {
+    method OPTIONS
+  }
+
+
+  # Proxy matching allowed routes to CouchDB
+  handle @root {
+    reverse_proxy couchdb_obsidian:5984
+  }
+
+  handle @session {
+    reverse_proxy couchdb_obsidian:5984
+  }
+
+  handle @vault_db {
+    reverse_proxy couchdb_obsidian:5984
+  }
+
+  handle @cors_preflight {
+    header Access-Control-Allow-Origin "{header.Origin}"
+    header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, Accept, Origin, Referer, X-Requested-With, X-Couch-Full-Commit, X-Couch-Persist, X-Couch-Update-Seq"
+    header Access-Control-Allow-Credentials "true"
+    respond "" 204
+  }
+
+  # Reject everything else explicitly
+  handle {
+    respond "Access Denied" 403
+  }
+  
+}
+
+trip.{$DOMAIN} {
+  import headers
+  import main
+
+  reverse_proxy trip:8000 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
 }

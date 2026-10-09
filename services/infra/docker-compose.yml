@@ -25,6 +25,7 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
+      ALLOW_LOGS: 1 # dozzle
       ALLOW_RESTARTS: 0 #
       ALLOW_START: 0 #
       ALLOW_STOP: 0 #
@@ -98,6 +99,7 @@ services:
       # Variables match the URL prefix (i.e. AUTH blocks access to /auth/* parts of the API, etc).
       #   0 - revoke access
       #   1 - grant access
+      ALLOW_LOGS: 1 # dozzle
       ALLOW_RESTARTS: 1 # dockpeek
       ALLOW_START: 1 # dockpeek
       ALLOW_STOP: 1 # dockpeek

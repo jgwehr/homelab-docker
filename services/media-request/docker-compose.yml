@@ -3,12 +3,12 @@ name: "media-request"
 services:
 
 ####################
-# Jellyseerr
+# seerr
 ####################
 
-  jellyseerr:
-    container_name: jellyseerr
-    image: fallenbagel/jellyseerr:latest
+  seerr:
+    container_name: seerr
+    image: ghcr.io/seerr-team/seerr:latest
 
     networks:
       - htpc-net
@@ -31,7 +31,7 @@ services:
       - homepage.widget.key=${HOMEPAGE_JELLYSEERR_API}
 
     volumes:
-        - ${CONFIGDIR}/jellyseerr:/app/config
+      - ${CONFIGDIR}/seerr:/app/config
     
     deploy:
       resources:

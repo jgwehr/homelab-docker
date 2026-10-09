@@ -7,11 +7,11 @@ services:
 ####################
 
   voidauth:
-    image: ghcr.io/voidauth/voidauth:1.11.2
+    image: ghcr.io/voidauth/voidauth:1.15.2
     container_name: voidauth
 
     depends_on:
-      voidauth-db:
+      voidauth_db:
         condition: service_healthy
 
     networks:
@@ -30,7 +30,7 @@ services:
       APP_URL: https://${EXTERNAL_VOIDAUTH}.${DOMAIN} # required, ex. https://auth.example.com
 
       STORAGE_KEY: ${VOIDAUTH_STORAGE_KEY} # required; Must be at least 32 characters
-      DB_PASSWORD: ${VOIDAUTH_DB_PASSWORD} # required
+      DB_PASSWORD: ${VOIDAUTH_DB_PASSWORD} # required. Make this a secrets: https://github.com/voidauth/voidauth/pull/501
       DB_HOST: voidauth_db # required; the container name
       DB_USER: ${VOIDAUTH_DB_USER:-voidauth} # optional, default: "voidauth"
       DB_NAME: ${VOIDAUTH_DB_NAME:-voidauth} # optional, default: "voidauth"
@@ -39,7 +39,7 @@ services:
     labels:
       - homepage.group=Wild West
       - homepage.name=VoidAuth
-      - homepage.icon=voidauth
+      - homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/voidauth.png
       - homepage.href=https://${EXTERNAL_VOIDAUTH}.${DOMAIN}
       - homepage.description=Self-hosted OpenID Connect Provider (OP) for your home lab
       #- homepage.weight=810

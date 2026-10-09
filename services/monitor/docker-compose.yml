@@ -50,6 +50,12 @@ services:
       DOCKER_HOST: tcp://socky_proxy:${PORT_SOCKY_PROXY} # redirects socket to the proxy
       DOZZLE_HOSTNAME: ${HOST_NAME}
       #DOZZLE_REMOTE_HOST: #optional. if you have other docker hosts, include them here. see https://dozzle.dev/guide/remote-hosts
+
+      DOZZLE_AUTH_PROVIDER: oidc
+      DOZZLE_AUTH_OIDC_NAME: ${VOIDAUTH_NAME}
+      DOZZLE_AUTH_OIDC_ISSUER: https://${EXTERNAL_VOIDAUTH}.${DOMAIN}/oidc
+      DOZZLE_AUTH_OIDC_CLIENT_ID: ${DOZZLE_OIDC_CLIENT_ID}
+      DOZZLE_AUTH_OIDC_CLIENT_SECRET: ${DOZZLE_OIDC_CLIENT_SECRET} #accepts _FILE
     
     labels:
       - homepage.group=System
@@ -57,6 +63,10 @@ services:
       - homepage.icon=dozzle
       - homepage.href=http://${SERVER_URL}:${PORT_DOZZLE}
       - dockpeek.tags=infra
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${CONFIGDIR}/dozzle:/data
 
     deploy:
       resources:

@@ -23,6 +23,7 @@ services:
 
     networks:
       - immich-net
+      - caddy-net
 
     ports:
       - ${PORT_IMMICH}:2283
@@ -50,6 +51,7 @@ services:
       - homepage.widget.url=http://${SERVER_URL}:${PORT_IMMICH}
       - homepage.widget.key=${IMMICH_API_KEY}
       - homepage.widget.version=2
+      - dockpeek.tags=zfs,oidc,caddy
 
     volumes:
       # https://docs.immich.app/guides/custom-locations/
@@ -85,6 +87,7 @@ services:
       - homepage.group=Back End
       - homepage.name=Immich Machine Learning
       - homepage.icon=immich
+      - dockpeek.tags=ai
 
     volumes:
       - model-cache:/cache
@@ -97,7 +100,7 @@ services:
 
   immich_redis:
     container_name: immich_redis
-    image: docker.io/valkey/valkey:9@sha256:3eeb09785cd61ec8e3be35f8804c8892080f3ca21934d628abc24ee4ed1698f6
+    image: docker.io/valkey/valkey:9@sha256:4963247afc4cd33c7d3b2d2816b9f7f8eeebab148d29056c2ca4d7cbc966f2d9
     
     networks:
       - immich-net
@@ -170,6 +173,7 @@ services:
       - homepage.icon=immich-public-proxy
       - homepage.descriptiopn=Provides secure public access to shared albums
       - homepage.href=http://${SERVER_URL}:${PORT_IMMICH_PROXY}
+      - dockpeek.tags=oidc,caddy
 
     healthcheck:
       test: curl -s http://localhost:3000/share/healthcheck -o /dev/null || exit 1

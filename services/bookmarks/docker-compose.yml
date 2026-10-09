@@ -10,6 +10,11 @@ services:
     image: ghcr.io/karakeep-app/karakeep:${KARAKEEP_VERSION:-release}
     container_name: karakeep
 
+    networks:
+      - caddy-net # provides access for the reverse proxy
+      - karakeep-net # provides access for the internal services (meilisearch, chrome, ollama)
+
+
     ports:
       - ${PORT_KARAKEEP}:3000
 
@@ -25,7 +30,17 @@ services:
       # Auth
       DISABLE_SIGNUPS: true
       DISABLE_PASSWORD_AUTH: false
+      
+      NEXTAUTH_URL: https://${EXTERNAL_KARAKEEP}.${DOMAIN} # The URL of the Karakeep instance. This is used to construct the callback URL for OAuth authentication, among other things. Make sure to include the port if it's not running on the default port 80.
       NEXTAUTH_SECRET: ${KARAKEEP_NEXTAUTH_SECRET}
+
+      OAUTH_AUTO_REDIRECT: true # If true, users will be automatically redirected to the OAuth provider for authentication. If false, users will see a sign in page where they can choose to sign in with a magic link or with the OAuth provider. Default is true.
+      OAUTH_WELLKNOWN_URL: ${VOIDAUTH_WELLKNOWN_URL} # The URL for the OIDC provider's well-known configuration. This is used to automatically discover the authorization, token, and userinfo endpoints, as well as the supported scopes and claims. If your provider doesn't have a well-known configuration, you can set this to an empty string and manually configure the endpoints and scopes with the other OAUTH_ environment variables.
+      OAUTH_CLIENT_ID: ${KARAKEEP_OIDC_CLIENT_ID}
+      OAUTH_CLIENT_SECRET: ${KARAKEEP_OIDC_CLIENT_SECRET}
+      OAUTH_PROVIDER_NAME: ${VOIDAUTH_NAME} # This is just a name that will be displayed on the login page. It doesn't have to match the actual provider name.
+      OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING: true # If true, users will be allowed to link their account with an email that is already associated with another account. This can be dangerous because it can lead to account takeover if someone else has access to that email. Only set this to true if you understand the risks and have other security measures in place (like 2FA on the email account).
+
 
       # Search
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
@@ -36,44 +51,55 @@ services:
       CRAWLER_STORE_SCREENSHOT: false
 
       # Inference Configs
-      OLLAMA_BASE_URL: http://ollama:${PORT_OLLAMA}
-      OLLAMA_KEEP_ALIVE: 3m # Controls how long the model will stay loaded into memory following the request (example value: "5m").
+      OPENAI_API_KEY: ollama
+      OPENAI_BASE_URL: http://ollama:${PORT_OLLAMA}/v1
+
+      # Make sure to pull the models in ollama first. Example models:
       INFERENCE_TEXT_MODEL: llama3.1 # change this from default if you're using ollama.
       INFERENCE_IMAGE_MODEL: llava-llama3:8b # change this from default if you're using ollama and that model needs to support vision APIs (e.g. llava).
       EMBEDDING_TEXT_MODEL: nomic-embed-text:latest #  model to be used for generating embeddings for the text
+      EMBEDDING_DIMENSIONS: 768
+      EMBEDDING_CONTEXT_LENGTH: 2048
 
+      # Inference Configs
+      OLLAMA_KEEP_ALIVE: 3m # Controls how long the model will stay loaded into memory following the request (example value: "5m").
       INFERENCE_CONTEXT_LENGTH: 2000 # max number of tokens that we'll pass to the inference model. If your content is larger than this size, it'll be truncated to fit. The larger this value, the more of the content will be used in tag inference, but the more expensive the inference will be (money-wise on openAI and resource-wise on ollama). Check the model you're using for its max supported content size.
         # INFERENCE_MAX_OUTPUT_TOKENS # maximum number of tokens that the inference model is allowed to generate in its response. This controls the length of AI-generated content like tags and summaries. Increase this if you need longer responses, but be aware that higher values will increase costs (for OpenAI) and processing time.
       INFERENCE_LANG: english
       INFERENCE_JOB_TIMEOUT_SEC: 90
       INFERENCE_ENABLE_AUTO_TAGGING: true
       INFERENCE_ENABLE_AUTO_SUMMARIZATION: false 
+      EMBEDDING_ENABLE_AUTO_INDEXING: true # If true, Karakeep will automatically generate embeddings for new content and index them in the search engine. If false, you will need to manually trigger embedding generation and indexing via the API or the admin interface.
+
 
     labels:
       - homepage.group=Office
       - homepage.name=Karakeep
-      - homepage.href=http://${SERVER_URL}:${PORT_KARAKEEP}
+      - homepage.href=https://${EXTERNAL_KARAKEEP}.${DOMAIN}
       - homepage.icon=karakeep
       - homepage.widget.type=karakeep
       - homepage.widget.url=http://${SERVER_URL}:${PORT_KARAKEEP}
       - homepage.widget.key=${KARAKEEP_APIKEY}
-      - dockpeek.tags=ai
+      - dockpeek.tags=ai,oidc
 
 
     volumes:
       - ${DIR_DB}/karakeep:/data #The path for the persistent data directory. This is where the db lives. Assets are stored here by default unless ASSETS_DIR is set.
       - ${DIR_DOCUMENT}/karakeep:/data-assets
 
-    #deploy:
-    #  resources:
-    #    limits:
-    #      cpus: '1'
-    #      memory: 128M
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 1024M
     restart: unless-stopped
 
   karakeep-chrome:
     image: ghcr.io/zenika/alpine-chrome:124
     container_name: karakeep-chrome
+
+    networks:
+      - karakeep-net # provides access for the internal services (meilisearch, chrome, ollama)
 
     command:
       - --no-sandbox
@@ -89,11 +115,19 @@ services:
       - homepage.icon=chrome
       - dockpeek.tags=pinned
 
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 512M
     restart: unless-stopped
 
-  karakeep-meilisearch:
-    image: getmeili/meilisearch:v1.37.0
+  kkarakeep-meilisearch:
+    image: getmeili/meilisearch:v1.41.0
     container_name: karakeep-meilisearch
+
+    networks:
+      - karakeep-net # provides access for the internal services (meilisearch, chrome, ollama)
 
     ports:
       - ${PORT_MEILISEARCH}:7700 # only needed for database dumps / upgrades. Not needed for normal operation since karakeep will connect to it via the internal docker network.
@@ -116,11 +150,20 @@ services:
     volumes:
       - ${CONFIGDIR}/meilisearch:/meili_data #data includes your indexes and the documents they store
     
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 512M
     restart: unless-stopped
     
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
+
+    networks:
+      - karakeep-net # provides access for the internal services (meilisearch, chrome, ollama)
+      - ai-net
 
     ports:
       - ${PORT_OLLAMA}:11434
@@ -141,3 +184,14 @@ services:
           memory: 6GB
 
     restart: unless-stopped
+
+networks:
+  karakeep-net:
+    name: karakeep-net
+    external: false
+  caddy-net:
+    name: caddy-net
+    external: true
+  ai-net:
+    name: ai-net
+    external: true

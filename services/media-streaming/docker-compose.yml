@@ -44,7 +44,8 @@ services:
 
     volumes:
       - ${CONFIGDIR}/jellyfin:/config
-      - ${CACHEDIR}/jellyfin:/cache
+      - ${DIR_CACHE}/jellyfin:/cache
+      - ${DIR_CACHE}/jellyfin-transcodes:/config/transcodes
       - ${MEDIADIR}:/media:ro #naming, etc all handled by *arr apps
     
     #deploy:
