@@ -254,6 +254,33 @@ cragheart.local {
   }
 }
 
+bookmarks.nota {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy karakeep:3000 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+books.nota {
+  import headers
+  import main
+  import internal-only
+
+  tls internal
+
+  reverse_proxy grimmory:6060 {
+    header_up Host {host}
+    header_up X-Real-IP {remote_host}
+  }
+}
+
+
 ghs.local {
   import headers
   import main
